@@ -2,17 +2,17 @@ export const caseStudies = [
   {
     main_image_src:
       "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356325/Screenshot_2025-08-28_at_10.14.32_AM_vndeou.png",
-    project_title: "Reimagining business insurance with a data-driven, AI-powered platform design.",
+    project_title: "Template landing page premium untuk jasa B2B dengan fokus lead generation.",
     logo_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/665dcd0c7dc5304519a9a4e0_Standard%20Draft.png",
     description:
-      "We designed, built & deployed on Standard Draft, an AI-powered legal signing platform. It was a multi-year journey.",
+      "Tamplateku membantu brand B2B meluncurkan landing page premium dalam waktu singkat tanpa membangun website dari nol.",
     features: [
-      "R&D-ed & built first-of-it's kind legal contract templating engine to draft & negotiate enterprise-ready NDAs in minutes via wizard-style interface.",
-      "Cut down contract creation time from ~31 days to hours. >10x faster. Several times cheaper.",
+      "Struktur section dibuat untuk mengarahkan pengunjung ke CTA utama.",
+      "Visual modern dan clean agar brand tampil lebih kredibel di first impression.",
     ],
     case_study_link: "#",
-    name: "Standard Draft",
+    name: "B2B Leadflow",
     demo_images: [
       "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356325/Screenshot_2025-08-28_at_10.14.32_AM_vndeou.png",
       "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356325/Screenshot_2025-08-28_at_10.14.32_AM_vndeou.png",
@@ -20,25 +20,26 @@ export const caseStudies = [
     ],
     test_img:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adecbe7684da501b70952_image%2014.jpg",
-    testimonial: `"Ionio didn't disappear after the MVP was built. They continued to work with us to fix bugs and make improvements based on user feedback."`,
+    testimonial:
+      '"Template dari Tamplateku bikin proses launch website kami jauh lebih cepat. Tim marketing langsung bisa pakai tanpa revisi besar."',
     founder_name: "Ryan Samii",
     position: "Founder & CEO",
   },
   {
     main_image_src:
       "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356657/Screenshot_2025-08-28_at_10.20.39_AM_v5cnur.png",
-    project_title: "Enhancing Perlon AI’s user experience for sales success",
+    project_title: "Template SaaS showcase untuk menampilkan fitur produk lebih jelas.",
     logo_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/6659ae5c3907ce45e187ce85_dex-logo.png",
     description:
-      "Ionio designed, trained, built & deployed an AI-powered personalized slide deck creation & analytics SaaS platform from scratch in ~8 weeks.",
+      "Kami pilihkan template yang menonjolkan value proposition, demo flow, dan paket harga agar lebih mudah closing.",
     features: [
-      "Create slide decks in minutes rather than hours. Personalized decks convert more. Successful outcomes.",
-      "Dex scrapes Google, LinkedIn & company website for your prospect's info.",
-      "Drastically cut down repetitive labor for SDRs from 20+ hours/month down to just ~2h. 10x faster. 20x cheaper.",
+      "Blok fitur dibuat ringkas agar user cepat paham manfaat produk.",
+      "Section pricing disusun agar perbandingan paket terlihat jelas.",
+      "Komponen CTA ditempatkan strategis di beberapa titik halaman.",
     ],
     case_study_link: "#",
-    name: "Dex",
+    name: "SaaS Growth",
     demo_images: [
       "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356657/Screenshot_2025-08-28_at_10.20.39_AM_v5cnur.png",
       "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356657/Screenshot_2025-08-28_at_10.20.39_AM_v5cnur.png",
@@ -46,23 +47,24 @@ export const caseStudies = [
     ],
     test_img:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adece3c44f7ae7233676d_video%2011.jpg",
-    testimonial: `"Even though we are from the US and working with a company overseas, they made the experience very personable."`,
+    testimonial:
+      '"Yang saya suka, templatenya premium tapi tetap fleksibel. Tinggal ganti copy dan visual, langsung siap dipromosikan."',
     founder_name: "Reid Chong",
     position: "Founder & CEO",
   },
   {
     main_image_src:
       "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356701/Screenshot_2025-08-28_at_10.21.20_AM_qr8ko9.png",
-    project_title: "Refining Scout’s interface and UX for scalable AI automation",
+    project_title: "Template company profile modern untuk meningkatkan trust brand.",
     logo_src: "https://veerview.ai/assets/images/image05.jpg?v=505d141a",
     description:
-      "Ionio designed, developed and deployed Veerview AI, a prospecting & data enrichment SaaS for outbound sales —  12 weeks, team of 3.",
+      "Tamplateku merapikan alur informasi dari hero sampai contact section agar website mudah dipahami calon klien.",
     features: [
-      "Scrape emails from our ~54million brand & employees database based on 50+ datapoints with <5 clicks.",
-      "Enrich data from 10+ sources with proprietary scraper for ecommerce & website data, SEO metrics & social media metrics through a single portal",
+      "Layout informatif dengan hierarchy konten yang jelas.",
+      "Desain responsif untuk desktop dan mobile tanpa penyesuaian rumit.",
     ],
     case_study_link: "#",
-    name: "Veerview",
+    name: "Brand Profile",
     demo_images: [
       "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356701/Screenshot_2025-08-28_at_10.21.20_AM_qr8ko9.png",
       "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356701/Screenshot_2025-08-28_at_10.21.20_AM_qr8ko9.png",
@@ -70,24 +72,25 @@ export const caseStudies = [
     ],
     test_img:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adecbea18eeb8f0d91b57_video%204.jpg",
-    testimonial: `"Communication is free-flowing and Veerview can almost always get a hold of someone on Ionio’s team throughout the day."`,
+    testimonial:
+      '"Komunikasi tim Tamplateku cepat dan jelas. Kami jadi punya website yang tampil premium tanpa harus develop dari nol."',
     founder_name: "TJ Gottfried",
     position: "Founder",
   },
   {
     main_image_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667a854a4fccb876bd2ac5b7_supplierHQ.png",
-    project_title: "A complete transformation of Acodei’s interface design and user experience",
+    project_title: "Template dashboard product untuk startup tahap awal.",
     logo_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/665da4b5d559ba95bc6af154_supplierhq.svg",
     description:
-      "Ionio designed, developed & launched the SaaS MVP from scratch in 8 weeks in late-2023. Scaled until it crossed several thousand paying users. Then, transferred it over to the in-house tech team.",
+      "Kombinasi template dan customisasi cepat membuat tim bisa go-live lebih awal dan fokus ke validasi pasar.",
     features: [
-      "Built a robust production-grade system to support large influx of users during launch — implemented intelligent-caching for sub-2second load times on search & database lookups.",
-      "24/7 availability & responsive support during critical launch & beta period",
+      "Komponen UI konsisten agar pengalaman pengguna lebih nyaman.",
+      "Halaman inti diprioritaskan untuk mempercepat time-to-market.",
     ],
     case_study_link: "#",
-    name: "SuppierHQ",
+    name: "Startup Launch",
     demo_images: [
       "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
       "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
@@ -95,24 +98,25 @@ export const caseStudies = [
     ],
     test_img:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adecda06c8f453168901f_video%2012.jpg",
-    testimonial: `"Ionio was very professional and provided excellent support throughout the entire process."`,
+    testimonial:
+      '"Tamplateku profesional dari awal sampai rilis. Prosesnya cepat, rapi, dan hasil akhirnya sesuai ekspektasi kami."',
     founder_name: "Brad Milne",
     position: "Co-Founder",
   },
   {
     main_image_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/6672c97bbd3718b215565426_Wordout.png",
-    project_title: "Bridging the gap between cutting-edge technology and user accessibility",
+    project_title: "Template portfolio kreatif untuk personal brand dan agency.",
     logo_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667404a553e0149bc2d16e69_wordout.png",
     description:
-      "We designed, developed, deployed & scaled WordOut an AI-powered social media content creation, repurposement & scheduling platform. MVP in 6 weeks. First of it’s kind in 2022. ✨",
+      "Template ini dirancang untuk menampilkan karya, layanan, dan testimoni dengan visual premium yang tetap ringan.",
     features: [
-      "~20x faster than with manual effort. Convert videos, ebooks, docs into 100s of social media content pieces with a single click.",
-      "Automated 90% of the content creation task. Saved $7-15k/month in manual labour",
+      "Section portfolio siap pakai untuk menampilkan hasil kerja terbaik.",
+      "Struktur halaman mendukung storytelling brand yang lebih kuat.",
     ],
     case_study_link: "#",
-    name: "Wordout",
+    name: "Creative Portfolio",
     demo_images: [
       "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
       "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
@@ -120,7 +124,8 @@ export const caseStudies = [
     ],
     test_img:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adece0c823fe11cb6aa89_video%2010.jpg",
-    testimonial: `"Ionio's team was understanding about this and did not get discouraged when new bugs were found."`,
+    testimonial:
+      '"Setelah pakai template Tamplateku, presentasi brand kami jadi jauh lebih meyakinkan di mata calon klien."',
     founder_name: "Michael Guimarin",
     position: "Founder",
   },

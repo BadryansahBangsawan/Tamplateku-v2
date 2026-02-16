@@ -1,0 +1,6 @@
+<svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+  <rect width="220" height="80" rx="14" fill="#121212"/>
+  <rect x="18" y="18" width="42" height="42" rx="8" fill="#ffffff"/>
+  <text x="28" y="46" fill="#121212" font-family="Arial, sans-serif" font-size="20" font-weight="700">R</text>
+  <text x="75" y="48" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="700">Remix</text>
+</svg>

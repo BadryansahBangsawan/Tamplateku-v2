@@ -1,6 +1,7 @@
 "use client";
 
 import { SectionHeading } from "@/components/custom/SectionHeading";
+import { useSiteContent } from "@/hooks/use-site-content";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
@@ -24,53 +25,54 @@ const ProcessCards: React.FC = () => {
   const slidesRef = useRef<HTMLDivElement[]>([]);
   const headingRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
+  const content = useSiteContent();
 
   const process: processType[] = [
     {
-      title: "Discovery & Strategy",
-      tagline: "Getting to Know Your Big Idea",
+      title: "Riset Niche & Tujuan",
+      tagline: "Mulai dari objektif bisnismu",
       description:
-        "We begin by diving deep into your vision, your goals, and the problem you’re solving. This stage is all about uncovering the story behind your idea and understanding why it matters. Through thorough market research and a detailed competitor analysis, we identify unique opportunities and define the best way to position your product for long-term success. This step ensures that your foundation is solid before any building begins.",
+        "Kami petakan kebutuhan website kamu, audiens utama, dan target konversinya. Dari sini kamu dapat rekomendasi template yang paling cocok untuk brand positioning dan funnel penjualanmu.",
       deliverables: [
-        { item: "Detailed market insights" },
-        { item: "Comprehensive competitor breakdown" },
-        { item: "A winning strategy tailored to your product" },
+        { item: "Analisis kebutuhan bisnis" },
+        { item: "Rekomendasi tipe template" },
+        { item: "Struktur halaman prioritas" },
       ],
       bg_image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png",
     },
     {
-      title: "Planning & Wireframes",
-      tagline: "Mapping Out Your Vision",
+      title: "Kurasi Template Terbaik",
+      tagline: "Pilih dari koleksi premium",
       description:
-        "Once we know where you want to go, we carefully map out how to get there. Our team creates structured wireframes and a detailed project scope so that everyone involved knows exactly what’s being built and how. This stage eliminates guesswork and brings clarity to the entire process. By the end, you’ll have a well-defined roadmap that aligns with your vision and keeps the project on track from start to finish.",
+        "Tim Tamplateku menyiapkan shortlist template terbaik sesuai kebutuhan brand kamu. Setiap template sudah memikirkan hierarchy konten, section konversi, dan flow yang mudah dioptimasi.",
       deliverables: [
-        { item: "Complete project blueprint" },
-        { item: "High-fidelity wireframes" },
-        { item: "Technical implementation plan" },
+        { item: "Pilihan template terkurasi" },
+        { item: "Preview desktop dan mobile" },
+        { item: "Arah copy section utama" },
       ],
       bg_image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     },
     {
-      title: "Design & Development",
-      tagline: "Building Your Dream Into Reality",
+      title: "Customisasi Cepat",
+      tagline: "Branding langsung masuk",
       description:
-        "This is where ideas start to take shape. Our designers and developers work hand in hand to turn your vision into a functional, scalable, and visually stunning platform. Every detail is thoughtfully crafted — from intuitive user experiences to reliable back-end systems. We combine creativity with technology to deliver a product that not only looks beautiful but also performs seamlessly and grows with your business.",
+        "Template dipoles sesuai identitas brand kamu: warna, tipografi, konten utama, dan CTA. Hasilnya tetap cepat, tetap rapi, dan tetap premium tanpa perlu bangun website dari nol.",
       deliverables: [
-        { item: "A fully designed user-friendly platform" },
-        { item: "Robust, scalable development" },
-        { item: "End-to-end tested product ready for growth" },
+        { item: "Penyesuaian brand guideline" },
+        { item: "Konten inti siap publish" },
+        { item: "Optimasi performa dasar" },
       ],
       bg_image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804376/fasimage_skodum.png",
     },
     {
-      title: "Launch & Growth",
-      tagline: "Getting You Out There",
+      title: "Launch & Scale",
+      tagline: "Website siap dipakai jualan",
       description:
-        "Bringing your platform to life is just the beginning of the journey. We provide full support for launch, making sure everything runs smoothly and your product reaches the right audience. Beyond launch day, we help you craft and refine marketing strategies, track performance, and implement optimizations that fuel sustainable growth. Our focus is on making sure your business doesn’t just go live, but thrives in the market.",
+        "Setelah final, website kamu siap tayang dengan struktur yang siap dikembangkan. Kamu juga dapat panduan update konten supaya timmu bisa maintain website dengan cepat dan mandiri.",
       deliverables: [
-        { item: "Hands-on launch support" },
-        { item: "Tailored marketing strategy" },
-        { item: "Actionable tips and ongoing growth guidance" },
+        { item: "Checklist pre-launch" },
+        { item: "Panduan edit konten" },
+        { item: "Dukungan pasca go-live" },
       ],
       bg_image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     },
@@ -189,9 +191,9 @@ const ProcessCards: React.FC = () => {
     <div ref={sectionRef} className="relative space-y-4 px-4 sm:px-6 lg:px-8">
       <SectionHeading
         ref={headingRef}
-        badge="Our Proven Process"
-        heading="How We Bring Ideas to Life"
-        description="Explore our latest projects featuring AI-powered platforms, business solutions, and innovative designs that have driven measurable growth for our clients."
+        badge={content.process.badge}
+        heading={content.process.heading}
+        description={content.process.description}
         size="md"
         align="center"
         as="h2"
@@ -232,11 +234,10 @@ const ProcessCards: React.FC = () => {
                     </li>
                   ))}
                   <li className="text-heading bg-tag-bg/20 rounded-4xl px-3 py-1 text-xs tracking-wide backdrop-blur-lg sm:px-4">
-                    competitor breakdown
+                    Siap dijalankan tim internal
                   </li>
                   <li className="text-heading bg-tag-bg/20 rounded-4xl px-3 py-1 text-xs tracking-wide backdrop-blur-lg sm:px-4">
-                    {" "}
-                    your winning strategy
+                    Fokus ke konversi
                   </li>
                 </ul>
               </div>

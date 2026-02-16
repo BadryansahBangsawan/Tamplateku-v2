@@ -10,7 +10,7 @@ function Footer() {
   const imageRef = useRef<HTMLImageElement>(null);
 
   const resourceLinks = [
-    { name: "Blogs", href: "blog" },
+    { name: "Blog", href: "blog" },
     { name: "About", href: "about" },
   ];
 
@@ -38,9 +38,9 @@ function Footer() {
           className="pointer-events-none absolute -bottom-10 z-10 w-full select-none sm:-bottom-16 md:-bottom-24 lg:-bottom-32"
         >
           <Marquee className="[--duration:5s]">
-            {["I", "O", "N", "I", "O"].map((char, idx) => (
+            {["T", "A", "M", "P", "L", "A", "T", "E", "K", "U"].map((char, idx) => (
               <span
-                key={`ionio-outline-${idx}`}
+                key={`tamplateku-outline-${idx}`}
                 className={`text-primary-foreground/80 footer-slang font-extrabold uppercase`}
               >
                 {char}
@@ -66,9 +66,9 @@ function Footer() {
                   itemType="https://schema.org/Organization"
                 >
                   <p className="text-2xl font-bold" itemProp="name">
-                    Ionio LLC
+                    Tamplateku LLC
                   </p>
-                  <p className="text-sm">Copyrights © All Rights Reserved by Ionio.io</p>
+                  <p className="text-sm">Copyright © All Rights Reserved by Tamplateku</p>
                   <p className="text-sm">
                     <span className="sr-only">Phone:</span>
                     <a href="tel:+19103150746" itemProp="telephone" className="hover:underline">
@@ -96,7 +96,7 @@ function Footer() {
                       variant="outline"
                       className="border-primary-foreground/5 bg-white/5 cursor-pointer backdrop-blur-2xl text-white hover:bg-white/10 hover:text-white hover:backdrop-blur-2xl"
                     >
-                      Work with us
+                      Konsultasi Gratis
                       <ArrowUpRight className="ml-2 h-4 w-4" />
                     </Button>
                   </a>

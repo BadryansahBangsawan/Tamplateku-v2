@@ -1,5 +1,4 @@
-import Footer from "@/components/custom/Footer";
-import Navbar from "@/components/custom/Navbar";
+import SiteChrome from "@/components/custom/SiteChrome";
 import "@/lib/GSAPAnimations";
 import { defaultMetadata } from "@/lib/metadata";
 import type { Metadata } from "next";
@@ -24,13 +23,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="id">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="min-h-screen w-full">
-          <Navbar />
-          {children}
-          <Footer />
-        </div>
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

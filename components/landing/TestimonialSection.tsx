@@ -3,6 +3,7 @@
 import { SectionHeading } from "@/components/custom/SectionHeading";
 import type { CaseStudyType } from "@/data/caseStudies";
 import { caseStudies } from "@/data/caseStudies";
+import { useSiteContent } from "@/hooks/use-site-content";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
@@ -71,6 +72,7 @@ function Testimonial() {
   const headingRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLElement>(null);
+  const content = useSiteContent();
 
   const testimonials = caseStudies.filter((cs) => cs.testimonial);
 
@@ -124,9 +126,9 @@ function Testimonial() {
         {/* Header */}
         <SectionHeading
           ref={headingRef}
-          badge="Testimonials"
-          heading="Meet our happy clients"
-          description="Read what our clients say about working with Ionio."
+          badge={content.testimonials.badge}
+          heading={content.testimonials.heading}
+          description={content.testimonials.description}
           size="md"
           align="center"
           as="h2"
@@ -167,7 +169,7 @@ function Testimonial() {
                   120+
                 </div>
                 <p className="text-label mt-1 text-sm sm:mt-2 sm:text-base">
-                  AI-powered projects delivered
+                  {content.testimonials.statOneLabel}
                 </p>
               </div>
 
@@ -179,7 +181,7 @@ function Testimonial() {
                   50+
                 </div>
                 <p className="text-label mt-1 text-sm sm:mt-2 sm:text-base">
-                  Global clients we've partnered with
+                  {content.testimonials.statTwoLabel}
                 </p>
               </div>
 
@@ -191,7 +193,7 @@ function Testimonial() {
                   $50k+
                 </div>
                 <p className="text-label mt-1 text-sm sm:mt-2 sm:text-base">
-                  Monthly recurring revenue generated
+                  {content.testimonials.statThreeLabel}
                 </p>
               </div>
             </div>

@@ -13,95 +13,104 @@ import { useRef, useState } from "react";
 const blogPosts = [
   {
     id: 1,
-    title: "Enhancing Model Performance: The Impact of Fine-tuning with LoRA & QLoRA",
+    title: "Cara Memilih Template Landing Page yang Siap Closing",
     excerpt:
-      "Explore how artificial intelligence is transforming modern business operations and what it means for your company's future.",
+      "Panduan memilih template premium berdasarkan tujuan bisnis, audiens, dan target konversi.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
-    tag: "AI Strategy",
+    tag: "Landing Page",
     slug: "optimize-lora-qlora",
     isTopPick: true,
   },
   {
     id: 2,
-    title: "Enhancing Model Performance: The Impact of Fine-tuning with LoRA & QLoRA",
+    title: "Checklist Website Company Profile yang Terlihat Premium",
     excerpt:
-      "Explore how artificial intelligence is transforming modern business operations and what it means for your company's future.",
+      "Elemen penting agar website company profile tampak profesional dan mudah dipercaya calon klien.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
-    tag: "SaaS",
+    tag: "Company Profile",
     slug: "optimize-lora-qlora",
     isTopPick: true,
   },
   {
     id: 3,
-    title: "Enhancing Model Performance: The Impact of Fine-tuning with LoRA & QLoRA",
+    title: "Struktur Halaman Jasa yang Bikin Visitor Mau Kontak",
     excerpt:
-      "Explore how artificial intelligence is transforming modern business operations and what it means for your company's future.",
+      "Susunan section jasa yang terbukti membantu pengunjung memahami nilai layanan dengan cepat.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
-    tag: "AI",
+    tag: "Copywriting",
     slug: "optimize-lora-qlora",
     isTopPick: true,
   },
   {
     id: 4,
-    title: "Enhancing Model Performance: The Impact of Fine-tuning with LoRA & QLoRA",
+    title: "Tips Menulis Hero Section untuk Website Bisnis",
     excerpt:
-      "Explore how artificial intelligence is transforming modern business operations and what it means for your company's future.",
+      "Formula sederhana untuk menulis headline dan subheadline yang langsung menjelaskan value bisnis kamu.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
-    tag: "Mobile",
+    tag: "UI Copy",
     slug: "optimize-lora-qlora",
     isTopPick: false,
   },
   {
     id: 5,
-    title: "Enhancing Model Performance: The Impact of Fine-tuning with LoRA & QLoRA",
+    title: "Optimasi CTA di Template Website: Praktik Terbaik",
     excerpt:
-      "Explore how artificial intelligence is transforming modern business operations and what it means for your company's future.",
+      "Posisi dan wording CTA yang tepat bisa meningkatkan rasio klik tanpa mengubah layout desain.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
-    tag: "Optimation",
+    tag: "Conversion",
     slug: "optimize-lora-qlora",
     isTopPick: false,
   },
   {
     id: 6,
-    title: "Enhancing Model Performance: The Impact of Fine-tuning with LoRA & QLoRA",
+    title: "Desain Mobile-First untuk Template Website Modern",
     excerpt:
-      "Explore how artificial intelligence is transforming modern business operations and what it means for your company's future.",
+      "Cara memastikan tampilan mobile tetap premium, cepat, dan nyaman dipakai pengunjung.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
-    tag: "AI Strategy",
+    tag: "Mobile UX",
     slug: "optimize-lora-qlora",
     isTopPick: false,
   },
   {
     id: 7,
-    title: "Enhancing Model Performance: The Impact of Fine-tuning with LoRA & QLoRA",
+    title: "Cara Menjaga Konsistensi Brand di Seluruh Halaman Website",
     excerpt:
-      "Explore how artificial intelligence is transforming modern business operations and what it means for your company's future.",
+      "Panduan menjaga warna, tipografi, dan tone konten agar pengalaman brand tetap kuat.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
-    tag: "AI Strategy",
+    tag: "Branding",
     slug: "optimize-lora-qlora",
     isTopPick: false,
   },
   {
     id: 8,
-    title: "Enhancing Model Performance: The Impact of Fine-tuning with LoRA & QLoRA",
+    title: "Pre-Launch Checklist Sebelum Website Go Live",
     excerpt:
-      "Explore how artificial intelligence is transforming modern business operations and what it means for your company's future.",
+      "Langkah final sebelum publish agar website siap dipromosikan tanpa kendala dasar teknis.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
-    tag: "AI Strategy",
+    tag: "Launch",
     slug: "optimize-lora-qlora",
     isTopPick: false,
   },
 ];
 
-const blogTags = ["All", "AI Strategy", "ML Engineering", "LLM Development"];
+const blogTags = [
+  "All",
+  "Landing Page",
+  "Company Profile",
+  "Copywriting",
+  "Conversion",
+  "Mobile UX",
+  "Branding",
+  "Launch",
+];
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
@@ -180,18 +189,17 @@ function BlogPage() {
                 <span className="mt-1.5 mr-2 inline-block self-center" aria-hidden="true">
                   📝
                 </span>
-                AI Insights & Research
+                Blog Tamplateku
               </p>
             </div>
 
             <h1 className="blog-heading text-h1 text-text-heading !text-center font-semibold md:mx-auto md:w-2/3">
-              Latest AI Research & Insights
+              Insight Website & Template Premium
             </h1>
 
             <p className="text-caption text-label md:mx-auto md:w-2/3">
-              Stay updated with the latest trends, research, and insights in artificial
-              intelligence, machine learning, and emerging technologies that are shaping the future
-              of business.
+              Baca panduan praktis seputar desain website, struktur konten, dan optimasi template
+              premium untuk meningkatkan kredibilitas serta konversi bisnis kamu.
             </p>
           </section>
 
@@ -204,7 +212,7 @@ function BlogPage() {
           >
             <div className="mb-8">
               <h2 id="top-picks-heading" className="text-h2 text-text-heading font-semibold mb-2">
-                Top Picks
+                Pilihan Editor
               </h2>
               <div className="h-px bg-border"></div>
             </div>
@@ -270,7 +278,7 @@ function BlogPage() {
                 id="research-blogs-heading"
                 className="text-h2 text-text-heading font-semibold mb-6"
               >
-                Research/Blogs
+                Artikel Terbaru
               </h2>
 
               {/* Filter Tags */}
@@ -357,14 +365,14 @@ function BlogPage() {
             {/* No results message */}
             {filteredPosts.length === 0 && (
               <div className="text-center py-12" role="status" aria-live="polite">
-                <p className="text-label text-lg">No blog posts found for the selected category.</p>
+                <p className="text-label text-lg">Belum ada artikel di kategori ini.</p>
                 <Button
                   variant="outline"
                   className="mt-4"
                   onClick={() => setSelectedTag("All")}
                   aria-label="Clear filter and show all blog posts"
                 >
-                  Show All Posts
+                  Tampilkan Semua
                 </Button>
               </div>
             )}

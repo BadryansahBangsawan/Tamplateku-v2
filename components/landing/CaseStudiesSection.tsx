@@ -5,6 +5,7 @@ import { SectionHeading } from "@/components/custom/SectionHeading";
 import { Button } from "@/components/ui/button";
 import type { CaseStudyType } from "@/data/caseStudies";
 import { caseStudies } from "@/data/caseStudies";
+import { useSiteContent } from "@/hooks/use-site-content";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
@@ -22,6 +23,7 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ caseStudy, index }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
+  const content = useSiteContent();
 
   useGSAP(() => {
     if (cardRef.current && gsap.effects?.fadeUpOnScroll) {
@@ -92,12 +94,12 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ caseStudy, index }) => {
           aria-describedby={`case-study-${index}-description`}
           type="button"
         >
-          View case study
+          {content.caseStudies.buttonLabel}
           <span className="sr-only"> for {caseStudy.name}</span>
         </Button>
 
         <p id={`case-study-${index}-description`} className="sr-only">
-          Learn more about the {caseStudy.name} project and its implementation details
+          Lihat detail template {caseStudy.name} dan hasil implementasinya
         </p>
       </div>
 
@@ -120,6 +122,7 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ caseStudy, index }) => {
 const CaseStudies: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
+  const content = useSiteContent();
 
   useGSAP(() => {
     // Animate the main heading
@@ -163,9 +166,9 @@ const CaseStudies: React.FC = () => {
         {/* Header */}
         <SectionHeading
           ref={headingRef}
-          badge="Designs That Drive Growth"
-          heading="Recent case studies"
-          description="Explore our latest projects featuring AI-powered platforms, business solutions, and innovative designs that have driven measurable growth for our clients."
+          badge={content.caseStudies.badge}
+          heading={content.caseStudies.heading}
+          description={content.caseStudies.description}
           size="md"
           align="center"
           as="h2"

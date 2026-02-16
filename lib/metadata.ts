@@ -1,29 +1,30 @@
 import type { Metadata } from "next";
 
 export const siteConfig = {
-  name: "Ionio",
-  description: "AI innovation company driven by people and powered by technology to deliver impactful AI solutions",
-  url: "https://ionio.com",
-  ogImage: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png",
-  logo: "https://ionio.com/logo.png",
+  name: "Tamplateku",
+  description:
+    "Tamplateku menyediakan template website premium siap pakai untuk bisnis, agency, dan personal brand yang ingin tampil profesional lebih cepat.",
+  url: "https://tamplateku.com",
+  ogImage:
+    "https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png",
+  logo: "https://tamplateku.com/logo.png",
   keywords: [
-    "AI innovation",
-    "artificial intelligence",
-    "machine learning",
-    "technology solutions",
-    "AI consulting",
-    "machine learning engineering",
-    "LLM development",
-    "AI strategy"
+    "template website premium",
+    "template landing page",
+    "template company profile",
+    "template website bisnis",
+    "jasa website",
+    "desain web premium",
+    "template siap pakai",
   ],
   authors: [
     {
-      name: "Ionio Team",
-      url: "https://ionio.com",
+      name: "Tamplateku Team",
+      url: "https://tamplateku.com",
     },
   ],
-  creator: "Ionio",
-  publisher: "Ionio",
+  creator: "Tamplateku",
+  publisher: "Tamplateku",
   robots: {
     index: true,
     follow: true,
@@ -37,140 +38,136 @@ export const siteConfig = {
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: "https://ionio.com",
-    siteName: "Ionio",
-    title: "Ionio - AI Innovation & Technology Solutions",
-    description: "AI innovation company driven by people and powered by technology to deliver impactful AI solutions",
+    locale: "id_ID",
+    url: "https://tamplateku.com",
+    siteName: "Tamplateku",
+    title: "Tamplateku - Template Website Premium",
+    description:
+      "Temukan template website premium siap pakai untuk mempercepat launch website bisnismu.",
     images: [
       {
         url: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png",
         width: 1200,
         height: 630,
-        alt: "Ionio - AI Innovation & Technology Solutions",
+        alt: "Tamplateku - Template Website Premium",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ionio - AI Innovation & Technology Solutions",
-    description: "AI innovation company driven by people and powered by technology to deliver impactful AI solutions",
+    title: "Tamplateku - Template Website Premium",
+    description:
+      "Template website premium untuk bisnis yang ingin tampil profesional lebih cepat.",
     images: ["https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png"],
-    creator: "@ionio",
+    creator: "@tamplateku",
   },
   verification: {
-    google: "your-google-verification-code", 
+    google: "your-google-verification-code",
   },
   alternates: {
-    canonical: "https://ionio.com",
+    canonical: "https://tamplateku.com",
   },
-  category: "technology",
+  category: "business",
 };
-
 
 export const pageMetadata = {
   home: {
-    title: "Ionio - AI Innovation & Technology Solutions",
-    description: "Transform your business with cutting-edge AI solutions. Ionio delivers innovative artificial intelligence technologies that drive growth and efficiency.",
+    title: "Tamplateku - Template Website Premium Siap Pakai",
+    description:
+      "Pilih template website premium untuk bisnis, agency, dan personal brand. Siap custom, siap publish, dan siap dipakai untuk konversi.",
     keywords: [
-      "AI solutions",
-      "artificial intelligence consulting",
-      "machine learning services",
-      "AI innovation",
-      "technology transformation",
-      "business AI",
-      "AI strategy"
+      "template website premium",
+      "template website bisnis",
+      "template landing page",
+      "template agency",
+      "website siap pakai",
     ],
     openGraph: {
-      title: "Ionio - AI Innovation & Technology Solutions",
-      description: "Transform your business with cutting-edge AI solutions. Ionio delivers innovative artificial intelligence technologies that drive growth and efficiency.",
-      url: "https://ionio.com",
+      title: "Tamplateku - Template Website Premium Siap Pakai",
+      description:
+        "Pilih template website premium untuk bisnis, agency, dan personal brand.",
+      url: "https://tamplateku.com",
       type: "website",
     },
     twitter: {
-      title: "Ionio - AI Innovation & Technology Solutions",
-      description: "Transform your business with cutting-edge AI solutions. Ionio delivers innovative artificial intelligence technologies that drive growth and efficiency.",
+      title: "Tamplateku - Template Website Premium Siap Pakai",
+      description:
+        "Template website premium yang mudah di-custom dan cepat dipublish.",
     },
     alternates: {
-      canonical: "https://ionio.com",
+      canonical: "https://tamplateku.com",
     },
   },
   about: {
-    title: "About Ionio - AI Innovation & Technology Solutions",
-    description: "Learn about Ionio's story, culture, and expertise in AI innovation. We are driven by people and powered by AI technology to deliver impactful solutions.",
+    title: "Tentang Tamplateku - Template Website Premium",
+    description:
+      "Kenali Tamplateku dan cara kami membantu bisnis go-live lebih cepat lewat template website premium yang terstruktur.",
     keywords: [
-      "Ionio",
-      "AI innovation",
-      "technology solutions",
-      "artificial intelligence",
-      "machine learning",
-      "company culture",
-      "team expertise",
-      "AI company story"
+      "tentang tamplateku",
+      "template website premium",
+      "desain web bisnis",
+      "brand website",
     ],
     openGraph: {
-      title: "About Ionio - AI Innovation & Technology Solutions",
-      description: "Learn about Ionio's story, culture, and expertise in AI innovation. We are driven by people and powered by AI technology to deliver impactful solutions.",
-      url: "https://ionio.com/about",
+      title: "Tentang Tamplateku - Template Website Premium",
+      description:
+        "Kami membantu bisnis tampil profesional lewat template website premium.",
+      url: "https://tamplateku.com/about",
       type: "website",
     },
     twitter: {
-      title: "About Ionio - AI Innovation & Technology Solutions",
-      description: "Learn about Ionio's story, culture, and expertise in AI innovation. We are driven by people and powered by AI technology to deliver impactful solutions.",
+      title: "Tentang Tamplateku - Template Website Premium",
+      description:
+        "Kenali proses dan standar kualitas Tamplateku dalam membuat template website premium.",
     },
     alternates: {
-      canonical: "https://ionio.com/about",
+      canonical: "https://tamplateku.com/about",
     },
     structuredData: {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "Ionio",
-      "description": "AI innovation company driven by people and powered by technology to deliver impactful AI solutions",
-      "url": "https://ionio.com",
-      "logo": "https://ionio.com/logo.png",
-      "foundingDate": "2016",
-      "numberOfEmployees": "50-100",
-      "address": {
+      name: "Tamplateku",
+      description:
+        "Penyedia template website premium untuk bisnis yang ingin launch cepat dengan tampilan profesional.",
+      url: "https://tamplateku.com",
+      logo: "https://tamplateku.com/logo.png",
+      foundingDate: "2020",
+      numberOfEmployees: "10-50",
+      address: {
         "@type": "PostalAddress",
-        "addressCountry": "US"
+        addressCountry: "ID",
       },
-      "sameAs": [
-        "https://linkedin.com/company/ionio",
-        "https://twitter.com/ionio"
+      sameAs: [
+        "https://linkedin.com/company/tamplateku",
+        "https://twitter.com/tamplateku",
       ],
-      "knowsAbout": [
-        "Artificial Intelligence",
-        "Machine Learning",
-        "AI Solutions",
-        "Technology Innovation"
-      ]
-    }
+      knowsAbout: ["Web Design", "Template Website", "Landing Page", "Brand Website"],
+    },
   },
   blog: {
-    title: "AI Insights & Research - Ionio Blog",
-    description: "Stay updated with the latest trends, research, and insights in artificial intelligence, machine learning, and emerging technologies that are shaping the future of business.",
+    title: "Blog Tamplateku - Insight Website & Template Premium",
+    description:
+      "Artikel seputar strategi website, copywriting landing page, dan tips memilih template premium untuk bisnis.",
     keywords: [
-      "AI blog",
-      "artificial intelligence insights",
-      "machine learning research",
-      "AI trends",
-      "technology insights",
-      "AI articles",
-      "ML engineering",
-      "LLM development"
+      "blog website",
+      "tips landing page",
+      "copywriting website",
+      "template premium",
     ],
     openGraph: {
-      title: "AI Insights & Research - Ionio Blog",
-      description: "Stay updated with the latest trends, research, and insights in artificial intelligence, machine learning, and emerging technologies that are shaping the future of business.",
-      url: "https://ionio.com/blog",
+      title: "Blog Tamplateku - Insight Website & Template Premium",
+      description:
+        "Belajar meningkatkan performa website dengan konten, struktur, dan template yang tepat.",
+      url: "https://tamplateku.com/blog",
       type: "website",
     },
     twitter: {
-      title: "AI Insights & Research - Ionio Blog",
-      description: "Stay updated with the latest trends, research, and insights in artificial intelligence, machine learning, and emerging technologies that are shaping the future of business.",
+      title: "Blog Tamplateku - Insight Website & Template Premium",
+      description:
+        "Insight praktis seputar website premium untuk kebutuhan bisnis modern.",
     },
     alternates: {
-      canonical: "https://ionio.com/blog",
+      canonical: "https://tamplateku.com/blog",
     },
   },
 };
@@ -180,7 +177,7 @@ export function generatePageMetadata(
   customMetadata?: Partial<Metadata>
 ): Metadata {
   const baseMetadata = pageMetadata[page];
-  
+
   return {
     title: baseMetadata.title,
     description: baseMetadata.description,
@@ -200,7 +197,6 @@ export function generatePageMetadata(
   };
 }
 
-
 export function generateBlogPostMetadata(
   title: string,
   description: string,
@@ -208,21 +204,16 @@ export function generateBlogPostMetadata(
   slug: string,
   image?: string
 ): Metadata {
-  const blogUrl = `https://ionio.com/blog/${slug}`;
+  const blogUrl = `https://tamplateku.com/blog/${slug}`;
   const ogImage = image || siteConfig.ogImage;
 
   return {
-    title: `${title} - Ionio Blog`,
+    title: `${title} - Tamplateku Blog`,
     description,
-    keywords: [
-      ...siteConfig.keywords,
-      "AI blog post",
-      "artificial intelligence article",
-      "machine learning insights"
-    ],
+    keywords: [...siteConfig.keywords, "artikel website", "template premium"],
     openGraph: {
       ...siteConfig.openGraph,
-      title: `${title} - Ionio Blog`,
+      title: `${title} - Tamplateku Blog`,
       description,
       url: blogUrl,
       type: "article",
@@ -238,7 +229,7 @@ export function generateBlogPostMetadata(
     },
     twitter: {
       ...siteConfig.twitter,
-      title: `${title} - Ionio Blog`,
+      title: `${title} - Tamplateku Blog`,
       description,
       images: [ogImage],
     },
@@ -248,7 +239,6 @@ export function generateBlogPostMetadata(
     robots: siteConfig.robots,
   };
 }
-
 
 export function generateBlogPostStructuredData(
   title: string,
@@ -264,14 +254,14 @@ export function generateBlogPostStructuredData(
     datePublished: publishedTime,
     dateModified: publishedTime,
     description,
-    url: `https://ionio.com/blog/${slug}`,
+    url: `https://tamplateku.com/blog/${slug}`,
     author: {
       "@type": "Person",
-      name: author || "Ionio Team",
+      name: author || "Tamplateku Team",
     },
     publisher: {
       "@type": "Organization",
-      name: "Ionio",
+      name: "Tamplateku",
       logo: {
         "@type": "ImageObject",
         url: siteConfig.logo,
@@ -279,11 +269,10 @@ export function generateBlogPostStructuredData(
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://ionio.com/blog/${slug}`,
+      "@id": `https://tamplateku.com/blog/${slug}`,
     },
   };
 }
-
 
 export const defaultMetadata: Metadata = {
   metadataBase: new URL(siteConfig.url),

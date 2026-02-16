@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { caseStudies } from "@/data/caseStudies";
+import { useSiteContent } from "@/hooks/use-site-content";
 import { cn } from "@/lib/utils";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -25,6 +26,7 @@ function ContactUs() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const testimonialRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
+  const content = useSiteContent();
 
   const currentCaseStudy = caseStudies[currentIndex];
 
@@ -145,9 +147,9 @@ function ContactUs() {
         {/* Header */}
         <SectionHeading
           ref={headingRef}
-          badge="Contact Us"
-          heading="Get in Touch"
-          description="Contact Ionio to discuss your AI transformation needs."
+          badge={content.contact.badge}
+          heading={content.contact.heading}
+          description={content.contact.description}
           size="md"
           align="center"
           as="h2"
@@ -160,10 +162,10 @@ function ContactUs() {
           <div className="lg:col-span-1">
             <div ref={formRef} className="space-y-4 sm:space-y-6">
               <h3 id="contact-form-title" className="sr-only">
-                Contact us form
+                Form konsultasi
               </h3>
               <p id="contact-form-description" className="sr-only">
-                Use this form to contact Ionio. All fields are required.
+                Isi form berikut untuk konsultasi template website premium.
               </p>
               <form
                 className="space-y-4 sm:space-y-6"
@@ -177,12 +179,12 @@ function ContactUs() {
                     htmlFor="name"
                     className="text-text-heading text-sm font-medium sm:text-base"
                   >
-                    Name
+                    {content.contact.nameLabel}
                   </label>
                   <Input
                     id="name"
                     type="text"
-                    placeholder="Enter your name"
+                    placeholder={content.contact.namePlaceholder}
                     className="focus:border-primary focus:ring-primary w-full border-gray-200 h-10 sm:h-11"
                     name="name"
                     autoComplete="name"
@@ -197,12 +199,12 @@ function ContactUs() {
                     htmlFor="email"
                     className="text-text-heading text-sm font-medium sm:text-base"
                   >
-                    Email
+                    {content.contact.emailLabel}
                   </label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder={content.contact.emailPlaceholder}
                     className="focus:border-primary focus:ring-primary w-full border-gray-200 h-10 sm:h-11"
                     name="email"
                     autoComplete="email"
@@ -218,11 +220,11 @@ function ContactUs() {
                     htmlFor="message"
                     className="text-text-heading text-sm font-medium sm:text-base"
                   >
-                    Message
+                    {content.contact.messageLabel}
                   </label>
                   <Textarea
                     id="message"
-                    placeholder="Type your message..."
+                    placeholder={content.contact.messagePlaceholder}
                     rows={4}
                     className="focus:border-primary focus:ring-primary min-h-32 sm:min-h-40 w-full resize-none border-gray-200"
                     name="message"
@@ -242,18 +244,18 @@ function ContactUs() {
                   />
                   <div className="text-label text-xs sm:text-sm">
                     <label htmlFor="terms" className="cursor-pointer">
-                      I accept the{" "}
+                      Saya menyetujui{" "}
                       <a
                         href="#"
                         className="text-primary hover:text-primary/80 underline"
                         rel="noreferrer nofollow noopener"
                         target="_blank"
                       >
-                        Terms
+                        Syarat & Ketentuan
                       </a>
                     </label>
                     <p id="terms-description" className="sr-only">
-                      You must accept the terms to submit the form.
+                      Centang persetujuan untuk melanjutkan kirim form.
                     </p>
                   </div>
                 </div>
@@ -263,7 +265,7 @@ function ContactUs() {
                   className="bg-primary hover:bg-primary/90 w-full py-3 sm:py-4 font-medium text-white text-sm sm:text-base"
                   aria-label="Submit contact form"
                 >
-                  Submit
+                  {content.contact.submitLabel}
                 </Button>
               </form>
             </div>

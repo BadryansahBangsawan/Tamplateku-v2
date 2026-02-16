@@ -1,0 +1,6 @@
+<svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+  <rect width="220" height="80" rx="14" fill="#20133a"/>
+  <circle cx="40" cy="40" r="20" fill="#663399"/>
+  <text x="30" y="47" fill="#ffffff" font-family="Arial, sans-serif" font-size="18" font-weight="700">G</text>
+  <text x="75" y="48" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="700">Gatsby</text>
+</svg>
