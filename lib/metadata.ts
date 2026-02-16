@@ -280,6 +280,11 @@ export const defaultMetadata: Metadata = {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,
   },
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
   description: siteConfig.description,
   keywords: siteConfig.keywords,
   authors: siteConfig.authors,
