@@ -4,7 +4,7 @@ import ImageCarousel from "@/components/custom/ImageCarousel";
 import { SectionHeading } from "@/components/custom/SectionHeading";
 import { Button } from "@/components/ui/button";
 import type { CaseStudyType } from "@/data/caseStudies";
-import { caseStudies } from "@/data/caseStudies";
+import { useCaseStudies } from "@/hooks/use-case-studies";
 import { useSiteContent } from "@/hooks/use-site-content";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -119,6 +119,7 @@ const CaseStudies: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const content = useSiteContent();
+  const caseStudies = useCaseStudies();
 
   useGSAP(() => {
     // Animate the main heading

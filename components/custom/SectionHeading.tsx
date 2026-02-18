@@ -6,9 +6,9 @@ import { forwardRef } from "react";
 
 export interface SectionHeadingProps {
   /**
-   * The badge text displayed above the heading
+   * Deprecated: no longer rendered
    */
-  badge: string;
+  badge?: string;
   /**
    * The main heading text
    */
@@ -18,7 +18,7 @@ export interface SectionHeadingProps {
    */
   description?: string;
   /**
-   * Optional icon to display in the badge
+   * Deprecated: no longer rendered
    */
   icon?: LucideIcon;
   /**
@@ -40,7 +40,7 @@ export interface SectionHeadingProps {
    */
   headingClassName?: string;
   /**
-   * Additional CSS classes for the badge
+   * Deprecated: no longer rendered
    */
   badgeClassName?: string;
   /**
@@ -61,28 +61,24 @@ export interface SectionHeadingProps {
 
 const sizeVariants = {
   sm: {
-    badge: "text-xs px-3 py-1",
     heading: "text-xl sm:text-2xl leading-tight",
     description: "text-sm leading-snug",
-    spacing: "space-y-2",
+    spacing: "space-y-1.5",
   },
   md: {
-    badge: "text-xs sm:text-sm px-4 py-1 sm:px-6",
     heading: "text-2xl sm:text-3xl md:text-4xl leading-tight",
     description: "text-sm sm:text-base leading-snug",
-    spacing: "space-y-1 ",
+    spacing: "space-y-2",
   },
   lg: {
-    badge: "text-sm px-4 py-1 sm:px-6",
     heading: "text-3xl sm:text-4xl md:text-5xl leading-tight",
     description: "text-base sm:text-md leading-snug",
-    spacing: "space-y-4 sm:space-y-6",
+    spacing: "space-y-3 sm:space-y-4",
   },
   xl: {
-    badge: "text-sm px-6 py-1 sm:px-8",
     heading: "text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-tight",
     description: "text-lg sm:text-xl leading-snug",
-    spacing: "space-y-6 sm:space-y-8",
+    spacing: "space-y-4 sm:space-y-6",
   },
 };
 
@@ -95,15 +91,12 @@ const alignVariants = {
 const SectionHeading = forwardRef<HTMLDivElement, SectionHeadingProps>(
   (
     {
-      badge,
       heading,
       description,
-      icon: Icon,
       size = "md",
       align = "center",
       className,
       headingClassName,
-      badgeClassName,
       as: Component = "h2",
       id,
       showDescriptionToScreenReaders = false,
@@ -116,31 +109,11 @@ const SectionHeading = forwardRef<HTMLDivElement, SectionHeadingProps>(
 
     return (
       <header ref={ref} className={cn("z-10", variant.spacing, alignment, className)} {...props}>
-        {/* Badge */}
-        <div
-          className={cn(
-            "bg-tag-bg w-fit rounded-3xl",
-            variant.badge,
-            align === "center" && "md:mx-auto",
-            badgeClassName
-          )}
-          role="banner"
-        >
-          <p className="text-tag align-middle font-medium">
-            {Icon && (
-              <span className="mt-1.5 mr-2 inline-block self-center">
-                <Icon height={12} width={12} aria-hidden="true" />
-              </span>
-            )}
-            {badge}
-          </p>
-        </div>
-
         {/* Heading */}
         <Component
           id={id}
           className={cn(
-            "text-heading font-semibold",
+            "text-foreground font-semibold",
             variant.heading,
             align === "center" && "md:mx-auto",
             headingClassName
@@ -153,7 +126,7 @@ const SectionHeading = forwardRef<HTMLDivElement, SectionHeadingProps>(
         {description && (
           <p
             className={cn(
-              "text-label",
+              "text-muted-foreground",
               variant.description,
               align === "center" && "md:mx-auto",
               !showDescriptionToScreenReaders && "sr-only"

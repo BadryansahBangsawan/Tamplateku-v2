@@ -212,15 +212,15 @@ const ProcessCards: React.FC = () => {
               className={"relative h-fit w-full rounded-lg bg-cover p-4 sm:p-6 md:p-8 lg:p-10"}
               style={{ backgroundImage: `url(${slide.bg_image})` }}
             >
-              <div className="w-full space-y-3 rounded-md bg-white/20 p-4 backdrop-blur-lg sm:space-y-4 sm:p-6 md:max-w-7/12">
+              <div className="w-full space-y-3 rounded-md bg-background/70 p-4 backdrop-blur-lg sm:space-y-4 sm:p-6 md:max-w-7/12">
                 <div className="space-y-2 sm:space-y-3">
                   <h3 className="heading text-h4 text-heading font-semibold">{slide.title}</h3>
-                  <p className="text-xs font-normal tracking-wide text-[#323c4d] sm:text-sm">
+                  <p className="text-xs font-normal tracking-wide text-muted-foreground sm:text-sm">
                     <span> 💡</span> {slide.tagline}
                   </p>
                 </div>
 
-                <p className="text-p text-sm leading-snug text-black/60 sm:text-base lg:max-w-4/5">
+                <p className="text-p text-sm leading-snug text-foreground/75 sm:text-base lg:max-w-4/5">
                   {slide.description}
                 </p>
 

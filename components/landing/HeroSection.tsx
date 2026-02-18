@@ -10,7 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { caseStudies } from "@/data/caseStudies";
+import { useCaseStudies } from "@/hooks/use-case-studies";
 import { useSiteContent } from "@/hooks/use-site-content";
 import "@/lib/GSAPAnimations";
 import { useGSAP } from "@gsap/react";
@@ -47,6 +47,7 @@ function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const caseStudiesRef = useRef(null);
   const content = useSiteContent();
+  const caseStudies = useCaseStudies();
 
   useGSAP(() => {
     const headingElement = heroRef?.current?.querySelector("h1");
@@ -92,7 +93,6 @@ function HomePage() {
           badge={content.hero.badge}
           heading={content.hero.heading}
           description={content.hero.description}
-          icon={Sparkles}
           size="lg"
           align="center"
           as="h1"
@@ -125,17 +125,14 @@ function HomePage() {
 
         <div className="relative" role="region" aria-label="Framework logos">
           <h2 className="!sr-only">Framework yang didukung template kami</h2>
-          <div className="pointer-events-none absolute top-0 left-0 z-10 h-full w-12 bg-gradient-to-r from-gray-50 via-gray-50/90 to-transparent md:w-48" />
+          <div className="pointer-events-none absolute top-0 left-0 z-10 h-full w-12 bg-gradient-to-r from-background via-background/90 to-transparent md:w-48" />
 
           {/* Right fade gradient */}
-          <div className="pointer-events-none absolute top-0 right-0 z-10 h-full w-12 bg-gradient-to-l from-gray-50 via-gray-50/90 to-transparent md:w-48" />
+          <div className="pointer-events-none absolute top-0 right-0 z-10 h-full w-12 bg-gradient-to-l from-background via-background/90 to-transparent md:w-48" />
 
           <Marquee pauseOnHover className="mt-14">
             {frameworkLogos.map((framework) => (
-              <div
-                key={framework.name}
-                className="group mx-1 flex-shrink-0 cursor-pointer md:mx-4"
-              >
+              <div key={framework.name} className="group mx-1 flex-shrink-0 cursor-pointer md:mx-4">
                 <div className="relative flex h-16 items-center justify-center p-4 transition-all duration-300 ease-in-out">
                   <img
                     src={framework.logo}
@@ -168,9 +165,9 @@ function HomePage() {
           <h2 id="featured-case-studies-heading" className="!sr-only">
             Featured Templates
           </h2>
-          <div className="pointer-events-none absolute top-0 left-0 z-5 h-full w-12 bg-gradient-to-r from-gray-50/80 via-gray-50/20 to-transparent md:w-36" />
+          <div className="pointer-events-none absolute top-0 left-0 z-5 h-full w-12 bg-gradient-to-r from-background/85 via-background/20 to-transparent md:w-36" />
 
-          <div className="pointer-events-none absolute top-0 right-0 z-5 h-full w-12 bg-gradient-to-l from-gray-50/90 via-gray-50/20 to-transparent md:w-36" />
+          <div className="pointer-events-none absolute top-0 right-0 z-5 h-full w-12 bg-gradient-to-l from-background/90 via-background/20 to-transparent md:w-36" />
 
           <CarouselContent>
             {caseStudies.map((caseStudy, index) => (
@@ -181,10 +178,7 @@ function HomePage() {
                 aria-roledescription="slide"
                 aria-label={`${index + 1} of ${caseStudies.length}: ${caseStudy.name}`}
               >
-                <div
-                  key={`case-study-${index}`}
-                  className="w-full max-w-sm space-y-3 text-left"
-                >
+                <div key={`case-study-${index}`} className="w-full max-w-sm space-y-3 text-left">
                   <div className="bg-tag-bg flex aspect-square items-center justify-center rounded-md p-4">
                     <img
                       src={caseStudy.main_image_src}
@@ -195,13 +189,9 @@ function HomePage() {
                     />
                   </div>
                   <div className="space-y-1">
-                    <p className="text-heading text-md leading-snug">
-                      {caseStudy.project_title}
-                    </p>
+                    <p className="text-heading text-md leading-snug">{caseStudy.project_title}</p>
                     <div className="flex items-center gap-3">
-                      <p className="text-heading text-sm font-medium">
-                        Template Premium
-                      </p>
+                      <p className="text-heading text-sm font-medium">Template Premium</p>
                       <p className="text-heading text-sm">[READY TO USE]</p>
                     </div>
                   </div>
@@ -212,11 +202,11 @@ function HomePage() {
 
           <CarouselPrevious
             aria-label="Previous case study"
-            className="left-0 z-50 size-9 translate-x-0 border-0 bg-gray-500/50"
+            className="left-0 z-50 size-9 translate-x-0 border-0 bg-foreground/30 hover:bg-foreground/45"
           />
           <CarouselNext
             aria-label="Next case study"
-            className="right-0 z-50 size-9 translate-x-0 border-0 bg-gray-500/50"
+            className="right-0 z-50 size-9 translate-x-0 border-0 bg-foreground/30 hover:bg-foreground/45"
           />
         </Carousel>
       </div>

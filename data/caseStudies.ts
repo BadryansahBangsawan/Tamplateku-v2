@@ -1,7 +1,6 @@
 export const caseStudies = [
   {
-    main_image_src:
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356325/Screenshot_2025-08-28_at_10.14.32_AM_vndeou.png",
+    main_image_src: "/tamplate/tamplate 1.png",
     project_title: "Template landing page premium untuk jasa B2B dengan fokus lead generation.",
     logo_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/665dcd0c7dc5304519a9a4e0_Standard%20Draft.png",
@@ -14,20 +13,18 @@ export const caseStudies = [
     case_study_link: "#",
     name: "B2B Leadflow",
     demo_images: [
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356325/Screenshot_2025-08-28_at_10.14.32_AM_vndeou.png",
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356325/Screenshot_2025-08-28_at_10.14.32_AM_vndeou.png",
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356325/Screenshot_2025-08-28_at_10.14.32_AM_vndeou.png",
+      "/tamplate/tamplate 1.png",
+      "/tamplate/tamplate 2.png",
+      "/tamplate/tamplate 3.png",
     ],
-    test_img:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adecbe7684da501b70952_image%2014.jpg",
+    test_img: "/tamplate/tamplate 1.png",
     testimonial:
       '"Template dari Tamplateku bikin proses launch website kami jauh lebih cepat. Tim marketing langsung bisa pakai tanpa revisi besar."',
     founder_name: "Ryan Samii",
     position: "Founder & CEO",
   },
   {
-    main_image_src:
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356657/Screenshot_2025-08-28_at_10.20.39_AM_v5cnur.png",
+    main_image_src: "/tamplate/tamplate 2.png",
     project_title: "Template SaaS showcase untuk menampilkan fitur produk lebih jelas.",
     logo_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/6659ae5c3907ce45e187ce85_dex-logo.png",
@@ -41,20 +38,18 @@ export const caseStudies = [
     case_study_link: "#",
     name: "SaaS Growth",
     demo_images: [
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356657/Screenshot_2025-08-28_at_10.20.39_AM_v5cnur.png",
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356657/Screenshot_2025-08-28_at_10.20.39_AM_v5cnur.png",
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356657/Screenshot_2025-08-28_at_10.20.39_AM_v5cnur.png",
+      "/tamplate/tamplate 2.png",
+      "/tamplate/tamplate 3.png",
+      "/tamplate/tamplate 1.png",
     ],
-    test_img:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adece3c44f7ae7233676d_video%2011.jpg",
+    test_img: "/tamplate/tamplate 2.png",
     testimonial:
       '"Yang saya suka, templatenya premium tapi tetap fleksibel. Tinggal ganti copy dan visual, langsung siap dipromosikan."',
     founder_name: "Reid Chong",
     position: "Founder & CEO",
   },
   {
-    main_image_src:
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356701/Screenshot_2025-08-28_at_10.21.20_AM_qr8ko9.png",
+    main_image_src: "/tamplate/tamplate 3.png",
     project_title: "Template company profile modern untuk meningkatkan trust brand.",
     logo_src: "https://veerview.ai/assets/images/image05.jpg?v=505d141a",
     description:
@@ -66,20 +61,18 @@ export const caseStudies = [
     case_study_link: "#",
     name: "Brand Profile",
     demo_images: [
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356701/Screenshot_2025-08-28_at_10.21.20_AM_qr8ko9.png",
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356701/Screenshot_2025-08-28_at_10.21.20_AM_qr8ko9.png",
-      "https://res.cloudinary.com/dieth2xb3/image/upload/v1756356701/Screenshot_2025-08-28_at_10.21.20_AM_qr8ko9.png",
+      "/tamplate/tamplate 3.png",
+      "/tamplate/tamplate 1.png",
+      "/tamplate/tamplate 2.png",
     ],
-    test_img:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adecbea18eeb8f0d91b57_video%204.jpg",
+    test_img: "/tamplate/tamplate 3.png",
     testimonial:
       '"Komunikasi tim Tamplateku cepat dan jelas. Kami jadi punya website yang tampil premium tanpa harus develop dari nol."',
     founder_name: "TJ Gottfried",
     position: "Founder",
   },
   {
-    main_image_src:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667a854a4fccb876bd2ac5b7_supplierHQ.png",
+    main_image_src: "/tamplate/tamplate 1.png",
     project_title: "Template dashboard product untuk startup tahap awal.",
     logo_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/665da4b5d559ba95bc6af154_supplierhq.svg",
@@ -92,20 +85,18 @@ export const caseStudies = [
     case_study_link: "#",
     name: "Startup Launch",
     demo_images: [
-      "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
-      "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
-      "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
+      "/tamplate/tamplate 1.png",
+      "/tamplate/tamplate 2.png",
+      "/tamplate/tamplate 3.png",
     ],
-    test_img:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adecda06c8f453168901f_video%2012.jpg",
+    test_img: "/tamplate/tamplate 1.png",
     testimonial:
       '"Tamplateku profesional dari awal sampai rilis. Prosesnya cepat, rapi, dan hasil akhirnya sesuai ekspektasi kami."',
     founder_name: "Brad Milne",
     position: "Co-Founder",
   },
   {
-    main_image_src:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/6672c97bbd3718b215565426_Wordout.png",
+    main_image_src: "/tamplate/tamplate 2.png",
     project_title: "Template portfolio kreatif untuk personal brand dan agency.",
     logo_src:
       "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667404a553e0149bc2d16e69_wordout.png",
@@ -118,12 +109,11 @@ export const caseStudies = [
     case_study_link: "#",
     name: "Creative Portfolio",
     demo_images: [
-      "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
-      "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
-      "https://pbs.twimg.com/media/GpPxvDUWEAAILZW?format=jpg&name=4096x4096",
+      "/tamplate/tamplate 2.png",
+      "/tamplate/tamplate 3.png",
+      "/tamplate/tamplate 1.png",
     ],
-    test_img:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667adece0c823fe11cb6aa89_video%2010.jpg",
+    test_img: "/tamplate/tamplate 2.png",
     testimonial:
       '"Setelah pakai template Tamplateku, presentasi brand kami jadi jauh lebih meyakinkan di mata calon klien."',
     founder_name: "Michael Guimarin",

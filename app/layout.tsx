@@ -1,4 +1,6 @@
 import SiteChrome from "@/components/custom/SiteChrome";
+import { LanguageProvider } from "@/components/language-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import "@/lib/GSAPAnimations";
 import { defaultMetadata } from "@/lib/metadata";
 import type { Metadata } from "next";
@@ -23,9 +25,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="id">
+    <html lang="id" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <SiteChrome>{children}</SiteChrome>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <LanguageProvider>
+            <SiteChrome>{children}</SiteChrome>
+          </LanguageProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

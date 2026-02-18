@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Bb logo">
+  <circle cx="256" cy="256" r="256" fill="#e5e5e5"/>
+  <text x="190" y="355" text-anchor="middle" font-size="260" font-weight="800" font-family="Arial, Helvetica, sans-serif" fill="#000000">B</text>
+  <text x="308" y="355" text-anchor="middle" font-size="260" font-weight="800" font-family="Arial, Helvetica, sans-serif" fill="#000000">b</text>
+  <circle cx="430" cy="350" r="25" fill="#ef5a49"/>
+</svg>

@@ -1,0 +1,7 @@
+<svg width="220" height="80" viewBox="0 0 220 80" xmlns="http://www.w3.org/2000/svg">
+  <rect width="220" height="80" rx="14" fill="#0b1220"/>
+  <path d="M18 58l16-28 16 28z" fill="#00dc82"/>
+  <path d="M34 58l20-34 20 34z" fill="#00c16a"/>
+  <path d="M54 58l12-20 12 20z" fill="#108775"/>
+  <text x="86" y="48" fill="#ffffff" font-family="Arial, sans-serif" font-size="24" font-weight="700">Nuxt</text>
+</svg>

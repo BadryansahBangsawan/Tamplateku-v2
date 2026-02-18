@@ -30,7 +30,7 @@ function Footer() {
         <img
           ref={imageRef}
           className="h-[36vh] w-full object-cover sm:h-[48vh] md:h-[64vh] lg:h-[70vh]"
-          src="https://pbs.twimg.com/media/GxtkGthWsAAPR6-?format=jpg&name=4096x4096"
+          src="/tamplate/tamplate 2.png"
           alt="Books landscape background"
         />
         <h5

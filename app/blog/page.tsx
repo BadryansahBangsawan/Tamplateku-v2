@@ -16,7 +16,7 @@ const blogPosts = [
     title: "Cara Memilih Template Landing Page yang Siap Closing",
     excerpt:
       "Panduan memilih template premium berdasarkan tujuan bisnis, audiens, dan target konversi.",
-    image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+    image: "/tamplate/tamplate 1.png",
     date: "Aug 16, 2025",
     tag: "Landing Page",
     slug: "optimize-lora-qlora",
@@ -27,7 +27,7 @@ const blogPosts = [
     title: "Checklist Website Company Profile yang Terlihat Premium",
     excerpt:
       "Elemen penting agar website company profile tampak profesional dan mudah dipercaya calon klien.",
-    image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+    image: "/tamplate/tamplate 2.png",
     date: "Aug 16, 2025",
     tag: "Company Profile",
     slug: "optimize-lora-qlora",
@@ -38,7 +38,7 @@ const blogPosts = [
     title: "Struktur Halaman Jasa yang Bikin Visitor Mau Kontak",
     excerpt:
       "Susunan section jasa yang terbukti membantu pengunjung memahami nilai layanan dengan cepat.",
-    image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+    image: "/tamplate/tamplate 3.png",
     date: "Aug 16, 2025",
     tag: "Copywriting",
     slug: "optimize-lora-qlora",
@@ -49,7 +49,7 @@ const blogPosts = [
     title: "Tips Menulis Hero Section untuk Website Bisnis",
     excerpt:
       "Formula sederhana untuk menulis headline dan subheadline yang langsung menjelaskan value bisnis kamu.",
-    image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+    image: "/tamplate/tamplate 1.png",
     date: "Aug 16, 2025",
     tag: "UI Copy",
     slug: "optimize-lora-qlora",
@@ -60,7 +60,7 @@ const blogPosts = [
     title: "Optimasi CTA di Template Website: Praktik Terbaik",
     excerpt:
       "Posisi dan wording CTA yang tepat bisa meningkatkan rasio klik tanpa mengubah layout desain.",
-    image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+    image: "/tamplate/tamplate 2.png",
     date: "Aug 16, 2025",
     tag: "Conversion",
     slug: "optimize-lora-qlora",
@@ -70,7 +70,7 @@ const blogPosts = [
     id: 6,
     title: "Desain Mobile-First untuk Template Website Modern",
     excerpt: "Cara memastikan tampilan mobile tetap premium, cepat, dan nyaman dipakai pengunjung.",
-    image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+    image: "/tamplate/tamplate 3.png",
     date: "Aug 16, 2025",
     tag: "Mobile UX",
     slug: "optimize-lora-qlora",
@@ -80,7 +80,7 @@ const blogPosts = [
     id: 7,
     title: "Cara Menjaga Konsistensi Brand di Seluruh Halaman Website",
     excerpt: "Panduan menjaga warna, tipografi, dan tone konten agar pengalaman brand tetap kuat.",
-    image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+    image: "/tamplate/tamplate 1.png",
     date: "Aug 16, 2025",
     tag: "Branding",
     slug: "optimize-lora-qlora",
@@ -91,7 +91,7 @@ const blogPosts = [
     title: "Pre-Launch Checklist Sebelum Website Go Live",
     excerpt:
       "Langkah final sebelum publish agar website siap dipromosikan tanpa kendala dasar teknis.",
-    image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+    image: "/tamplate/tamplate 2.png",
     date: "Aug 16, 2025",
     tag: "Launch",
     slug: "optimize-lora-qlora",

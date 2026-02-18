@@ -2,7 +2,7 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { caseStudies } from "@/data/caseStudies";
+import { useCaseStudies } from "@/hooks/use-case-studies";
 import Link from "next/link";
 
 const formatPrice = (value: number) =>
@@ -12,17 +12,18 @@ const formatPrice = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
-const templateItems = caseStudies.slice(0, 6).map((item, index) => ({
-  id: `${item.name}-${index}`,
-  title: item.project_title,
-  category: "Template Premium",
-  thumbnail: item.main_image_src,
-  description: item.features[0] ?? "Template siap pakai dengan desain modern dan performa cepat.",
-  price: 299000 + index * 50000,
-  slug: item.name.toLowerCase().replace(/\s+/g, "-"),
-}));
-
 export default function TemplatesSection() {
+  const caseStudies = useCaseStudies();
+  const templateItems = caseStudies.slice(0, 6).map((item, index) => ({
+    id: `${item.name}-${index}`,
+    title: item.project_title,
+    category: "Template Premium",
+    thumbnail: item.main_image_src,
+    description: item.features[0] ?? "Template siap pakai dengan desain modern dan performa cepat.",
+    price: 299000 + index * 50000,
+    slug: item.name.toLowerCase().replace(/\s+/g, "-"),
+  }));
+
   return (
     <section
       id="templates-section"
@@ -55,7 +56,7 @@ export default function TemplatesSection() {
         {templateItems.map((item) => (
           <article
             key={item.id}
-            className="group overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+            className="group overflow-hidden rounded-2xl border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
             aria-label={`Template ${item.title}`}
           >
             <div className="bg-tag-bg relative aspect-[16/10] overflow-hidden">

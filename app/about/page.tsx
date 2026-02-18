@@ -112,7 +112,7 @@ const AboutPage = () => {
                   aria-label="Company team and workplace images"
                 >
                   <img
-                    src="https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png"
+                    src="/tamplate/tamplate 1.png"
                     alt="Tim Tamplateku berdiskusi merancang template website premium"
                     className="aspect-[0.7] w-full rounded-lg object-cover md:w-1/2"
                     loading="eager"
@@ -122,7 +122,7 @@ const AboutPage = () => {
                   />
                   <div className="flex w-full flex-col items-center justify-center gap-6 md:w-1/2">
                     <img
-                      src="https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png"
+                      src="/tamplate/tamplate 2.png"
                       alt="Proses desain template website di Tamplateku"
                       className="aspect-[1.1] rounded-lg object-cover"
                       loading="lazy"
@@ -131,7 +131,7 @@ const AboutPage = () => {
                       height="273"
                     />
                     <img
-                      src="https://res.cloudinary.com/dieth2xb3/image/upload/v1755804376/fasimage_skodum.png"
+                      src="/tamplate/tamplate 3.png"
                       alt="Sesi evaluasi kualitas template di Tamplateku"
                       className="aspect-[0.7] rounded-lg object-cover"
                       loading="lazy"
@@ -152,7 +152,7 @@ const AboutPage = () => {
                   aria-label="Additional workplace and team collaboration images"
                 >
                   <img
-                    src="https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png"
+                    src="/tamplate/tamplate 1.png"
                     alt="Kolaborasi tim Tamplateku untuk pengembangan template"
                     className="aspect-[0.9] w-full rounded-lg object-cover md:w-1/2"
                     loading="lazy"
@@ -162,7 +162,7 @@ const AboutPage = () => {
                   />
                   <div className="flex w-full flex-col items-center justify-center gap-6 md:w-1/2">
                     <img
-                      src="https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png"
+                      src="/tamplate/tamplate 2.png"
                       alt="Prototyping section landing page premium"
                       className="aspect-[0.8] rounded-lg object-cover"
                       loading="lazy"
@@ -171,7 +171,7 @@ const AboutPage = () => {
                       height="375"
                     />
                     <img
-                      src="https://res.cloudinary.com/dieth2xb3/image/upload/v1755804376/fasimage_skodum.png"
+                      src="/tamplate/tamplate 3.png"
                       alt="Diskusi UX untuk meningkatkan konversi website"
                       className="aspect-[0.9] rounded-lg object-cover"
                       loading="lazy"

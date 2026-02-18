@@ -2,7 +2,7 @@
 
 import { SectionHeading } from "@/components/custom/SectionHeading";
 import type { CaseStudyType } from "@/data/caseStudies";
-import { caseStudies } from "@/data/caseStudies";
+import { useCaseStudies } from "@/hooks/use-case-studies";
 import { useSiteContent } from "@/hooks/use-site-content";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -72,6 +72,7 @@ function Testimonial() {
   const gridRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLElement>(null);
   const content = useSiteContent();
+  const caseStudies = useCaseStudies();
 
   const testimonials = caseStudies.filter((cs) => cs.testimonial);
 

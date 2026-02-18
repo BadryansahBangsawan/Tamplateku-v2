@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { caseStudies } from "@/data/caseStudies";
+import { useCaseStudies } from "@/hooks/use-case-studies";
 import { useSiteContent } from "@/hooks/use-site-content";
+import { defaultCaseStudiesContent } from "@/lib/caseStudiesContent";
 import { cn } from "@/lib/utils";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -27,8 +28,10 @@ function ContactUs() {
   const testimonialRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const content = useSiteContent();
+  const caseStudies = useCaseStudies();
 
-  const currentCaseStudy = caseStudies[currentIndex];
+  const currentCaseStudy =
+    caseStudies[currentIndex] ?? caseStudies[0] ?? defaultCaseStudiesContent[0];
 
   useGSAP(() => {
     if (headingRef.current) {
@@ -117,12 +120,14 @@ function ContactUs() {
   };
 
   const handleNext = () => {
+    if (caseStudies.length < 2) return;
     animateOut().then(() => {
       setCurrentIndex((prev) => (prev + 1) % caseStudies.length);
     });
   };
 
   const handlePrevious = () => {
+    if (caseStudies.length < 2) return;
     animateOut().then(() => {
       setCurrentIndex((prev) => (prev - 1 + caseStudies.length) % caseStudies.length);
     });
@@ -185,7 +190,7 @@ function ContactUs() {
                     id="name"
                     type="text"
                     placeholder={content.contact.namePlaceholder}
-                    className="focus:border-primary focus:ring-primary w-full border-gray-200 h-10 sm:h-11"
+                    className="focus:border-primary focus:ring-primary h-10 w-full border-border sm:h-11"
                     name="name"
                     autoComplete="name"
                     required
@@ -205,7 +210,7 @@ function ContactUs() {
                     id="email"
                     type="email"
                     placeholder={content.contact.emailPlaceholder}
-                    className="focus:border-primary focus:ring-primary w-full border-gray-200 h-10 sm:h-11"
+                    className="focus:border-primary focus:ring-primary h-10 w-full border-border sm:h-11"
                     name="email"
                     autoComplete="email"
                     inputMode="email"
@@ -226,7 +231,7 @@ function ContactUs() {
                     id="message"
                     placeholder={content.contact.messagePlaceholder}
                     rows={4}
-                    className="focus:border-primary focus:ring-primary min-h-32 sm:min-h-40 w-full resize-none border-gray-200"
+                    className="focus:border-primary focus:ring-primary min-h-32 w-full resize-none border-border sm:min-h-40"
                     name="message"
                     required
                     aria-required="true"
@@ -262,7 +267,7 @@ function ContactUs() {
 
                 <Button
                   type="submit"
-                  className="bg-primary hover:bg-primary/90 w-full py-3 sm:py-4 font-medium text-white text-sm sm:text-base"
+                  className="bg-primary hover:bg-primary/90 w-full py-3 text-sm font-medium text-primary-foreground sm:py-4 sm:text-base"
                   aria-label="Submit contact form"
                 >
                   {content.contact.submitLabel}
@@ -276,8 +281,7 @@ function ContactUs() {
             <div className="bg-primary absolute inset-0 h-full w-full rounded-2xl" />
             <div
               style={{
-                backgroundImage:
-                  "url(https://pbs.twimg.com/media/GqMIQdAXgAA_C4K?format=jpg&name=4096x4096)",
+                backgroundImage: "url(/tamplate/tamplate 3.png)",
               }}
               className="bg-background relative flex h-64 w-full flex-col items-center justify-center overflow-hidden rounded-2xl border bg-cover opacity-85 sm:h-80 lg:h-full"
             >
@@ -290,7 +294,7 @@ function ContactUs() {
             </div>
             <div className="absolute bottom-0 w-full">
               <div ref={contentRef} className="relative p-4 sm:p-6 lg:p-8">
-                <div className="absolute inset-0 w-full rounded-b-2xl bg-gradient-to-t from-gray-500/40 to-transparent" />
+                <div className="absolute inset-0 w-full rounded-b-2xl bg-gradient-to-t from-black/55 to-transparent dark:from-black/70" />
 
                 {/* Testimonial Section */}
                 {currentCaseStudy.testimonial && (
@@ -315,7 +319,7 @@ function ContactUs() {
                         />
                       </div>
                       <blockquote
-                        className="text-sm leading-tight font-medium text-gray-200 italic sm:text-base lg:text-lg"
+                        className="text-sm leading-tight font-medium text-foreground/90 italic sm:text-base lg:text-lg"
                         itemProp="reviewBody"
                       >
                         {currentCaseStudy.testimonial}
@@ -323,10 +327,13 @@ function ContactUs() {
                     </div>
                     <div className="flex items-center justify-between gap-3 sm:gap-4">
                       <div>
-                        <p className="text-xs font-medium text-white sm:text-sm" itemProp="author">
+                        <p
+                          className="text-xs font-medium text-foreground sm:text-sm"
+                          itemProp="author"
+                        >
                           {currentCaseStudy.founder_name}
                         </p>
-                        <p className="text-xs text-gray-300" itemProp="authorPosition">
+                        <p className="text-xs text-muted-foreground" itemProp="authorPosition">
                           {currentCaseStudy.position}
                         </p>
                       </div>

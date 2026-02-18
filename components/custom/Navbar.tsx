@@ -6,7 +6,10 @@ import { ScrollTrigger } from "gsap/all";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { useLanguage } from "../language-provider";
 import { Button } from "../ui/button";
+import LanguageButton from "./LanguageButton";
+import ThemeToggle from "./ThemeToggle";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -17,24 +20,39 @@ function Navbar() {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const navRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
+  const { language } = useLanguage();
 
-  const navLinks = [
-    {
-      name: "Home",
-      href: "/",
-      description: "Return to homepage",
-    },
-    {
-      name: "About",
-      href: "/about",
-      description: "Learn more about our company",
-    },
-    {
-      name: "Blog",
-      href: "/blog",
-      description: "Baca tips website dan template premium terbaru",
-    },
-  ];
+  const copy = {
+    skipToMain: language === "id" ? "Lewati ke konten utama" : "Skip to main content",
+    signupCta: language === "id" ? "Mulai Sekarang" : "Get Started",
+    signupCtaAria:
+      language === "id"
+        ? "Mulai sekarang dengan membuat akun"
+        : "Get started now by creating an account",
+    navLinks: [
+      {
+        name: language === "id" ? "Beranda" : "Home",
+        href: "/",
+        description: language === "id" ? "Kembali ke beranda" : "Return to homepage",
+      },
+      {
+        name: "About",
+        href: "/about",
+        description:
+          language === "id"
+            ? "Pelajari lebih lanjut tentang perusahaan kami"
+            : "Learn more about our company",
+      },
+      {
+        name: "Blog",
+        href: "/blog",
+        description:
+          language === "id"
+            ? "Baca tips website dan template premium terbaru"
+            : "Read website tips and the latest premium templates",
+      },
+    ],
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -53,11 +71,11 @@ function Navbar() {
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
-        setActiveIndex((prev) => (prev + 1) % navLinks.length);
+        setActiveIndex((prev) => (prev + 1) % copy.navLinks.length);
         break;
       case "ArrowUp":
         event.preventDefault();
-        setActiveIndex((prev) => (prev - 1 + navLinks.length) % navLinks.length);
+        setActiveIndex((prev) => (prev - 1 + copy.navLinks.length) % copy.navLinks.length);
         break;
       case "Home":
         event.preventDefault();
@@ -65,7 +83,7 @@ function Navbar() {
         break;
       case "End":
         event.preventDefault();
-        setActiveIndex(navLinks.length - 1);
+        setActiveIndex(copy.navLinks.length - 1);
         break;
       case "Escape":
         closeMenu();
@@ -176,7 +194,7 @@ function Navbar() {
         href="#main-content"
         className="focus:bg-primary focus:text-primary-foreground focus:ring-ring !sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:px-4 focus:py-2 focus:ring-2 focus:ring-offset-2 focus:outline-none"
       >
-        Skip to main content
+        {copy.skipToMain}
       </a>
 
       <header
@@ -214,7 +232,7 @@ function Navbar() {
               role="menubar"
               aria-label="Main navigation menu"
             >
-              {navLinks.map((link, index) => {
+              {copy.navLinks.map((link, index) => {
                 const isActive =
                   pathname === link.href || (link.href.startsWith("/#") && pathname === "/");
 
@@ -241,12 +259,10 @@ function Navbar() {
             </ul>
 
             <div className="flex items-center gap-3">
-              <Button
-                size={"sm"}
-                className="text-sm"
-                aria-label="Contact us to start working together"
-              >
-                Mulai Sekarang
+              <LanguageButton />
+              <ThemeToggle />
+              <Button size="sm" className="text-sm" aria-label={copy.signupCtaAria} asChild>
+                <Link href="/signup">{copy.signupCta}</Link>
               </Button>
             </div>
 
@@ -291,7 +307,7 @@ function Navbar() {
               <div className="">
                 <div className="space-y-2 px-2 py-4">
                   <ul className="space-y-2" role="menu" aria-label="Mobile navigation options">
-                    {navLinks.map((link, index) => {
+                    {copy.navLinks.map((link, index) => {
                       const isActive =
                         pathname === link.href || (link.href.startsWith("/#") && pathname === "/");
 
@@ -320,12 +336,16 @@ function Navbar() {
                     })}
                   </ul>
                   <div className="border-t pt-4 space-y-3">
+                    <div className="flex items-center justify-end">
+                      <ThemeToggle />
+                    </div>
                     <Button
                       className="w-full"
-                      aria-label="Contact us to start working together"
+                      aria-label={copy.signupCtaAria}
+                      asChild
                       onClick={closeMenu}
                     >
-                      Mulai Sekarang
+                      <Link href="/signup">{copy.signupCta}</Link>
                     </Button>
                   </div>
                 </div>
