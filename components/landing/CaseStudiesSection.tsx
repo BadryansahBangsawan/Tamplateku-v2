@@ -74,11 +74,7 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ caseStudy, index }) => {
 
           <div className="space-y-4">
             <h4 className="sr-only">Key Features</h4>
-            <ul
-              className="list-disc space-y-3 pl-4"
-              role="list"
-              aria-label="Project features and achievements"
-            >
+            <ul className="list-disc space-y-3 pl-4" aria-label="Project features and achievements">
               {caseStudy.features.map((feature, featureIndex) => (
                 <li key={featureIndex} className="text-label text-sm">
                   {feature}
@@ -161,7 +157,6 @@ const CaseStudies: React.FC = () => {
         ref={sectionRef}
         className="mx-auto max-w-7xl px-5 py-16 md:py-24"
         aria-labelledby="case-studies-heading"
-        role="region"
       >
         {/* Header */}
         <SectionHeading

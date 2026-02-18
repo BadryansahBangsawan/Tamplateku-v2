@@ -96,17 +96,20 @@ export function AnimatedBlogContent({ children }: AnimatedBlogContentProps) {
         [&_em]:italic
         [&_hr]:border-border [&_hr]:my-8"
       dangerouslySetInnerHTML={{
-        __html: children ? children?.toString()
-          .replace(/<h([1-6])([^>]*)>(.*?)<\/h[1-6]>/gi, (match, level, attrs, content) => {
-            const id = content
-              .replace(/<[^>]*>/g, "") // Remove HTML tags
-              .toLowerCase()
-              .replace(/[^\w\s-]/g, "")
-              .replace(/\s+/g, "-")
-              .replace(/-+/g, "-")
-              .trim();
-            return `<h${level}${attrs} id="${id}">${content}</h${level}>`;
-          }) : "",
+        __html: children
+          ? children
+              ?.toString()
+              .replace(/<h([1-6])([^>]*)>(.*?)<\/h[1-6]>/gi, (_match, level, attrs, content) => {
+                const id = content
+                  .replace(/<[^>]*>/g, "") // Remove HTML tags
+                  .toLowerCase()
+                  .replace(/[^\w\s-]/g, "")
+                  .replace(/\s+/g, "-")
+                  .replace(/-+/g, "-")
+                  .trim();
+                return `<h${level}${attrs} id="${id}">${content}</h${level}>`;
+              })
+          : "",
       }}
     />
   );

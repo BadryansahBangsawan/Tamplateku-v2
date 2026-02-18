@@ -2,9 +2,9 @@
 
 import {
   SITE_CONTENT_UPDATED_EVENT,
+  type SiteContent,
   defaultSiteContent,
   readSiteContentFromStorage,
-  type SiteContent,
 } from "@/lib/siteContent";
 import { useEffect, useState } from "react";
 

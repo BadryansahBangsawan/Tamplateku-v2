@@ -114,7 +114,7 @@ export function AnimatedMainContent({ content }: AnimatedMainContentProps) {
             dangerouslySetInnerHTML={{
               __html: content.replace(
                 /<h([1-6])([^>]*)>(.*?)<\/h[1-6]>/gi,
-                (match, level, attrs, content) => {
+                (_match, level, attrs, content) => {
                   const id = content
                     .replace(/<[^>]*>/g, "") // Remove HTML tags
                     .toLowerCase()

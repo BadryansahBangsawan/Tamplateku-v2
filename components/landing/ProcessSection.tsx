@@ -119,21 +119,21 @@ const ProcessCards: React.FC = () => {
             rotationX: 8,
             opacity: 0,
           };
-        } else if (isTablet) {
+        }
+        if (isTablet) {
           return {
             scale: 0.7,
             z: -75,
             rotationX: 12,
             opacity: 0,
           };
-        } else {
-          return {
-            scale: 0.6,
-            z: -100,
-            rotationX: 15,
-            opacity: 0,
-          };
         }
+        return {
+          scale: 0.6,
+          z: -100,
+          rotationX: 15,
+          opacity: 0,
+        };
       };
 
       tl.to(slide, {
@@ -209,7 +209,7 @@ const ProcessCards: React.FC = () => {
             className="relative mb-6 flex h-fit w-full items-center justify-center sm:mb-8 md:mb-10"
           >
             <div
-              className={`relative h-fit w-full rounded-lg bg-cover p-4 sm:p-6 md:p-8 lg:p-10`}
+              className={"relative h-fit w-full rounded-lg bg-cover p-4 sm:p-6 md:p-8 lg:p-10"}
               style={{ backgroundImage: `url(${slide.bg_image})` }}
             >
               <div className="w-full space-y-3 rounded-md bg-white/20 p-4 backdrop-blur-lg sm:space-y-4 sm:p-6 md:max-w-7/12">
@@ -242,9 +242,11 @@ const ProcessCards: React.FC = () => {
                 </ul>
               </div>
               <div className="absolute right-4 bottom-4 sm:right-8 sm:bottom-6 md:right-12 md:bottom-8 lg:right-16 lg:bottom-10">
-                <div className={`relative`}>
+                <div className={"relative"}>
                   <span
-                    className={`text-6xl font-extrabold text-transparent sm:text-7xl md:text-8xl lg:text-9xl`}
+                    className={
+                      "text-6xl font-extrabold text-transparent sm:text-7xl md:text-8xl lg:text-9xl"
+                    }
                     style={{
                       WebkitTextStroke: "2px rgb(225,225,225,0.9",
                       textShadow: "0 1px 2px rgba(225, 225, 225, 0.05)",

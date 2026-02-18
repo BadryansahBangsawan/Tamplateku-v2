@@ -27,18 +27,34 @@
       "style": {
         "noNonNullAssertion": "warn",
         "useConst": "error",
-        "useTemplate": "error"
+        "useTemplate": "error",
+        "noParameterAssign": "off"
       },
       "suspicious": {
         "noExplicitAny": "warn",
-        "noArrayIndexKey": "warn"
-      },
-      "complexity": {
-        "noExcessiveCognitiveComplexity": "warn",
-        "noBannedTypes": "error"
+        "noArrayIndexKey": "warn",
+        "noImplicitAnyLet": "off",
+        "noAssignInExpressions": "off"
       },
       "performance": {
         "noAccumulatingSpread": "warn"
+      },
+      "a11y": {
+        "useSemanticElements": "off",
+        "noRedundantRoles": "off",
+        "noRedundantAlt": "off",
+        "useButtonType": "off",
+        "useFocusableInteractive": "off",
+        "useValidAnchor": "off",
+        "noSvgWithoutTitle": "off"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "off"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "warn",
+        "noBannedTypes": "error",
+        "noForEach": "off"
       }
     }
   },

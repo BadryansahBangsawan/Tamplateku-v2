@@ -38,8 +38,7 @@ export const blogPosts: BlogPost[] = [
     date: "16 Aug 2025",
     tag: "Copywriting",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
-    excerpt:
-      "Susunan section jasa yang membantu pengunjung memahami value layanan dengan cepat.",
+    excerpt: "Susunan section jasa yang membantu pengunjung memahami value layanan dengan cepat.",
     slug: "custom-llm-development-concept-deployment",
     isTopPick: true,
   },
@@ -49,8 +48,7 @@ export const blogPosts: BlogPost[] = [
     date: "16 Aug 2025",
     tag: "UI Copy",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
-    excerpt:
-      "Formula headline dan subheadline agar pesan utama bisnis langsung tertangkap.",
+    excerpt: "Formula headline dan subheadline agar pesan utama bisnis langsung tertangkap.",
     slug: "data-privacy-ai-compliance-best-practices",
   },
   {
@@ -59,8 +57,7 @@ export const blogPosts: BlogPost[] = [
     date: "16 Aug 2025",
     tag: "Conversion",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
-    excerpt:
-      "Posisi dan wording CTA yang tepat untuk meningkatkan klik tanpa ubah layout.",
+    excerpt: "Posisi dan wording CTA yang tepat untuk meningkatkan klik tanpa ubah layout.",
     slug: "generative-ai-tools-content-creation",
   },
   {
@@ -69,8 +66,7 @@ export const blogPosts: BlogPost[] = [
     date: "16 Aug 2025",
     tag: "Mobile UX",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
-    excerpt:
-      "Pastikan tampilan mobile tetap premium, cepat, dan nyaman untuk pengunjung.",
+    excerpt: "Pastikan tampilan mobile tetap premium, cepat, dan nyaman untuk pengunjung.",
     slug: "ai-ethics-building-responsible-ai-systems",
   },
   {
@@ -79,8 +75,7 @@ export const blogPosts: BlogPost[] = [
     date: "16 Aug 2025",
     tag: "Branding",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
-    excerpt:
-      "Panduan menjaga warna, tipografi, dan tone konten agar brand terasa konsisten.",
+    excerpt: "Panduan menjaga warna, tipografi, dan tone konten agar brand terasa konsisten.",
     slug: "edge-ai-bringing-intelligence-edge",
   },
   {
@@ -89,8 +84,7 @@ export const blogPosts: BlogPost[] = [
     date: "16 Aug 2025",
     tag: "Launch",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
-    excerpt:
-      "Langkah final sebelum publish agar website siap dipromosikan tanpa kendala.",
+    excerpt: "Langkah final sebelum publish agar website siap dipromosikan tanpa kendala.",
     slug: "ai-model-optimization-performance-efficiency",
   },
   {

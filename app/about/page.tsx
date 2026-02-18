@@ -79,28 +79,38 @@ const AboutPage = () => {
           __html: JSON.stringify(pageMetadata.about.structuredData),
         }}
       />
-      
-      <main id="main-content" role="main">
+
+      <main id="main-content">
         <section className="py-32 mx-auto max-w-6xl px-5" aria-labelledby="about-heading">
           <div className="container">
             <div className="flex flex-col items-center justify-start gap-6 lg:flex-row">
               <div className="flex w-full flex-col items-start justify-start gap-24 lg:w-1/2">
                 <header ref={heroContentRef} className="pr-6">
-                  <h1 id="about-heading" className="mb-6 text-4xl font-bold md:text-5xl lg:mb-10 lg:text-6xl">
+                  <h1
+                    id="about-heading"
+                    className="mb-6 text-4xl font-bold md:text-5xl lg:mb-10 lg:text-6xl"
+                  >
                     Cerita Tamplateku
                   </h1>
                   <p className="mb-9 text-lg font-medium lg:text-xl">
                     Kami membangun template website premium yang siap dipakai
                   </p>
                   <p className="text-muted-foreground leading-relaxed">
-                    Tamplateku lahir dari kebutuhan sederhana: banyak bisnis butuh website
-                    yang terlihat mahal, tapi proses pembuatannya sering lama dan rumit.
-                    Karena itu kami membuat koleksi template premium yang fokus pada
-                    tampilan profesional, struktur konten yang jelas, dan kemudahan
-                    kustomisasi agar bisnis bisa go-live lebih cepat.
+                    Tamplateku lahir dari kebutuhan sederhana: banyak bisnis butuh website yang
+                    terlihat mahal, tapi proses pembuatannya sering lama dan rumit. Karena itu kami
+                    membuat koleksi template premium yang fokus pada tampilan profesional, struktur
+                    konten yang jelas, dan kemudahan kustomisasi agar bisnis bisa go-live lebih
+                    cepat.
                   </p>
                 </header>
-                <figure ref={(el) => { imageGroupRefs.current[0] = el as HTMLDivElement; }} className="flex flex-col items-center justify-center gap-6 md:flex-row" role="group" aria-label="Company team and workplace images">
+                <figure
+                  ref={(el) => {
+                    imageGroupRefs.current[0] = el as HTMLDivElement;
+                  }}
+                  className="flex flex-col items-center justify-center gap-6 md:flex-row"
+                  role="group"
+                  aria-label="Company team and workplace images"
+                >
                   <img
                     src="https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png"
                     alt="Tim Tamplateku berdiskusi merancang template website premium"
@@ -131,9 +141,16 @@ const AboutPage = () => {
                     />
                   </div>
                 </figure>
-          </div>
+              </div>
               <div className="flex w-full flex-col items-center justify-center gap-12 pt-12 lg:w-1/2 lg:pt-48">
-                <figure ref={(el) => { imageGroupRefs.current[1] = el as HTMLDivElement; }} className="flex flex-col items-center justify-center gap-6 md:flex-row" role="group" aria-label="Additional workplace and team collaboration images">
+                <figure
+                  ref={(el) => {
+                    imageGroupRefs.current[1] = el as HTMLDivElement;
+                  }}
+                  className="flex flex-col items-center justify-center gap-6 md:flex-row"
+                  role="group"
+                  aria-label="Additional workplace and team collaboration images"
+                >
                   <img
                     src="https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png"
                     alt="Kolaborasi tim Tamplateku untuk pengembangan template"
@@ -165,47 +182,104 @@ const AboutPage = () => {
                   </div>
                 </figure>
                 <article ref={workplaceContentRef} className="px-8">
-                  <h2 className="mb-8 text-2xl font-semibold lg:mb-6">
-                    Cara Kerja Kami
-                  </h2>
+                  <h2 className="mb-8 text-2xl font-semibold lg:mb-6">Cara Kerja Kami</h2>
                   <p className="mb-9 text-lg font-medium lg:text-xl">
                     Cepat, detail, dan fokus ke hasil
                   </p>
                   <p className="text-muted-foreground leading-relaxed">
-                    Setiap template di Tamplateku dirancang dengan standar yang sama:
-                    visual yang modern, struktur section yang terukur, dan performa yang
-                    ringan. Kami percaya website yang bagus bukan hanya indah dilihat,
-                    tapi juga mudah dikelola dan mampu mendorong aksi dari pengunjung.
+                    Setiap template di Tamplateku dirancang dengan standar yang sama: visual yang
+                    modern, struktur section yang terukur, dan performa yang ringan. Kami percaya
+                    website yang bagus bukan hanya indah dilihat, tapi juga mudah dikelola dan mampu
+                    mendorong aksi dari pengunjung.
                   </p>
                 </article>
               </div>
-        </div>
+            </div>
 
-            <section ref={statsSectionRef} className="container flex flex-col gap-16 mt-24" aria-labelledby="stats-heading">
+            <section
+              ref={statsSectionRef}
+              className="container flex flex-col gap-16 mt-24"
+              aria-labelledby="stats-heading"
+            >
               <header>
                 <h2 id="stats-heading" className="max-w-3xl text-4xl font-medium md:text-5xl">
                   Kami tidak hanya jual template, kami bantu bisnis tampil siap bersaing.
                 </h2>
               </header>
-              <div ref={statsGridRef} className="grid grid-cols-2 gap-6 md:grid-cols-3" role="region" aria-label="Company statistics and achievements">
-                <div className="flex flex-col gap-6 border-b pb-8" role="article" aria-labelledby="stat-1">
-                  <p id="stat-1" className="text-4xl font-medium md:text-5xl" aria-label="21 million">21M</p>
+              <div
+                ref={statsGridRef}
+                className="grid grid-cols-2 gap-6 md:grid-cols-3"
+                role="region"
+                aria-label="Company statistics and achievements"
+              >
+                <div
+                  className="flex flex-col gap-6 border-b pb-8"
+                  role="article"
+                  aria-labelledby="stat-1"
+                >
+                  <p
+                    id="stat-1"
+                    className="text-4xl font-medium md:text-5xl"
+                    aria-label="21 million"
+                  >
+                    21M
+                  </p>
                   <p className="text-muted-foreground">Total page views dari website klien</p>
                 </div>
-                <div className="flex flex-col gap-6 border-b pb-8" role="article" aria-labelledby="stat-2">
-                  <p id="stat-2" className="text-4xl font-medium md:text-5xl" aria-label="8 plus years">8+</p>
+                <div
+                  className="flex flex-col gap-6 border-b pb-8"
+                  role="article"
+                  aria-labelledby="stat-2"
+                >
+                  <p
+                    id="stat-2"
+                    className="text-4xl font-medium md:text-5xl"
+                    aria-label="8 plus years"
+                  >
+                    8+
+                  </p>
                   <p className="text-muted-foreground">Tahun pengalaman di web design</p>
                 </div>
-                <div className="flex flex-col gap-6 border-b pb-8" role="article" aria-labelledby="stat-3">
-                  <p id="stat-3" className="text-4xl font-medium md:text-5xl" aria-label="54 projects">54</p>
+                <div
+                  className="flex flex-col gap-6 border-b pb-8"
+                  role="article"
+                  aria-labelledby="stat-3"
+                >
+                  <p
+                    id="stat-3"
+                    className="text-4xl font-medium md:text-5xl"
+                    aria-label="54 projects"
+                  >
+                    54
+                  </p>
                   <p className="text-muted-foreground">Template premium siap pakai</p>
                 </div>
-                <div className="flex flex-col gap-6 border-b pb-8" role="article" aria-labelledby="stat-4">
-                  <p id="stat-4" className="text-4xl font-medium md:text-5xl" aria-label="113 thousand plus">113k+</p>
+                <div
+                  className="flex flex-col gap-6 border-b pb-8"
+                  role="article"
+                  aria-labelledby="stat-4"
+                >
+                  <p
+                    id="stat-4"
+                    className="text-4xl font-medium md:text-5xl"
+                    aria-label="113 thousand plus"
+                  >
+                    113k+
+                  </p>
                   <p className="text-muted-foreground">Visitor bulanan website klien</p>
                 </div>
-                <div className="flex flex-col gap-6 border-b pb-8" role="article" aria-labelledby="stat-5">
-                  <p id="stat-5" className="text-4xl font-medium md:text-5xl" aria-label="461 thousand">461k</p>
+                <div
+                  className="flex flex-col gap-6 border-b pb-8"
+                  role="article"
+                  aria-labelledby="stat-5"
+                >
+                  <p
+                    id="stat-5"
+                    className="text-4xl font-medium md:text-5xl"
+                    aria-label="461 thousand"
+                  >
+                    461k
+                  </p>
                   <p className="text-muted-foreground">Leads yang masuk dari landing page</p>
                 </div>
               </div>

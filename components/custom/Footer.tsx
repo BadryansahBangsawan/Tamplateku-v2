@@ -41,7 +41,7 @@ function Footer() {
             {["T", "A", "M", "P", "L", "A", "T", "E", "K", "U"].map((char, idx) => (
               <span
                 key={`tamplateku-outline-${idx}`}
-                className={`text-primary-foreground/80 footer-slang font-extrabold uppercase`}
+                className={"text-primary-foreground/80 footer-slang font-extrabold uppercase"}
               >
                 {char}
               </span>
@@ -104,7 +104,7 @@ function Footer() {
               </div>
             </div>
 
-            <div className="hidden md:col-span-1 md:block lg:col-span-2"></div>
+            <div className="hidden md:col-span-1 md:block lg:col-span-2" />
 
             <div className="md:col-span-3 lg:col-span-3">
               <h3

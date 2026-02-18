@@ -115,12 +115,7 @@ const SectionHeading = forwardRef<HTMLDivElement, SectionHeadingProps>(
     const alignment = alignVariants[align];
 
     return (
-      <header
-        ref={ref}
-        className={cn("z-10", variant.spacing, alignment, className)}
-        role="banner"
-        {...props}
-      >
+      <header ref={ref} className={cn("z-10", variant.spacing, alignment, className)} {...props}>
         {/* Badge */}
         <div
           className={cn(

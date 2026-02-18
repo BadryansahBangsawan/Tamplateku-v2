@@ -5,8 +5,7 @@ export const siteConfig = {
   description:
     "Tamplateku menyediakan template website premium siap pakai untuk bisnis, agency, dan personal brand yang ingin tampil profesional lebih cepat.",
   url: "https://tamplateku.com",
-  ogImage:
-    "https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png",
+  ogImage: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png",
   logo: "https://tamplateku.com/logo.png",
   keywords: [
     "template website premium",
@@ -56,8 +55,7 @@ export const siteConfig = {
   twitter: {
     card: "summary_large_image",
     title: "Tamplateku - Template Website Premium",
-    description:
-      "Template website premium untuk bisnis yang ingin tampil profesional lebih cepat.",
+    description: "Template website premium untuk bisnis yang ingin tampil profesional lebih cepat.",
     images: ["https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png"],
     creator: "@tamplateku",
   },
@@ -84,15 +82,13 @@ export const pageMetadata = {
     ],
     openGraph: {
       title: "Tamplateku - Template Website Premium Siap Pakai",
-      description:
-        "Pilih template website premium untuk bisnis, agency, dan personal brand.",
+      description: "Pilih template website premium untuk bisnis, agency, dan personal brand.",
       url: "https://tamplateku.com",
       type: "website",
     },
     twitter: {
       title: "Tamplateku - Template Website Premium Siap Pakai",
-      description:
-        "Template website premium yang mudah di-custom dan cepat dipublish.",
+      description: "Template website premium yang mudah di-custom dan cepat dipublish.",
     },
     alternates: {
       canonical: "https://tamplateku.com",
@@ -110,8 +106,7 @@ export const pageMetadata = {
     ],
     openGraph: {
       title: "Tentang Tamplateku - Template Website Premium",
-      description:
-        "Kami membantu bisnis tampil profesional lewat template website premium.",
+      description: "Kami membantu bisnis tampil profesional lewat template website premium.",
       url: "https://tamplateku.com/about",
       type: "website",
     },
@@ -137,10 +132,7 @@ export const pageMetadata = {
         "@type": "PostalAddress",
         addressCountry: "ID",
       },
-      sameAs: [
-        "https://linkedin.com/company/tamplateku",
-        "https://twitter.com/tamplateku",
-      ],
+      sameAs: ["https://linkedin.com/company/tamplateku", "https://twitter.com/tamplateku"],
       knowsAbout: ["Web Design", "Template Website", "Landing Page", "Brand Website"],
     },
   },
@@ -148,12 +140,7 @@ export const pageMetadata = {
     title: "Blog Tamplateku - Insight Website & Template Premium",
     description:
       "Artikel seputar strategi website, copywriting landing page, dan tips memilih template premium untuk bisnis.",
-    keywords: [
-      "blog website",
-      "tips landing page",
-      "copywriting website",
-      "template premium",
-    ],
+    keywords: ["blog website", "tips landing page", "copywriting website", "template premium"],
     openGraph: {
       title: "Blog Tamplateku - Insight Website & Template Premium",
       description:
@@ -163,8 +150,7 @@ export const pageMetadata = {
     },
     twitter: {
       title: "Blog Tamplateku - Insight Website & Template Premium",
-      description:
-        "Insight praktis seputar website premium untuk kebutuhan bisnis modern.",
+      description: "Insight praktis seputar website premium untuk kebutuhan bisnis modern.",
     },
     alternates: {
       canonical: "https://tamplateku.com/blog",

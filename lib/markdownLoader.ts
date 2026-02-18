@@ -107,7 +107,6 @@ const blogPostMetadata: Record<string, BlogPostMetadata> = {
   },
 };
 
-
 export const parseMarkdownHeadings = (markdown: string) => {
   const headingRegex = /^(#{1,6})\s+(.+)$/gm;
   const headings = [];

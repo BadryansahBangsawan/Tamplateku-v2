@@ -18,6 +18,7 @@ import Autoplay from "embla-carousel-autoplay";
 import gsap from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import { Sparkles } from "lucide-react";
+import Link from "next/link";
 import { useRef } from "react";
 
 // Register ScrollTrigger plugin
@@ -108,29 +109,33 @@ function HomePage() {
             aria-describedby="founder-cta-description"
             type="button"
             className="cursor-pointer"
+            asChild
           >
-            {content.hero.primaryCta}
+            <Link href="/blog">{content.hero.primaryCta}</Link>
           </Button>
           <Button
             aria-describedby="case-studies-cta-description"
-            type="button"
             className="cursor-pointer"
             variant={"outline"}
+            asChild
           >
-            {content.hero.secondaryCta}
+            <Link href="#contact-section">{content.hero.secondaryCta}</Link>
           </Button>
         </div>
 
         <div className="relative" role="region" aria-label="Framework logos">
           <h2 className="!sr-only">Framework yang didukung template kami</h2>
-          <div className="pointer-events-none absolute top-0 left-0 z-10 h-full w-12 bg-gradient-to-r from-gray-50 via-gray-50/90 to-transparent md:w-48"></div>
+          <div className="pointer-events-none absolute top-0 left-0 z-10 h-full w-12 bg-gradient-to-r from-gray-50 via-gray-50/90 to-transparent md:w-48" />
 
           {/* Right fade gradient */}
-          <div className="pointer-events-none absolute top-0 right-0 z-10 h-full w-12 bg-gradient-to-l from-gray-50 via-gray-50/90 to-transparent md:w-48"></div>
+          <div className="pointer-events-none absolute top-0 right-0 z-10 h-full w-12 bg-gradient-to-l from-gray-50 via-gray-50/90 to-transparent md:w-48" />
 
           <Marquee pauseOnHover className="mt-14">
             {frameworkLogos.map((framework) => (
-              <div key={framework.name} className="group mx-1 flex-shrink-0 cursor-pointer md:mx-4">
+              <div
+                key={framework.name}
+                className="group mx-1 flex-shrink-0 cursor-pointer md:mx-4"
+              >
                 <div className="relative flex h-16 items-center justify-center p-4 transition-all duration-300 ease-in-out">
                   <img
                     src={framework.logo}
@@ -163,9 +168,9 @@ function HomePage() {
           <h2 id="featured-case-studies-heading" className="!sr-only">
             Featured Templates
           </h2>
-          <div className="pointer-events-none absolute top-0 left-0 z-5 h-full w-12 bg-gradient-to-r from-gray-50/80 via-gray-50/20 to-transparent md:w-36"></div>
+          <div className="pointer-events-none absolute top-0 left-0 z-5 h-full w-12 bg-gradient-to-r from-gray-50/80 via-gray-50/20 to-transparent md:w-36" />
 
-          <div className="pointer-events-none absolute top-0 right-0 z-5 h-full w-12 bg-gradient-to-l from-gray-50/90 via-gray-50/20 to-transparent md:w-36"></div>
+          <div className="pointer-events-none absolute top-0 right-0 z-5 h-full w-12 bg-gradient-to-l from-gray-50/90 via-gray-50/20 to-transparent md:w-36" />
 
           <CarouselContent>
             {caseStudies.map((caseStudy, index) => (
@@ -176,10 +181,13 @@ function HomePage() {
                 aria-roledescription="slide"
                 aria-label={`${index + 1} of ${caseStudies.length}: ${caseStudy.name}`}
               >
-                <div key={`case-study-${index}`} className="w-full max-w-sm space-y-3 text-left">
+                <div
+                  key={`case-study-${index}`}
+                  className="w-full max-w-sm space-y-3 text-left"
+                >
                   <div className="bg-tag-bg flex aspect-square items-center justify-center rounded-md p-4">
                     <img
-                      src={caseStudy["main_image_src"]}
+                      src={caseStudy.main_image_src}
                       className="max-h-full max-w-full object-contain"
                       alt={`${caseStudy.name} project preview - ${caseStudy.project_title}`}
                       loading={index < 4 ? "eager" : "lazy"}
@@ -188,10 +196,12 @@ function HomePage() {
                   </div>
                   <div className="space-y-1">
                     <p className="text-heading text-md leading-snug">
-                      {caseStudy["project_title"]}
+                      {caseStudy.project_title}
                     </p>
                     <div className="flex items-center gap-3">
-                      <p className="text-heading text-sm font-medium">Template Premium</p>
+                      <p className="text-heading text-sm font-medium">
+                        Template Premium
+                      </p>
                       <p className="text-heading text-sm">[READY TO USE]</p>
                     </div>
                   </div>

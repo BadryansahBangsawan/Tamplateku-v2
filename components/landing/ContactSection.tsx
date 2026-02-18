@@ -138,9 +138,9 @@ function ContactUs() {
     <>
       <section
         ref={sectionRef}
+        id="contact-section"
         className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20 lg:px-12 lg:py-24"
         aria-labelledby="contact-heading"
-        role="region"
         itemScope
         itemType="https://schema.org/ContactPage"
       >
@@ -273,10 +273,11 @@ function ContactUs() {
 
           {/* Right Column - Case Studies */}
           <div className="relative rounded-2xl lg:col-span-2">
-            <div className="bg-primary absolute inset-0 h-full w-full rounded-2xl"></div>
+            <div className="bg-primary absolute inset-0 h-full w-full rounded-2xl" />
             <div
               style={{
-                backgroundImage: `url(https://pbs.twimg.com/media/GqMIQdAXgAA_C4K?format=jpg&name=4096x4096)`,
+                backgroundImage:
+                  "url(https://pbs.twimg.com/media/GqMIQdAXgAA_C4K?format=jpg&name=4096x4096)",
               }}
               className="bg-background relative flex h-64 w-full flex-col items-center justify-center overflow-hidden rounded-2xl border bg-cover opacity-85 sm:h-80 lg:h-full"
             >
@@ -289,7 +290,7 @@ function ContactUs() {
             </div>
             <div className="absolute bottom-0 w-full">
               <div ref={contentRef} className="relative p-4 sm:p-6 lg:p-8">
-                <div className="absolute inset-0 w-full rounded-b-2xl bg-gradient-to-t from-gray-500/40 to-transparent"></div>
+                <div className="absolute inset-0 w-full rounded-b-2xl bg-gradient-to-t from-gray-500/40 to-transparent" />
 
                 {/* Testimonial Section */}
                 {currentCaseStudy.testimonial && (

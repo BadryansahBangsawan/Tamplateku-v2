@@ -33,7 +33,7 @@ function Navbar() {
       name: "Blog",
       href: "/blog",
       description: "Baca tips website dan template premium terbaru",
-    }
+    },
   ];
 
   const toggleMenu = () => {
@@ -182,15 +182,10 @@ function Navbar() {
       <header
         ref={navRef}
         className="bg-background fixed inset-x-0 top-2 z-40 mx-auto w-full max-w-6xl rounded-lg px-5"
-        role="banner"
         aria-label="Main navigation"
       >
         <div className="container mx-auto">
-          <nav
-            className="flex items-center justify-between py-4"
-            role="navigation"
-            aria-label="Primary navigation"
-          >
+          <nav className="flex items-center justify-between py-4" aria-label="Primary navigation">
             {/* Logo */}
             <div className="flex items-center">
               <Link
@@ -224,7 +219,7 @@ function Navbar() {
                   pathname === link.href || (link.href.startsWith("/#") && pathname === "/");
 
                 return (
-                  <li key={link.name} role="none">
+                  <li key={link.name}>
                     <Link
                       href={link.href}
                       className={`text-text-heading hover:text-foreground focus:ring-ring rounded-md px-2 py-1 !text-sm font-medium transition-colors focus:ring-0 focus:outline-none ${
@@ -301,7 +296,7 @@ function Navbar() {
                         pathname === link.href || (link.href.startsWith("/#") && pathname === "/");
 
                       return (
-                        <li key={link.name} role="none">
+                        <li key={link.name}>
                           <Link
                             href={link.href}
                             className={`hover:bg-accent hover:text-accent-foreground block rounded-md px-3 py-2 text-base font-medium transition-colors focus:outline-none ${

@@ -83,7 +83,10 @@ export function AnimatedHeroSection({ post }: AnimatedHeroSectionProps) {
       )}
 
       {/* Hero Content */}
-      <div ref={contentRef} className="relative z-10 container mx-auto flex min-h-screen flex-col justify-center px-4 py-20 lg:py-32">
+      <div
+        ref={contentRef}
+        className="relative z-10 container mx-auto flex min-h-screen flex-col justify-center px-4 py-20 lg:py-32"
+      >
         {/* Back Navigation */}
         <div className="hero-content-item mb-8">
           <BackButton />
@@ -98,7 +101,11 @@ export function AnimatedHeroSection({ post }: AnimatedHeroSectionProps) {
             <div className="flex items-center gap-2">
               <Calendar className="h-4 w-4" />
               <Suspense fallback={<span>Loading...</span>}>
-                <span>{post.metadata.publishedAt ? formatDate(post.metadata.publishedAt) : "Unknown date"}</span>
+                <span>
+                  {post.metadata.publishedAt
+                    ? formatDate(post.metadata.publishedAt)
+                    : "Unknown date"}
+                </span>
               </Suspense>
             </div>
           </div>

@@ -25,7 +25,6 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
       key={`${item.name}-testimonial-${index}`}
       className="testimonial-card-bg flex h-full w-full flex-col space-y-3 rounded-2xl text-left sm:space-y-4"
       aria-labelledby={`testimonial-${index}-title`}
-      role="article"
     >
       <div className="flex aspect-video items-center justify-center overflow-hidden rounded-t-md">
         <img
@@ -121,7 +120,6 @@ function Testimonial() {
         ref={sectionRef}
         className="px-4 py-12 sm:px-6 sm:py-16 md:px-8 md:py-20 lg:px-12 lg:py-24"
         aria-labelledby="testimonials-heading"
-        role="region"
       >
         {/* Header */}
         <SectionHeading
@@ -153,7 +151,6 @@ function Testimonial() {
         <section
           className="mt-10 sm:mt-12 md:mt-14 lg:mt-16"
           aria-labelledby="stats-heading"
-          role="region"
           ref={statsRef}
         >
           <h3 id="stats-heading" className="sr-only">

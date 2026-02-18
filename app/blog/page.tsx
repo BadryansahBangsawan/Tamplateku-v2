@@ -69,8 +69,7 @@ const blogPosts = [
   {
     id: 6,
     title: "Desain Mobile-First untuk Template Website Modern",
-    excerpt:
-      "Cara memastikan tampilan mobile tetap premium, cepat, dan nyaman dipakai pengunjung.",
+    excerpt: "Cara memastikan tampilan mobile tetap premium, cepat, dan nyaman dipakai pengunjung.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
     tag: "Mobile UX",
@@ -80,8 +79,7 @@ const blogPosts = [
   {
     id: 7,
     title: "Cara Menjaga Konsistensi Brand di Seluruh Halaman Website",
-    excerpt:
-      "Panduan menjaga warna, tipografi, dan tone konten agar pengalaman brand tetap kuat.",
+    excerpt: "Panduan menjaga warna, tipografi, dan tone konten agar pengalaman brand tetap kuat.",
     image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
     date: "Aug 16, 2025",
     tag: "Branding",
@@ -175,7 +173,7 @@ function BlogPage() {
 
   return (
     <div className="min-h-screen w-full">
-      <main id="main-content" role="main">
+      <main id="main-content">
         <div className="mx-auto max-w-6xl px-5">
           {/* Hero Section */}
           <section
@@ -204,17 +202,12 @@ function BlogPage() {
           </section>
 
           {/* Top Picks Section */}
-          <section
-            ref={topPicksRef}
-            className="mb-16"
-            role="region"
-            aria-labelledby="top-picks-heading"
-          >
+          <section ref={topPicksRef} className="mb-16" aria-labelledby="top-picks-heading">
             <div className="mb-8">
               <h2 id="top-picks-heading" className="text-h2 text-text-heading font-semibold mb-2">
                 Pilihan Editor
               </h2>
-              <div className="h-px bg-border"></div>
+              <div className="h-px bg-border" />
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -267,12 +260,7 @@ function BlogPage() {
           </section>
 
           {/* Research/Blogs Section */}
-          <section
-            ref={blogGridRef}
-            className="mb-16"
-            role="region"
-            aria-labelledby="research-blogs-heading"
-          >
+          <section ref={blogGridRef} className="mb-16" aria-labelledby="research-blogs-heading">
             <div className="mb-8">
               <h2
                 id="research-blogs-heading"
@@ -305,7 +293,7 @@ function BlogPage() {
                 </div>
               </div>
 
-              <div className="h-px bg-border"></div>
+              <div className="h-px bg-border" />
             </div>
 
             {/* Blog Grid */}
