@@ -4,16 +4,49 @@ import { SectionHeading } from "@/components/custom/SectionHeading";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { type FormEvent, Suspense, useState } from "react";
 
-function LoginPage() {
+function LoginPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const registered = searchParams.get("registered") === "success";
+
+  const handleLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrorMessage("");
+
+    const formData = new FormData(event.currentTarget);
+    const email = String(formData.get("email") ?? "");
+    const password = String(formData.get("password") ?? "");
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const result = (await response.json()) as { ok: boolean; message?: string };
+      if (!response.ok || !result.ok) {
+        setErrorMessage(result.message ?? "Login gagal.");
+        return;
+      }
+      router.push("/browse-template?login=form_success");
+    } catch {
+      setErrorMessage("Tidak bisa terhubung ke server.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full">
       <main id="main-content">
         <div className="mx-auto flex min-h-screen max-w-6xl flex-col px-5 pt-[116px] pb-16 md:pt-[128px] md:pb-24 lg:pt-[140px]">
-          <section
-            className="mx-auto w-full max-w-xl space-y-8"
-            aria-labelledby="login-heading"
-          >
+          <section className="mx-auto w-full max-w-xl space-y-8" aria-labelledby="login-heading">
             <SectionHeading
               badge="Member Access"
               heading="Login ke akun Tamplateku"
@@ -26,7 +59,22 @@ function LoginPage() {
               showDescriptionToScreenReaders={true}
             />
 
-            <form className="space-y-4 md:space-y-5" aria-label="Login form">
+            {registered ? (
+              <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300">
+                Registrasi berhasil. Silakan login dengan email dan password kamu.
+              </div>
+            ) : null}
+            {errorMessage ? (
+              <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                {errorMessage}
+              </div>
+            ) : null}
+
+            <form
+              className="space-y-4 md:space-y-5"
+              aria-label="Login form"
+              onSubmit={handleLoginSubmit}
+            >
               <div className="space-y-2">
                 <label htmlFor="login-email" className="text-sm font-medium text-heading">
                   Email
@@ -55,14 +103,14 @@ function LoginPage() {
                 />
               </div>
 
-              <Button type="submit" className="w-full">
-                Masuk
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Memproses..." : "Masuk"}
               </Button>
             </form>
 
             <p className="text-center text-sm text-label">
               Belum punya akun?{" "}
-              <Link href="/#signup-section" className="text-primary hover:underline">
+              <Link href="/signup" className="text-primary hover:underline">
                 Daftar sekarang
               </Link>
             </p>
@@ -73,4 +121,10 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginPageContent />
+    </Suspense>
+  );
+}

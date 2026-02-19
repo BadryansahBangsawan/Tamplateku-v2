@@ -122,6 +122,7 @@ export const caseStudies = [
 ];
 
 export interface CaseStudyType {
+  id?: string;
   main_image_src: string;
   project_title: string;
   logo_src: string;

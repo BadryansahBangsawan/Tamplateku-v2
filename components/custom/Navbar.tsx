@@ -16,6 +16,11 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [authUser, setAuthUser] = useState<{
+    name: string;
+    email: string;
+    picture?: string;
+  } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -50,6 +55,14 @@ function Navbar() {
           language === "id"
             ? "Baca tips website dan template premium terbaru"
             : "Read website tips and the latest premium templates",
+      },
+      {
+        name: language === "id" ? "Browse Template" : "Browse Templates",
+        href: "/browse-template",
+        description:
+          language === "id"
+            ? "Jelajahi semua koleksi template"
+            : "Explore all template collections",
       },
     ],
   };
@@ -187,6 +200,31 @@ function Navbar() {
     };
   }, []);
 
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const response = await fetch("/api/auth/me", { cache: "no-store" });
+        if (!response.ok) return;
+        const data = (await response.json()) as {
+          user: { name: string; email: string; picture?: string } | null;
+        };
+        setAuthUser(data.user);
+      } catch {
+        setAuthUser(null);
+      }
+    };
+
+    loadUser();
+  }, []);
+
+  const logout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {}
+    setAuthUser(null);
+    window.location.href = "/";
+  };
+
   return (
     <>
       {/* Skip to main content link for screen readers */}
@@ -261,9 +299,33 @@ function Navbar() {
             <div className="flex items-center gap-3">
               <LanguageButton />
               <ThemeToggle />
-              <Button size="sm" className="text-sm" aria-label={copy.signupCtaAria} asChild>
-                <Link href="/signup">{copy.signupCta}</Link>
-              </Button>
+              {authUser ? (
+                <div className="group relative hidden lg:block">
+                  <Button size="sm" variant="outline" asChild className="max-w-[220px]">
+                    <Link href="/admin" aria-label={`Profile account ${authUser.name}`}>
+                      {authUser.picture ? (
+                        <img
+                          src={authUser.picture}
+                          alt={authUser.name}
+                          className="mr-2 size-5 rounded-full border border-border object-cover"
+                        />
+                      ) : null}
+                      <span className="truncate">{authUser.name}</span>
+                    </Link>
+                  </Button>
+                  <div className="invisible absolute right-0 top-full z-50 pt-2 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+                    <div className="min-w-[140px] rounded-md border bg-popover p-2 shadow-md">
+                      <Button size="sm" variant="destructive" className="w-full" onClick={logout}>
+                        Logout
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <Button size="sm" className="text-sm" aria-label={copy.signupCtaAria} asChild>
+                  <Link href="/signup">{copy.signupCta}</Link>
+                </Button>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -337,16 +399,44 @@ function Navbar() {
                   </ul>
                   <div className="border-t pt-4 space-y-3">
                     <div className="flex items-center justify-end">
+                      <LanguageButton />
                       <ThemeToggle />
                     </div>
-                    <Button
-                      className="w-full"
-                      aria-label={copy.signupCtaAria}
-                      asChild
-                      onClick={closeMenu}
-                    >
-                      <Link href="/signup">{copy.signupCta}</Link>
-                    </Button>
+                    {authUser ? (
+                      <>
+                        <Button className="w-full" variant="outline" asChild onClick={closeMenu}>
+                          <Link href="/admin">
+                            {authUser.picture ? (
+                              <img
+                                src={authUser.picture}
+                                alt={authUser.name}
+                                className="mr-2 size-5 rounded-full border border-border object-cover"
+                              />
+                            ) : null}
+                            <span className="truncate">{authUser.name}</span>
+                          </Link>
+                        </Button>
+                        <Button
+                          className="w-full"
+                          variant="outline"
+                          onClick={() => {
+                            closeMenu();
+                            logout();
+                          }}
+                        >
+                          Logout
+                        </Button>
+                      </>
+                    ) : (
+                      <Button
+                        className="w-full"
+                        aria-label={copy.signupCtaAria}
+                        asChild
+                        onClick={closeMenu}
+                      >
+                        <Link href="/signup">{copy.signupCta}</Link>
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -143,7 +143,7 @@ function Testimonial() {
           aria-label="Client testimonials"
         >
           {testimonials.map((item, index) => (
-            <div role="listitem" key={`${item.name}-${index}`}>
+            <div role="listitem" key={item.id ?? `${item.name}-${index}`}>
               <TestimonialCard item={item} index={index} />
             </div>
           ))}

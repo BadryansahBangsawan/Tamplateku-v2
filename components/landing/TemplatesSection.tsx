@@ -15,7 +15,7 @@ const formatPrice = (value: number) =>
 export default function TemplatesSection() {
   const caseStudies = useCaseStudies();
   const templateItems = caseStudies.slice(0, 6).map((item, index) => ({
-    id: `${item.name}-${index}`,
+    id: item.id ?? `${item.name}-${index}`,
     title: item.project_title,
     category: "Template Premium",
     thumbnail: item.main_image_src,

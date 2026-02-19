@@ -44,6 +44,7 @@ function normalizeCaseStudy(raw: unknown, fallback: CaseStudyType): CaseStudyTyp
   }
 
   return {
+    id: typeof raw.id === "string" ? raw.id : fallback.id,
     main_image_src: pickString(raw, "main_image_src", fallback.main_image_src),
     project_title: pickString(raw, "project_title", fallback.project_title),
     logo_src: pickString(raw, "logo_src", fallback.logo_src),

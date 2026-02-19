@@ -175,7 +175,7 @@ const CaseStudies: React.FC = () => {
         {/* Case Studies */}
         <div className="space-y-8 md:space-y-24" role="main" aria-label="Case studies collection">
           {caseStudies.slice(0, 3).map((caseStudy, index) => (
-            <div key={`${caseStudy.name}-${index}`}>
+            <div key={caseStudy.id ?? `${caseStudy.name}-${index}`}>
               <CaseStudyCard caseStudy={caseStudy} index={index} />
             </div>
           ))}

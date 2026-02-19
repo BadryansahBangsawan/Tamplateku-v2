@@ -11,17 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import type { CaseStudyType } from "@/data/caseStudies";
 import { useCaseStudies } from "@/hooks/use-case-studies";
 import { useSiteContent } from "@/hooks/use-site-content";
-import {
-  defaultCaseStudiesContent,
-  resetCaseStudiesStorage,
-  writeCaseStudiesToStorage,
-} from "@/lib/caseStudiesContent";
-import {
-  type SiteContent,
-  defaultSiteContent,
-  resetSiteContentStorage,
-  writeSiteContentToStorage,
-} from "@/lib/siteContent";
+import { defaultCaseStudiesContent, writeCaseStudiesToStorage } from "@/lib/caseStudiesContent";
+import { type SiteContent, defaultSiteContent, writeSiteContentToStorage } from "@/lib/siteContent";
 import { Copy, ExternalLink, Plus, RotateCcw, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
@@ -39,6 +30,7 @@ function createNewCaseStudy(seed: number): CaseStudyType {
   const base = cloneCaseStudy(defaultCaseStudiesContent[0]);
   return {
     ...base,
+    id: crypto.randomUUID(),
     name: `Template ${seed}`,
     project_title: "Template baru siap pakai",
     description: "Deskripsi singkat template baru.",
@@ -62,6 +54,7 @@ export default function AdminPage() {
   const [draftContent, setDraftContent] = useState<SiteContent>(liveContent);
   const [draftCaseStudies, setDraftCaseStudies] = useState<CaseStudyType[]>(liveCaseStudies);
   const [selectedCaseStudy, setSelectedCaseStudy] = useState(0);
+  const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<string>("");
 
   useEffect(() => {
@@ -112,19 +105,92 @@ export default function AdminPage() {
     );
   };
 
-  const saveAll = () => {
-    writeSiteContentToStorage(draftContent);
-    writeCaseStudiesToStorage(draftCaseStudies);
-    setStatus("Perubahan berhasil disimpan dan sudah terhubung ke semua halaman.");
+  const saveAll = async () => {
+    setIsSaving(true);
+    setStatus("Menyimpan perubahan ke database...");
+
+    try {
+      const [contentResponse, templatesResponse] = await Promise.all([
+        fetch("/api/cms/content", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: draftContent }),
+        }),
+        fetch("/api/cms/templates", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ templates: draftCaseStudies }),
+        }),
+      ]);
+
+      if (!contentResponse.ok || !templatesResponse.ok) {
+        throw new Error("Failed to save CMS content");
+      }
+
+      const templatesPayload = (await templatesResponse.json()) as {
+        ok: boolean;
+        data?: CaseStudyType[];
+      };
+      const savedTemplates = templatesPayload.data ?? draftCaseStudies;
+
+      setDraftCaseStudies(savedTemplates);
+      writeSiteContentToStorage(draftContent);
+      writeCaseStudiesToStorage(savedTemplates);
+      setStatus("Perubahan berhasil disimpan ke D1 dan sinkron ke semua halaman.");
+    } catch {
+      setStatus("Gagal menyimpan perubahan. Pastikan Anda login dan env D1 sudah benar.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  const resetAll = () => {
-    resetSiteContentStorage();
-    resetCaseStudiesStorage();
-    setDraftContent(defaultSiteContent);
-    setDraftCaseStudies(defaultCaseStudiesContent.map(cloneCaseStudy));
+  const resetAll = async () => {
+    const resetContent = defaultSiteContent;
+    const resetTemplates = defaultCaseStudiesContent.map((item) => ({
+      ...cloneCaseStudy(item),
+      id: crypto.randomUUID(),
+    }));
+
+    setDraftContent(resetContent);
+    setDraftCaseStudies(resetTemplates);
     setSelectedCaseStudy(0);
-    setStatus("Semua konten direset ke default.");
+
+    setIsSaving(true);
+    setStatus("Mereset konten ke default dan menyimpan ke database...");
+
+    try {
+      const [contentResponse, templatesResponse] = await Promise.all([
+        fetch("/api/cms/content", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ content: resetContent }),
+        }),
+        fetch("/api/cms/templates", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ templates: resetTemplates }),
+        }),
+      ]);
+
+      if (!contentResponse.ok || !templatesResponse.ok) {
+        throw new Error("Failed to reset CMS content");
+      }
+
+      const templatesPayload = (await templatesResponse.json()) as {
+        ok: boolean;
+        data?: CaseStudyType[];
+      };
+      const savedTemplates = templatesPayload.data ?? resetTemplates;
+
+      setDraftCaseStudies(savedTemplates);
+      writeSiteContentToStorage(resetContent);
+      writeCaseStudiesToStorage(savedTemplates);
+      setStatus("Semua konten berhasil direset ke default.");
+    } catch {
+      setStatus("Gagal reset konten ke database.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const addCaseStudy = () => {
@@ -137,6 +203,7 @@ export default function AdminPage() {
   const duplicateCaseStudy = () => {
     if (!activeCaseStudy) return;
     const duplicated = cloneCaseStudy(activeCaseStudy);
+    duplicated.id = crypto.randomUUID();
     duplicated.name = `${duplicated.name} Copy`;
     setDraftCaseStudies((prev) => [...prev, duplicated]);
     setSelectedCaseStudy(draftCaseStudies.length);
@@ -173,11 +240,11 @@ export default function AdminPage() {
                 <ExternalLink className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button onClick={saveAll} disabled={!isDirty}>
+            <Button onClick={saveAll} disabled={!isDirty || isSaving}>
               <Save className="mr-2 h-4 w-4" />
-              Simpan Semua
+              {isSaving ? "Menyimpan..." : "Simpan Semua"}
             </Button>
-            <Button variant="outline" onClick={resetAll}>
+            <Button variant="outline" onClick={resetAll} disabled={isSaving}>
               <RotateCcw className="mr-2 h-4 w-4" />
               Reset Semua
             </Button>
@@ -212,8 +279,10 @@ export default function AdminPage() {
               <CardTitle className="text-sm">Storage</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-semibold">Local</p>
-              <p className="text-xs text-muted-foreground">Browser localStorage + event sync</p>
+              <p className="text-2xl font-semibold">Cloudflare D1</p>
+              <p className="text-xs text-muted-foreground">
+                Database utama + local sync untuk realtime update UI
+              </p>
             </CardContent>
           </Card>
           <Card>
@@ -500,7 +569,7 @@ export default function AdminPage() {
                 <CardContent className="space-y-2">
                   {draftCaseStudies.map((item, index) => (
                     <div
-                      key={`${item.name}-${index}`}
+                      key={item.id ?? `${item.name}-${index}`}
                       className={`w-full rounded-md border px-3 py-2 text-left transition ${
                         selectedCaseStudy === index
                           ? "border-primary bg-primary/5"
