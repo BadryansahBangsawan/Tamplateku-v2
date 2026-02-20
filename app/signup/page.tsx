@@ -14,6 +14,7 @@ function SignupPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const googleStatus = searchParams.get("google");
+  const githubStatus = searchParams.get("github");
   const authStatus = searchParams.get("auth");
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -82,12 +83,28 @@ function SignupPageContent() {
               <CardContent>
                 {authStatus === "required" ? (
                   <div className="mb-4 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
-                    Untuk mengakses admin, login dengan Google terlebih dahulu.
+                    Untuk mengakses admin, login dengan Google atau GitHub terlebih dahulu.
                   </div>
                 ) : null}
                 {googleStatus === "success" ? (
                   <div className="mb-4 rounded-md border border-green-500/40 bg-green-500/10 px-3 py-2 text-sm text-green-700 dark:text-green-300">
                     Login Google berhasil. Akun kamu sudah terhubung.
+                  </div>
+                ) : null}
+                {githubStatus === "success" ? (
+                  <div className="mb-4 rounded-md border border-green-500/40 bg-green-500/10 px-3 py-2 text-sm text-green-700 dark:text-green-300">
+                    Login GitHub berhasil. Akun kamu sudah terhubung.
+                  </div>
+                ) : null}
+                {githubStatus && githubStatus !== "success" ? (
+                  <div className="mb-4 rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+                    {githubStatus === "missing_env"
+                      ? "Konfigurasi GitHub OAuth belum lengkap di server."
+                      : githubStatus === "email_unavailable"
+                        ? "GitHub tidak mengembalikan email terverifikasi. Pastikan email GitHub kamu verified."
+                        : githubStatus === "disabled"
+                          ? "Login sosial sedang dinonaktifkan oleh admin."
+                          : "Proses login GitHub gagal. Coba lagi."}
                   </div>
                 ) : null}
                 {errorMessage ? (
@@ -188,6 +205,21 @@ function SignupPageContent() {
                         />
                       </svg>
                       Sign in with Google
+                    </a>
+                  </Button>
+
+                  <Button type="button" variant="outline" className="w-full" asChild>
+                    <a href="/api/auth/github">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        className="mr-2 h-4 w-4"
+                        aria-hidden="true"
+                        fill="currentColor"
+                      >
+                        <path d="M12 .5C5.649.5.5 5.649.5 12A11.5 11.5 0 008.357 22.93c.576.106.786-.25.786-.555 0-.274-.01-1-.015-1.962-3.196.695-3.87-1.54-3.87-1.54-.522-1.327-1.276-1.68-1.276-1.68-1.043-.713.079-.699.079-.699 1.153.081 1.759 1.184 1.759 1.184 1.025 1.756 2.69 1.248 3.346.954.104-.743.401-1.248.73-1.535-2.552-.29-5.236-1.276-5.236-5.683 0-1.256.449-2.284 1.184-3.09-.119-.29-.513-1.457.112-3.038 0 0 .966-.309 3.166 1.18A11.05 11.05 0 0112 6.09c.98.005 1.968.132 2.89.387 2.198-1.49 3.163-1.18 3.163-1.18.627 1.581.233 2.748.114 3.038.737.806 1.182 1.834 1.182 3.09 0 4.418-2.688 5.39-5.25 5.674.412.354.78 1.052.78 2.12 0 1.53-.014 2.764-.014 3.14 0 .308.207.667.792.553A11.502 11.502 0 0023.5 12C23.5 5.649 18.351.5 12 .5z" />
+                      </svg>
+                      Sign in with GitHub
                     </a>
                   </Button>
 

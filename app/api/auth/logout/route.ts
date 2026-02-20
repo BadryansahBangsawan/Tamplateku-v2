@@ -8,6 +8,7 @@ export async function POST(request: Request) {
   const response = NextResponse.json({ ok: true }, { status: 200 });
   response.cookies.delete(AUTH_COOKIE_NAME);
   response.cookies.delete("google_oauth_state");
+  response.cookies.delete("github_oauth_state");
 
   if (requestUrl.searchParams.get("redirect") === "1") {
     return NextResponse.redirect(new URL("/", requestUrl.origin));
