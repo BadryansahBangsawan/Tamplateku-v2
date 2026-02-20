@@ -108,8 +108,12 @@ function BrowseTemplateContent() {
       try {
         payload = rawText ? (JSON.parse(rawText) as typeof payload) : {};
       } catch {
+        const trimmed = rawText.trim();
+        const lower = trimmed.toLowerCase();
+        const isHtml =
+          lower.startsWith("<!doctype") || lower.startsWith("<html") || lower.startsWith("<!--[if");
         payload = {
-          message: rawText?.trim().slice(0, 200) || undefined,
+          message: isHtml ? undefined : trimmed.slice(0, 200) || undefined,
         };
       }
 

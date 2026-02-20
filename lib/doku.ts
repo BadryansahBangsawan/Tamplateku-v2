@@ -90,6 +90,12 @@ export type DokuCheckoutInput = {
     id: string;
     name: string;
     email: string;
+    phone?: string;
+    address?: string;
+    postcode?: string;
+    state?: string;
+    city?: string;
+    country?: string;
   };
   successUrl: string;
   failureUrl: string;
@@ -110,6 +116,25 @@ export type DokuWebhookHeaders = {
   requestTimestamp: string | null;
   signature: string | null;
 };
+
+function safeSlugPart(value: string): string {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "")
+    .slice(0, 32);
+}
+
+function splitCustomerName(fullName: string): { firstName: string; lastName: string } {
+  const normalized = fullName.trim().replace(/\s+/g, " ");
+  if (!normalized) return { firstName: "Customer", lastName: "User" };
+  const parts = normalized.split(" ");
+  const firstName = parts.shift() || "Customer";
+  const lastName = parts.join(" ") || "User";
+  return {
+    firstName: firstName.slice(0, 255),
+    lastName: lastName.slice(0, 16),
+  };
+}
 
 export function getDokuConfig() {
   return {
@@ -158,37 +183,73 @@ export async function createDokuCheckout(input: DokuCheckoutInput): Promise<Doku
   const requestId = input.requestId ?? crypto.randomUUID();
   const requestTimestamp = nowIsoUtc();
   const requestTarget = "/checkout/v1/payment";
+  const origin = new URL(input.successUrl).origin;
+  const { firstName, lastName } = splitCustomerName(input.customer.name);
+  const normalizedPhone = input.customer.phone?.trim() || "6281234567890";
+  const normalizedAddress = input.customer.address?.trim() || "Indonesia";
+  const normalizedPostcode = input.customer.postcode?.trim() || "10110";
+  const normalizedState = input.customer.state?.trim() || "DKI Jakarta";
+  const normalizedCity = input.customer.city?.trim() || "Jakarta";
+  const normalizedCountry = input.customer.country?.trim() || "ID";
+  const safeTemplateSlug = safeSlugPart(input.templateSlug) || "template";
+  const safeTemplateName = input.templateName.trim() || "Template";
+  const lineItem = {
+    id: `${safeTemplateSlug}-001`,
+    name: safeTemplateName.slice(0, 255),
+    quantity: 1,
+    price: input.amount,
+    sku: `${safeTemplateSlug}-sku`,
+    category: "digital-template",
+    url: `${origin}/browse-template/${input.templateSlug}`,
+    image_url: `${origin}/logo.png`,
+    type: "DIGITAL",
+  };
 
   const body = {
     order: {
       invoice_number: input.invoiceNumber,
       amount: input.amount,
+      currency: "IDR",
       callback_url: input.successUrl,
+      callback_url_result: input.successUrl,
       callback_url_cancel: input.failureUrl,
+      language: "ID",
       auto_redirect: true,
-      line_items: [
-        {
-          name: input.templateName,
-          price: input.amount,
-          quantity: 1,
-        },
-      ],
+      line_items: [lineItem],
     },
     payment: {
       payment_due_date: 60,
     },
     customer: {
       id: input.customer.id,
-      name: input.customer.name,
+      name: firstName,
+      last_name: lastName,
       email: input.customer.email,
+      phone: normalizedPhone,
+      address: normalizedAddress,
+      postcode: normalizedPostcode,
+      state: normalizedState,
+      city: normalizedCity,
+      country: normalizedCountry,
     },
-    line_items: [
-      {
-        name: input.templateName,
-        price: input.amount,
-        quantity: 1,
-      },
-    ],
+    shipping_address: {
+      first_name: firstName,
+      last_name: lastName,
+      address: normalizedAddress,
+      city: normalizedCity,
+      postal_code: normalizedPostcode,
+      phone: normalizedPhone,
+      country_code: "IDN",
+    },
+    billing_address: {
+      first_name: firstName,
+      last_name: lastName,
+      address: normalizedAddress,
+      city: normalizedCity,
+      postal_code: normalizedPostcode,
+      phone: normalizedPhone,
+      country_code: "IDN",
+    },
     additional_info: {
       product_type: "DIGITAL",
       template_slug: input.templateSlug,

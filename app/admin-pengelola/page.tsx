@@ -14,6 +14,7 @@ import {
   fileToOptimizedDataUrl,
   validateUploadImageFile,
 } from "@/lib/clientImageUpload";
+import { enrichTemplates, formatIdr } from "@/lib/templateCatalog";
 import { ArrowDown, ArrowUp, Copy, Plus, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { type ChangeEvent, useEffect, useMemo, useState } from "react";
@@ -81,8 +82,13 @@ export default function AdminPengelolaPage() {
     () => JSON.stringify(draftCaseStudies) !== JSON.stringify(liveCaseStudies),
     [draftCaseStudies, liveCaseStudies]
   );
+  const enrichedDraftCaseStudies = useMemo(
+    () => enrichTemplates(draftCaseStudies),
+    [draftCaseStudies]
+  );
 
   const activeCaseStudy = draftCaseStudies[selectedCaseStudy];
+  const activeTemplateMeta = enrichedDraftCaseStudies[selectedCaseStudy];
 
   const updateCaseStudyField = (field: keyof CaseStudyType, value: string) => {
     setDraftCaseStudies((prev) =>
@@ -326,7 +332,7 @@ export default function AdminPengelolaPage() {
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
-              {draftCaseStudies.map((item, index) => (
+              {enrichedDraftCaseStudies.map((item, index) => (
                 <div
                   key={item.id ?? `${item.name}-${index}`}
                   className={`w-full rounded-md border px-3 py-2 text-left transition ${
@@ -344,6 +350,9 @@ export default function AdminPengelolaPage() {
                       <p className="text-sm font-medium text-foreground">{item.name}</p>
                       <p className="line-clamp-2 text-xs text-muted-foreground">
                         {item.project_title}
+                      </p>
+                      <p className="mt-1 text-[11px] text-muted-foreground">
+                        {formatIdr(item.price)} • {item.slug}
                       </p>
                     </button>
                     <div className="flex items-center gap-1">
@@ -432,6 +441,26 @@ export default function AdminPengelolaPage() {
                         />
                         Tandai sebagai template unggulan
                       </label>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="space-y-2">
+                      <Label>Slug Halaman (Otomatis)</Label>
+                      <Input value={activeTemplateMeta?.slug ?? "-"} readOnly />
+                      <p className="text-xs text-muted-foreground">
+                        Dipakai untuk URL halaman detail template dan proses checkout.
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Harga Jual (Otomatis)</Label>
+                      <Input
+                        value={activeTemplateMeta ? formatIdr(activeTemplateMeta.price) : "-"}
+                        readOnly
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Harga mengikuti urutan template di daftar kiri.
+                      </p>
                     </div>
                   </div>
 

@@ -36,7 +36,7 @@ globalThis.__BUILD_MANIFEST.lowPriorityFiles = [
 
 ];
 /**/;self.__INTERCEPTION_ROUTE_REWRITE_MANIFEST="[]";
-/**/;self.__RSC_SERVER_MANIFEST="{\n  \"node\": {},\n  \"edge\": {},\n  \"encryptionKey\": \"rta9KQa/NtPJZdJElyO2VSp9JMom0sb0lq2HTB5bDXI=\"\n}"
+/**/;self.__RSC_SERVER_MANIFEST="{\n  \"node\": {},\n  \"edge\": {},\n  \"encryptionKey\": \"QrhdK25DBoSTaxca2pChcfuKFEWXfUxQK/tueWh8Q8w=\"\n}"
 /**/;globalThis.__RSC_MANIFEST = globalThis.__RSC_MANIFEST || {};
 globalThis.__RSC_MANIFEST["/api/super-admin/users/route"] = {"moduleLoading":{"prefix":"","crossOrigin":null},"clientModules":{},"ssrModuleMapping":{},"edgeSSRModuleMapping":{},"rscModuleMapping":{},"edgeRscModuleMapping":{},"entryCSSFiles":{},"entryJSFiles":{}}
 

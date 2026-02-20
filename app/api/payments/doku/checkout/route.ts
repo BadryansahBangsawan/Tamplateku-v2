@@ -49,6 +49,22 @@ function resolvePublicOrigin(request: Request): string {
   return new URL(request.url).origin;
 }
 
+function sanitizeGatewayMessage(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return "Gateway pembayaran tidak merespons dengan benar.";
+  const looksLikeHtml =
+    /^<!doctype/i.test(trimmed) ||
+    /^<html/i.test(trimmed) ||
+    /^<!--\[if/i.test(trimmed) ||
+    /<head|<body|<title/i.test(trimmed);
+
+  if (looksLikeHtml) {
+    return "Gateway pembayaran sedang bermasalah. Coba lagi beberapa menit.";
+  }
+
+  return trimmed.slice(0, 220);
+}
+
 type DokuNotificationBody = {
   order?: {
     invoice_number?: string;
@@ -338,12 +354,13 @@ export async function POST(request: Request) {
     } catch (error) {
       const message = error instanceof Error ? error.message : "Checkout gagal.";
       await markPaymentOrderFailed(invoiceNumber, { error: message });
+      const safeMessage = sanitizeGatewayMessage(message);
 
       return NextResponse.json(
         {
           ok: false,
           code: "CHECKOUT_FAILED",
-          message: `Gagal membuat checkout DOKU. ${message}`,
+          message: `Gagal membuat checkout DOKU. ${safeMessage}`,
         },
         { status: 502 }
       );

@@ -17,6 +17,7 @@ import {
   fileToOptimizedDataUrl,
   validateUploadImageFile,
 } from "@/lib/clientImageUpload";
+import { enrichTemplates, formatIdr } from "@/lib/templateCatalog";
 import { type SiteContent, defaultSiteContent, writeSiteContentToStorage } from "@/lib/siteContent";
 import {
   ArrowDown,
@@ -217,6 +218,11 @@ export default function AdminPage() {
   };
 
   const activeCaseStudy = draftCaseStudies[selectedCaseStudy];
+  const enrichedDraftCaseStudies = useMemo(
+    () => enrichTemplates(draftCaseStudies),
+    [draftCaseStudies]
+  );
+  const activeTemplateMeta = enrichedDraftCaseStudies[selectedCaseStudy];
 
   const updateCaseStudyField = (field: keyof CaseStudyType, value: string) => {
     setDraftCaseStudies((prev) =>
@@ -1117,7 +1123,7 @@ export default function AdminPage() {
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    {draftCaseStudies.map((item, index) => (
+                    {enrichedDraftCaseStudies.map((item, index) => (
                       <div
                         key={item.id ?? `${item.name}-${index}`}
                         className={`w-full rounded-md border px-3 py-2 text-left transition ${
@@ -1135,6 +1141,9 @@ export default function AdminPage() {
                             <p className="text-sm font-medium text-foreground">{item.name}</p>
                             <p className="text-xs text-muted-foreground line-clamp-2">
                               {item.project_title}
+                            </p>
+                            <p className="mt-1 text-[11px] text-muted-foreground">
+                              {formatIdr(item.price)} • {item.slug}
                             </p>
                           </button>
                           <div className="flex items-center gap-1">
@@ -1249,6 +1258,26 @@ export default function AdminPage() {
                               onChange={(e) => updateCaseStudyField("download_url", e.target.value)}
                               placeholder="https://github.com/owner/repo atau link file zip"
                             />
+                          </div>
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label>Slug Halaman (Otomatis)</Label>
+                            <Input value={activeTemplateMeta?.slug ?? "-"} readOnly />
+                            <p className="text-xs text-muted-foreground">
+                              Dipakai untuk URL detail template dan proses checkout.
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Harga Jual (Otomatis)</Label>
+                            <Input
+                              value={activeTemplateMeta ? formatIdr(activeTemplateMeta.price) : "-"}
+                              readOnly
+                            />
+                            <p className="text-xs text-muted-foreground">
+                              Harga mengikuti urutan template pada daftar kiri.
+                            </p>
                           </div>
                         </div>
 
