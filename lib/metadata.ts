@@ -4,9 +4,9 @@ export const siteConfig = {
   name: "Tamplateku",
   description:
     "Tamplateku menyediakan template website premium siap pakai untuk bisnis, agency, dan personal brand yang ingin tampil profesional lebih cepat.",
-  url: "https://tamplateku.com",
+  url: "https://tamplateku.store",
   ogImage: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png",
-  logo: "https://tamplateku.com/logo.png",
+  logo: "https://tamplateku.store/logo.png",
   keywords: [
     "template website premium",
     "template landing page",
@@ -19,7 +19,7 @@ export const siteConfig = {
   authors: [
     {
       name: "Tamplateku Team",
-      url: "https://tamplateku.com",
+      url: "https://tamplateku.store",
     },
   ],
   creator: "Tamplateku",
@@ -38,7 +38,7 @@ export const siteConfig = {
   openGraph: {
     type: "website",
     locale: "id_ID",
-    url: "https://tamplateku.com",
+    url: "https://tamplateku.store",
     siteName: "Tamplateku",
     title: "Tamplateku - Template Website Premium",
     description:
@@ -63,7 +63,7 @@ export const siteConfig = {
     google: "your-google-verification-code",
   },
   alternates: {
-    canonical: "https://tamplateku.com",
+    canonical: "https://tamplateku.store",
   },
   category: "business",
 };
@@ -83,7 +83,7 @@ export const pageMetadata = {
     openGraph: {
       title: "Tamplateku - Template Website Premium Siap Pakai",
       description: "Pilih template website premium untuk bisnis, agency, dan personal brand.",
-      url: "https://tamplateku.com",
+      url: "https://tamplateku.store",
       type: "website",
     },
     twitter: {
@@ -91,7 +91,7 @@ export const pageMetadata = {
       description: "Template website premium yang mudah di-custom dan cepat dipublish.",
     },
     alternates: {
-      canonical: "https://tamplateku.com",
+      canonical: "https://tamplateku.store",
     },
   },
   about: {
@@ -107,7 +107,7 @@ export const pageMetadata = {
     openGraph: {
       title: "Tentang Tamplateku - Template Website Premium",
       description: "Kami membantu bisnis tampil profesional lewat template website premium.",
-      url: "https://tamplateku.com/about",
+      url: "https://tamplateku.store/about",
       type: "website",
     },
     twitter: {
@@ -116,7 +116,7 @@ export const pageMetadata = {
         "Kenali proses dan standar kualitas Tamplateku dalam membuat template website premium.",
     },
     alternates: {
-      canonical: "https://tamplateku.com/about",
+      canonical: "https://tamplateku.store/about",
     },
     structuredData: {
       "@context": "https://schema.org",
@@ -124,8 +124,8 @@ export const pageMetadata = {
       name: "Tamplateku",
       description:
         "Penyedia template website premium untuk bisnis yang ingin launch cepat dengan tampilan profesional.",
-      url: "https://tamplateku.com",
-      logo: "https://tamplateku.com/logo.png",
+      url: "https://tamplateku.store",
+      logo: "https://tamplateku.store/logo.png",
       foundingDate: "2020",
       numberOfEmployees: "10-50",
       address: {
@@ -145,7 +145,7 @@ export const pageMetadata = {
       title: "Blog Tamplateku - Insight Website & Template Premium",
       description:
         "Belajar meningkatkan performa website dengan konten, struktur, dan template yang tepat.",
-      url: "https://tamplateku.com/blog",
+      url: "https://tamplateku.store/blog",
       type: "website",
     },
     twitter: {
@@ -153,7 +153,32 @@ export const pageMetadata = {
       description: "Insight praktis seputar website premium untuk kebutuhan bisnis modern.",
     },
     alternates: {
-      canonical: "https://tamplateku.com/blog",
+      canonical: "https://tamplateku.store/blog",
+    },
+  },
+  browseTemplate: {
+    title: "Browse Template Premium",
+    description:
+      "Jelajahi koleksi template website premium Tamplateku. Filter berdasarkan framework, kategori, use case, dan budget.",
+    keywords: [
+      "browse template website",
+      "template website premium",
+      "template landing page",
+      "template saas",
+      "template company profile",
+    ],
+    openGraph: {
+      title: "Browse Template Premium - Tamplateku",
+      description: "Temukan template website premium siap pakai untuk berbagai kebutuhan bisnis.",
+      url: "https://tamplateku.store/browse-template",
+      type: "website",
+    },
+    twitter: {
+      title: "Browse Template Premium - Tamplateku",
+      description: "Katalog template premium siap launch untuk bisnis modern.",
+    },
+    alternates: {
+      canonical: "https://tamplateku.store/browse-template",
     },
   },
 };
@@ -190,7 +215,7 @@ export function generateBlogPostMetadata(
   slug: string,
   image?: string
 ): Metadata {
-  const blogUrl = `https://tamplateku.com/blog/${slug}`;
+  const blogUrl = `https://tamplateku.store/blog/${slug}`;
   const ogImage = image || siteConfig.ogImage;
 
   return {
@@ -240,7 +265,7 @@ export function generateBlogPostStructuredData(
     datePublished: publishedTime,
     dateModified: publishedTime,
     description,
-    url: `https://tamplateku.com/blog/${slug}`,
+    url: `https://tamplateku.store/blog/${slug}`,
     author: {
       "@type": "Person",
       name: author || "Tamplateku Team",
@@ -255,8 +280,50 @@ export function generateBlogPostStructuredData(
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://tamplateku.com/blog/${slug}`,
+      "@id": `https://tamplateku.store/blog/${slug}`,
     },
+  };
+}
+
+export function generateTemplateDetailMetadata(params: {
+  title: string;
+  description: string;
+  slug: string;
+  image?: string;
+}): Metadata {
+  const pageUrl = `https://tamplateku.store/browse-template/${params.slug}`;
+  const image = params.image || siteConfig.ogImage;
+  const pageTitle = `${params.title} - Template Premium | Tamplateku`;
+
+  return {
+    title: pageTitle,
+    description: params.description,
+    keywords: [...siteConfig.keywords, "template premium", "browse template"],
+    openGraph: {
+      ...siteConfig.openGraph,
+      title: pageTitle,
+      description: params.description,
+      url: pageUrl,
+      type: "website",
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: params.title,
+        },
+      ],
+    },
+    twitter: {
+      ...siteConfig.twitter,
+      title: pageTitle,
+      description: params.description,
+      images: [image],
+    },
+    alternates: {
+      canonical: pageUrl,
+    },
+    robots: siteConfig.robots,
   };
 }
 

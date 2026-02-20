@@ -25,6 +25,8 @@ type TemplateRow = {
   testimonial: string | null;
   founder_name: string | null;
   position: string | null;
+  status_label: string | null;
+  is_best_seller: number | null;
 };
 
 function parseJsonArray(raw: string): string[] {
@@ -62,6 +64,8 @@ function rowToCaseStudy(row: TemplateRow): CaseStudyType {
     testimonial: row.testimonial ?? undefined,
     founder_name: row.founder_name ?? undefined,
     position: row.position ?? undefined,
+    status_label: row.status_label ?? undefined,
+    is_best_seller: row.is_best_seller === 1,
   };
 }
 
@@ -104,6 +108,8 @@ export async function ensureCmsTables(): Promise<void> {
       testimonial TEXT,
       founder_name TEXT,
       position TEXT,
+      status_label TEXT,
+      is_best_seller INTEGER NOT NULL DEFAULT 0,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
@@ -113,6 +119,18 @@ export async function ensureCmsTables(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_cms_templates_sort_order
     ON cms_templates(sort_order);
   `);
+
+  const templateColumns = await runD1Query<{ name: string }>("PRAGMA table_info(cms_templates)");
+  const hasStatusLabel = templateColumns.some((column) => column.name === "status_label");
+  if (!hasStatusLabel) {
+    await runD1Query("ALTER TABLE cms_templates ADD COLUMN status_label TEXT");
+  }
+  const hasBestSeller = templateColumns.some((column) => column.name === "is_best_seller");
+  if (!hasBestSeller) {
+    await runD1Query(
+      "ALTER TABLE cms_templates ADD COLUMN is_best_seller INTEGER NOT NULL DEFAULT 0"
+    );
+  }
 }
 
 export async function getSiteContentFromDb(): Promise<SiteContent> {
@@ -152,7 +170,8 @@ export async function getTemplatesFromDb(): Promise<CaseStudyType[]> {
   const rows = await runD1Query<TemplateRow>(
     `SELECT id, sort_order, name, project_title, main_image_src, logo_src, description,
             features_json, case_study_link, demo_images_json, project_link, cta_talk,
-            cta_read_case_study, test_img, testimonial, founder_name, position
+            cta_read_case_study, test_img, testimonial, founder_name, position,
+            status_label, is_best_seller
      FROM cms_templates
      ORDER BY sort_order ASC`
   );
@@ -182,8 +201,9 @@ export async function saveTemplatesToDb(templates: CaseStudyType[]): Promise<Cas
         id, sort_order, name, project_title, main_image_src, logo_src, description,
         features_json, case_study_link, demo_images_json, project_link, cta_talk,
         cta_read_case_study, test_img, testimonial, founder_name, position,
+        status_label, is_best_seller,
         created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         id,
         index,
@@ -202,6 +222,8 @@ export async function saveTemplatesToDb(templates: CaseStudyType[]): Promise<Cas
         toNullableString(item.testimonial),
         toNullableString(item.founder_name),
         toNullableString(item.position),
+        toNullableString(item.status_label),
+        item.is_best_seller ? 1 : 0,
         now,
         now,
       ]

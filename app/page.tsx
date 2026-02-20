@@ -1,5 +1,6 @@
 import CaseStudiesSection from "@/components/landing/CaseStudiesSection";
 import ContactSection from "@/components/landing/ContactSection";
+import FeaturedTemplatesSection from "@/components/landing/FeaturedTemplatesSection";
 import HeroSection from "@/components/landing/HeroSection";
 import ProcessSection from "@/components/landing/ProcessSection";
 import TestimonialSection from "@/components/landing/TestimonialSection";
@@ -13,6 +14,7 @@ export default function Home() {
     <main id="main-content">
       <div className="mx-auto max-w-6xl">
         <HeroSection />
+        <FeaturedTemplatesSection />
         <CaseStudiesSection />
         <ProcessSection />
         <TestimonialSection />

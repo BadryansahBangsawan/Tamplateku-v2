@@ -21,6 +21,8 @@ export const caseStudies = [
       '"Template dari Tamplateku bikin proses launch website kami jauh lebih cepat. Tim marketing langsung bisa pakai tanpa revisi besar."',
     founder_name: "Ryan Samii",
     position: "Founder & CEO",
+    status_label: "Ready to Use",
+    is_best_seller: true,
   },
   {
     main_image_src: "/tamplate/tamplate-2.png",
@@ -45,6 +47,8 @@ export const caseStudies = [
       '"Yang saya suka, templatenya premium tapi tetap fleksibel. Tinggal ganti copy dan visual, langsung siap dipromosikan."',
     founder_name: "Reid Chong",
     position: "Founder & CEO",
+    status_label: "Ready to Use",
+    is_best_seller: true,
   },
   {
     main_image_src: "/tamplate/tamplate-3.png",
@@ -68,6 +72,8 @@ export const caseStudies = [
       '"Komunikasi tim Tamplateku cepat dan jelas. Kami jadi punya website yang tampil premium tanpa harus develop dari nol."',
     founder_name: "TJ Gottfried",
     position: "Founder",
+    status_label: "Ready to Use",
+    is_best_seller: false,
   },
   {
     main_image_src: "/tamplate/tamplate-1.png",
@@ -91,6 +97,8 @@ export const caseStudies = [
       '"Tamplateku profesional dari awal sampai rilis. Prosesnya cepat, rapi, dan hasil akhirnya sesuai ekspektasi kami."',
     founder_name: "Brad Milne",
     position: "Co-Founder",
+    status_label: "Ready to Use",
+    is_best_seller: false,
   },
   {
     main_image_src: "/tamplate/tamplate-2.png",
@@ -114,6 +122,8 @@ export const caseStudies = [
       '"Setelah pakai template Tamplateku, presentasi brand kami jadi jauh lebih meyakinkan di mata calon klien."',
     founder_name: "Michael Guimarin",
     position: "Founder",
+    status_label: "Ready to Use",
+    is_best_seller: false,
   },
 ];
 
@@ -136,4 +146,6 @@ export interface CaseStudyType {
   testimonial?: string;
   founder_name?: string;
   position?: string;
+  status_label?: string | null;
+  is_best_seller?: boolean | null;
 }

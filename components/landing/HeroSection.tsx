@@ -34,7 +34,9 @@ function HomePage() {
     () => [
       {
         name: "Next.js",
-        logo: withFrameworkLogoVersion(content.hero.frameworkLogos.nextjs || "/frameworks/nextjs.svg"),
+        logo: withFrameworkLogoVersion(
+          content.hero.frameworkLogos.nextjs || "/frameworks/nextjs.svg"
+        ),
       },
       {
         name: "Vue.js",
@@ -42,14 +44,21 @@ function HomePage() {
       },
       {
         name: "React",
-        logo: withFrameworkLogoVersion(content.hero.frameworkLogos.react || "/frameworks/react.svg"),
+        logo: withFrameworkLogoVersion(
+          content.hero.frameworkLogos.react || "/frameworks/react.svg"
+        ),
       },
       {
         name: "Nuxt",
         logo: withFrameworkLogoVersion(content.hero.frameworkLogos.nuxt || "/frameworks/nuxt.svg"),
       },
     ],
-    [content.hero.frameworkLogos.nextjs, content.hero.frameworkLogos.nuxt, content.hero.frameworkLogos.react, content.hero.frameworkLogos.vue]
+    [
+      content.hero.frameworkLogos.nextjs,
+      content.hero.frameworkLogos.nuxt,
+      content.hero.frameworkLogos.react,
+      content.hero.frameworkLogos.vue,
+    ]
   );
 
   useGSAP(() => {
@@ -114,7 +123,7 @@ function HomePage() {
             className="cursor-pointer"
             asChild
           >
-            <Link href="/blog">{content.hero.primaryCta}</Link>
+            <Link href="/browse-template">{content.hero.primaryCta}</Link>
           </Button>
           <Button
             aria-describedby="case-studies-cta-description"

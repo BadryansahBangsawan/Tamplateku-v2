@@ -13,7 +13,20 @@ import { useCaseStudies } from "@/hooks/use-case-studies";
 import { useSiteContent } from "@/hooks/use-site-content";
 import { defaultCaseStudiesContent, writeCaseStudiesToStorage } from "@/lib/caseStudiesContent";
 import { type SiteContent, defaultSiteContent, writeSiteContentToStorage } from "@/lib/siteContent";
-import { ArrowDown, ArrowUp, Copy, ExternalLink, Plus, RotateCcw, Save, Trash2 } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Copy,
+  ExternalLink,
+  GalleryVerticalEnd,
+  LayoutDashboard,
+  Link2,
+  Plus,
+  RotateCcw,
+  Save,
+  Settings2,
+  Trash2,
+} from "lucide-react";
 import Link from "next/link";
 import { type ChangeEvent, useEffect, useMemo, useState } from "react";
 
@@ -60,6 +73,8 @@ function createNewCaseStudy(seed: number): CaseStudyType {
     testimonial: "",
     founder_name: "",
     position: "",
+    status_label: "Ready to Use",
+    is_best_seller: false,
   };
 }
 
@@ -152,10 +167,7 @@ export default function AdminPage() {
     }));
   };
 
-  const updateHeroFrameworkLogo = (
-    key: (typeof HERO_LOGO_KEYS)[number],
-    value: string
-  ) => {
+  const updateHeroFrameworkLogo = (key: (typeof HERO_LOGO_KEYS)[number], value: string) => {
     setDraftContent((prev) => ({
       ...prev,
       hero: {
@@ -205,6 +217,19 @@ export default function AdminPage() {
   const activeCaseStudy = draftCaseStudies[selectedCaseStudy];
 
   const updateCaseStudyField = (field: keyof CaseStudyType, value: string) => {
+    setDraftCaseStudies((prev) =>
+      prev.map((item, index) =>
+        index === selectedCaseStudy
+          ? {
+              ...item,
+              [field]: value,
+            }
+          : item
+      )
+    );
+  };
+
+  const updateCaseStudyBooleanField = (field: keyof CaseStudyType, value: boolean) => {
     setDraftCaseStudies((prev) =>
       prev.map((item, index) =>
         index === selectedCaseStudy
@@ -316,9 +341,7 @@ export default function AdminPage() {
     try {
       const dataUrl = await fileToDataUrl(file);
       updateHeroFrameworkLogo(key, dataUrl);
-      setStatus(
-        `Logo ${label} berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`
-      );
+      setStatus(`Logo ${label} berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`);
     } catch {
       setStatus(`Gagal membaca file "${file.name}".`);
     }
@@ -514,9 +537,7 @@ export default function AdminPage() {
       setStatus("Semua konten berhasil direset ke default.");
     } catch (error) {
       const message =
-        error instanceof Error && error.message
-          ? error.message
-          : "Gagal reset konten ke database.";
+        error instanceof Error && error.message ? error.message : "Gagal reset konten ke database.";
       setStatus(message);
     } finally {
       setIsSaving(false);
@@ -608,335 +629,248 @@ export default function AdminPage() {
           </div>
         </header>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Section Editable</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-semibold">5</p>
-              <p className="text-xs text-muted-foreground">
-                Hero, Case Studies, Process, Testimonials, Contact
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Template Items</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-semibold">{draftCaseStudies.length}</p>
-              <p className="text-xs text-muted-foreground">
-                Dipakai untuk carousel, cards, dan testimonial
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Storage</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-semibold">Cloudflare D1</p>
-              <p className="text-xs text-muted-foreground">
-                Database utama + local sync untuk realtime update UI
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm">Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center gap-2">
+        <Tabs
+          defaultValue="overview"
+          className="gap-4 lg:grid lg:grid-cols-[260px_minmax(0,1fr)] lg:items-start"
+        >
+          <aside className="space-y-4 lg:sticky lg:top-6">
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Sidebar Admin</CardTitle>
+                <CardDescription>Pilih section yang ingin dikelola.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <TabsList className="flex h-auto w-full flex-col items-stretch gap-2 bg-transparent p-0">
+                  <TabsTrigger value="overview" className="h-10 w-full justify-start">
+                    <LayoutDashboard className="mr-2 h-4 w-4" />
+                    Overview
+                  </TabsTrigger>
+                  <TabsTrigger value="sections" className="h-10 w-full justify-start">
+                    <Settings2 className="mr-2 h-4 w-4" />
+                    Sections
+                  </TabsTrigger>
+                  <TabsTrigger value="templates" className="h-10 w-full justify-start">
+                    <GalleryVerticalEnd className="mr-2 h-4 w-4" />
+                    Templates CRUD
+                  </TabsTrigger>
+                  <TabsTrigger value="links" className="h-10 w-full justify-start">
+                    <Link2 className="mr-2 h-4 w-4" />
+                    Page Links
+                  </TabsTrigger>
+                </TabsList>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm">Status Sinkronisasi</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
                 <Badge variant={isDirty ? "destructive" : "secondary"}>
                   {isDirty ? "Unsaved" : "Synced"}
                 </Badge>
+                <p className="text-xs text-muted-foreground">
+                  {status || "Siap edit dan simpan perubahan."}
+                </p>
+              </CardContent>
+            </Card>
+          </aside>
+
+          <div className="space-y-4">
+            <TabsContent value="overview" className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Section Editable</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-semibold">5</p>
+                    <p className="text-xs text-muted-foreground">
+                      Hero, Case Studies, Process, Testimonials, Contact
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Template Items</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-semibold">{draftCaseStudies.length}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Dipakai untuk carousel, cards, dan testimonial
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Storage</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-semibold">Cloudflare D1</p>
+                    <p className="text-xs text-muted-foreground">
+                      Database utama + local sync untuk realtime update UI
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm">Perubahan Pending</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-2xl font-semibold">{isDirty ? "Ya" : "Tidak"}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Gunakan tombol Simpan Semua setelah selesai edit.
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                {status || "Siap edit dan simpan perubahan."}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
 
-        <Tabs defaultValue="sections" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="sections">Sections</TabsTrigger>
-            <TabsTrigger value="templates">Templates CRUD</TabsTrigger>
-            <TabsTrigger value="links">Page Links</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="sections" className="space-y-4">
-            <div className="grid gap-4 lg:grid-cols-2">
               <Card>
                 <CardHeader>
-                  <CardTitle>Hero Section</CardTitle>
+                  <CardTitle>Aksi Cepat</CardTitle>
+                  <CardDescription>Navigasi cepat untuk workflow admin harian.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <Label htmlFor="hero-badge">Badge</Label>
-                  <Input
-                    id="hero-badge"
-                    value={draftContent.hero.badge}
-                    onChange={(e) => updateContentField("hero", "badge", e.target.value)}
-                  />
-                  <Label htmlFor="hero-heading">Heading</Label>
-                  <Input
-                    id="hero-heading"
-                    value={draftContent.hero.heading}
-                    onChange={(e) => updateContentField("hero", "heading", e.target.value)}
-                  />
-                  <Label htmlFor="hero-description">Description</Label>
-                  <Textarea
-                    id="hero-description"
-                    rows={3}
-                    value={draftContent.hero.description}
-                    onChange={(e) => updateContentField("hero", "description", e.target.value)}
-                  />
-                  <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-2">
-                      <Label htmlFor="hero-primary">Primary CTA</Label>
-                      <Input
-                        id="hero-primary"
-                        value={draftContent.hero.primaryCta}
-                        onChange={(e) => updateContentField("hero", "primaryCta", e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="hero-secondary">Secondary CTA</Label>
-                      <Input
-                        id="hero-secondary"
-                        value={draftContent.hero.secondaryCta}
-                        onChange={(e) => updateContentField("hero", "secondaryCta", e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <Separator />
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium">Framework Logo Bar (Hero)</p>
-                    <div className="grid gap-3 md:grid-cols-2">
-                      {HERO_LOGO_KEYS.map((key, index) => (
-                        <div key={key} className="space-y-2 rounded-md border p-3">
-                          <Label>{HERO_LOGO_LABELS[index]} Logo URL</Label>
-                          <Input
-                            value={draftContent.hero.frameworkLogos[key]}
-                            onChange={(e) => updateHeroFrameworkLogo(key, e.target.value)}
-                          />
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={(event) =>
-                              void handleHeroLogoUpload(event, key, HERO_LOGO_LABELS[index])
-                            }
-                          />
-                          <div className="bg-muted/40 flex h-16 items-center justify-center rounded border p-2">
-                            <img
-                              src={draftContent.hero.frameworkLogos[key]}
-                              alt={`${HERO_LOGO_LABELS[index]} preview`}
-                              className="max-h-10 w-auto object-contain"
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                <CardContent className="flex flex-wrap gap-2">
+                  <Button asChild variant="outline">
+                    <Link href="/" target="_blank">
+                      Preview Website
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <Link href="/browse-template" target="_blank">
+                      Buka Browse Template
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline">
+                    <Link href="/blog" target="_blank">
+                      Buka Blog
+                      <ExternalLink className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
                 </CardContent>
               </Card>
+            </TabsContent>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Case Studies Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Label htmlFor="cs-badge">Badge</Label>
-                  <Input
-                    id="cs-badge"
-                    value={draftContent.caseStudies.badge}
-                    onChange={(e) => updateContentField("caseStudies", "badge", e.target.value)}
-                  />
-                  <Label htmlFor="cs-heading">Heading</Label>
-                  <Input
-                    id="cs-heading"
-                    value={draftContent.caseStudies.heading}
-                    onChange={(e) => updateContentField("caseStudies", "heading", e.target.value)}
-                  />
-                  <Label htmlFor="cs-description">Description</Label>
-                  <Textarea
-                    id="cs-description"
-                    rows={3}
-                    value={draftContent.caseStudies.description}
-                    onChange={(e) =>
-                      updateContentField("caseStudies", "description", e.target.value)
-                    }
-                  />
-                  <Label htmlFor="cs-button">Button Label</Label>
-                  <Input
-                    id="cs-button"
-                    value={draftContent.caseStudies.buttonLabel}
-                    onChange={(e) =>
-                      updateContentField("caseStudies", "buttonLabel", e.target.value)
-                    }
-                  />
-                  <Separator />
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium">Quick Image CRUD - Case Studies (Top 3)</p>
-                    {featuredCaseStudies.map(({ item, index }) => (
-                      <div key={`cs-image-${item.id ?? index}`} className="space-y-2 rounded-md border p-3">
-                        <p className="text-sm font-medium">{item.name}</p>
-                        <Label>Main Image URL</Label>
+            <TabsContent value="sections" className="space-y-4">
+              <div className="grid gap-4 lg:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Hero Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Label htmlFor="hero-badge">Badge</Label>
+                    <Input
+                      id="hero-badge"
+                      value={draftContent.hero.badge}
+                      onChange={(e) => updateContentField("hero", "badge", e.target.value)}
+                    />
+                    <Label htmlFor="hero-heading">Heading</Label>
+                    <Input
+                      id="hero-heading"
+                      value={draftContent.hero.heading}
+                      onChange={(e) => updateContentField("hero", "heading", e.target.value)}
+                    />
+                    <Label htmlFor="hero-description">Description</Label>
+                    <Textarea
+                      id="hero-description"
+                      rows={3}
+                      value={draftContent.hero.description}
+                      onChange={(e) => updateContentField("hero", "description", e.target.value)}
+                    />
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="hero-primary">Primary CTA</Label>
                         <Input
-                          value={item.main_image_src}
-                          onChange={(e) =>
-                            updateCaseStudyImageFieldByIndex(index, "main_image_src", e.target.value)
-                          }
-                        />
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) =>
-                            void handleSectionCaseStudyImageUpload(
-                              event,
-                              index,
-                              "main_image_src",
-                              `Main image ${item.name}`
-                            )
-                          }
-                        />
-                        <img
-                          src={item.main_image_src}
-                          alt={`Case study ${item.name} preview`}
-                          className="h-24 w-full rounded border object-cover"
+                          id="hero-primary"
+                          value={draftContent.hero.primaryCta}
+                          onChange={(e) => updateContentField("hero", "primaryCta", e.target.value)}
                         />
                       </div>
-                    ))}
-                    <p className="text-xs text-muted-foreground">
-                      Untuk edit demo images dan logo lebih lengkap, gunakan tab Templates CRUD.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Process Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Label htmlFor="process-badge">Badge</Label>
-                  <Input
-                    id="process-badge"
-                    value={draftContent.process.badge}
-                    onChange={(e) => updateContentField("process", "badge", e.target.value)}
-                  />
-                  <Label htmlFor="process-heading">Heading</Label>
-                  <Input
-                    id="process-heading"
-                    value={draftContent.process.heading}
-                    onChange={(e) => updateContentField("process", "heading", e.target.value)}
-                  />
-                  <Label htmlFor="process-description">Description</Label>
-                  <Textarea
-                    id="process-description"
-                    rows={3}
-                    value={draftContent.process.description}
-                    onChange={(e) => updateContentField("process", "description", e.target.value)}
-                  />
-                  <Separator />
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium">Background Image per Step</p>
-                    <div className="grid gap-3 md:grid-cols-2">
-                      {[0, 1, 2, 3].map((index) => (
-                        <div key={`process-bg-${index}`} className="space-y-2 rounded-md border p-3">
-                          <Label>{`Step ${index + 1} Background URL`}</Label>
-                          <Input
-                            value={draftContent.process.backgroundImages[index] ?? ""}
-                            onChange={(e) =>
-                              updateProcessBackgroundImage(index, e.target.value)
-                            }
-                          />
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={(event) => void handleProcessBackgroundUpload(event, index)}
-                          />
-                          <img
-                            src={draftContent.process.backgroundImages[index] ?? ""}
-                            alt={`Process step ${index + 1} background preview`}
-                            className="h-24 w-full rounded border object-cover"
-                          />
-                        </div>
-                      ))}
+                      <div className="space-y-2">
+                        <Label htmlFor="hero-secondary">Secondary CTA</Label>
+                        <Input
+                          id="hero-secondary"
+                          value={draftContent.hero.secondaryCta}
+                          onChange={(e) =>
+                            updateContentField("hero", "secondaryCta", e.target.value)
+                          }
+                        />
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    <Separator />
+                    <div className="space-y-3">
+                      <p className="text-sm font-medium">Framework Logo Bar (Hero)</p>
+                      <div className="grid gap-3 md:grid-cols-2">
+                        {HERO_LOGO_KEYS.map((key, index) => (
+                          <div key={key} className="space-y-2 rounded-md border p-3">
+                            <Label>{HERO_LOGO_LABELS[index]} Logo</Label>
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(event) =>
+                                void handleHeroLogoUpload(event, key, HERO_LOGO_LABELS[index])
+                              }
+                            />
+                            <div className="bg-muted/40 flex h-16 items-center justify-center rounded border p-2">
+                              <img
+                                src={draftContent.hero.frameworkLogos[key]}
+                                alt={`${HERO_LOGO_LABELS[index]} preview`}
+                                className="max-h-10 w-auto object-contain"
+                              />
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Testimonials Section</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Label htmlFor="testi-badge">Badge</Label>
-                  <Input
-                    id="testi-badge"
-                    value={draftContent.testimonials.badge}
-                    onChange={(e) => updateContentField("testimonials", "badge", e.target.value)}
-                  />
-                  <Label htmlFor="testi-heading">Heading</Label>
-                  <Input
-                    id="testi-heading"
-                    value={draftContent.testimonials.heading}
-                    onChange={(e) => updateContentField("testimonials", "heading", e.target.value)}
-                  />
-                  <Label htmlFor="testi-description">Description</Label>
-                  <Textarea
-                    id="testi-description"
-                    rows={2}
-                    value={draftContent.testimonials.description}
-                    onChange={(e) =>
-                      updateContentField("testimonials", "description", e.target.value)
-                    }
-                  />
-                  <div className="grid gap-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Case Studies Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Label htmlFor="cs-badge">Badge</Label>
                     <Input
-                      value={draftContent.testimonials.statOneLabel}
-                      onChange={(e) =>
-                        updateContentField("testimonials", "statOneLabel", e.target.value)
-                      }
-                      placeholder="Stat 1 label"
+                      id="cs-badge"
+                      value={draftContent.caseStudies.badge}
+                      onChange={(e) => updateContentField("caseStudies", "badge", e.target.value)}
                     />
+                    <Label htmlFor="cs-heading">Heading</Label>
                     <Input
-                      value={draftContent.testimonials.statTwoLabel}
-                      onChange={(e) =>
-                        updateContentField("testimonials", "statTwoLabel", e.target.value)
-                      }
-                      placeholder="Stat 2 label"
+                      id="cs-heading"
+                      value={draftContent.caseStudies.heading}
+                      onChange={(e) => updateContentField("caseStudies", "heading", e.target.value)}
                     />
+                    <Label htmlFor="cs-description">Description</Label>
+                    <Textarea
+                      id="cs-description"
+                      rows={3}
+                      value={draftContent.caseStudies.description}
+                      onChange={(e) =>
+                        updateContentField("caseStudies", "description", e.target.value)
+                      }
+                    />
+                    <Label htmlFor="cs-button">Button Label</Label>
                     <Input
-                      value={draftContent.testimonials.statThreeLabel}
+                      id="cs-button"
+                      value={draftContent.caseStudies.buttonLabel}
                       onChange={(e) =>
-                        updateContentField("testimonials", "statThreeLabel", e.target.value)
+                        updateContentField("caseStudies", "buttonLabel", e.target.value)
                       }
-                      placeholder="Stat 3 label"
                     />
-                  </div>
-                  <Separator />
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium">Quick Image CRUD - Testimonials</p>
-                    {testimonialCaseStudies.length === 0 ? (
-                      <p className="text-xs text-muted-foreground">
-                        Belum ada item testimonial. Isi testimonial di tab Templates CRUD untuk
-                        menampilkan kontrol image di sini.
-                      </p>
-                    ) : (
-                      testimonialCaseStudies.map(({ item, index }) => (
-                        <div key={`testimonial-image-${item.id ?? index}`} className="space-y-2 rounded-md border p-3">
+                    <Separator />
+                    <div className="space-y-3">
+                      <p className="text-sm font-medium">Quick Image CRUD - Case Studies (Top 3)</p>
+                      {featuredCaseStudies.map(({ item, index }) => (
+                        <div
+                          key={`cs-image-${item.id ?? index}`}
+                          className="space-y-2 rounded-md border p-3"
+                        >
                           <p className="text-sm font-medium">{item.name}</p>
-                          <Label>Testimonial Image URL</Label>
-                          <Input
-                            value={item.test_img ?? ""}
-                            onChange={(e) =>
-                              updateCaseStudyImageFieldByIndex(index, "test_img", e.target.value)
-                            }
-                          />
+                          <Label>Main Image</Label>
                           <Input
                             type="file"
                             accept="image/*"
@@ -944,420 +878,612 @@ export default function AdminPage() {
                               void handleSectionCaseStudyImageUpload(
                                 event,
                                 index,
-                                "test_img",
-                                `Testimonial image ${item.name}`
+                                "main_image_src",
+                                `Main image ${item.name}`
                               )
                             }
                           />
                           <img
-                            src={item.test_img ?? ""}
-                            alt={`Testimonial ${item.name} preview`}
+                            src={item.main_image_src}
+                            alt={`Case study ${item.name} preview`}
                             className="h-24 w-full rounded border object-cover"
                           />
                         </div>
-                      ))
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Contact Section</CardTitle>
-                <CardDescription>Kontrol heading dan label form di section kontak.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="grid gap-3 md:grid-cols-3">
-                  <div className="space-y-2">
-                    <Label>Badge</Label>
-                    <Input
-                      value={draftContent.contact.badge}
-                      onChange={(e) => updateContentField("contact", "badge", e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-2 md:col-span-2">
-                    <Label>Heading</Label>
-                    <Input
-                      value={draftContent.contact.heading}
-                      onChange={(e) => updateContentField("contact", "heading", e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Description</Label>
-                  <Textarea
-                    rows={2}
-                    value={draftContent.contact.description}
-                    onChange={(e) => updateContentField("contact", "description", e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Background Image URL</Label>
-                  <Input
-                    value={draftContent.contact.backgroundImage}
-                    onChange={(e) =>
-                      updateContentField("contact", "backgroundImage", e.target.value)
-                    }
-                  />
-                  <Input type="file" accept="image/*" onChange={(event) => void handleContactBackgroundUpload(event)} />
-                  <img
-                    src={draftContent.contact.backgroundImage}
-                    alt="Contact background preview"
-                    className="h-24 w-full rounded border object-cover"
-                  />
-                </div>
-                <Separator />
-                <div className="grid gap-3 md:grid-cols-2">
-                  <Input
-                    value={draftContent.contact.nameLabel}
-                    onChange={(e) => updateContentField("contact", "nameLabel", e.target.value)}
-                    placeholder="Name label"
-                  />
-                  <Input
-                    value={draftContent.contact.namePlaceholder}
-                    onChange={(e) =>
-                      updateContentField("contact", "namePlaceholder", e.target.value)
-                    }
-                    placeholder="Name placeholder"
-                  />
-                  <Input
-                    value={draftContent.contact.emailLabel}
-                    onChange={(e) => updateContentField("contact", "emailLabel", e.target.value)}
-                    placeholder="Email label"
-                  />
-                  <Input
-                    value={draftContent.contact.emailPlaceholder}
-                    onChange={(e) =>
-                      updateContentField("contact", "emailPlaceholder", e.target.value)
-                    }
-                    placeholder="Email placeholder"
-                  />
-                  <Input
-                    value={draftContent.contact.messageLabel}
-                    onChange={(e) => updateContentField("contact", "messageLabel", e.target.value)}
-                    placeholder="Message label"
-                  />
-                  <Input
-                    value={draftContent.contact.submitLabel}
-                    onChange={(e) => updateContentField("contact", "submitLabel", e.target.value)}
-                    placeholder="Submit label"
-                  />
-                </div>
-                <Textarea
-                  rows={2}
-                  value={draftContent.contact.messagePlaceholder}
-                  onChange={(e) =>
-                    updateContentField("contact", "messagePlaceholder", e.target.value)
-                  }
-                  placeholder="Message placeholder"
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="templates" className="space-y-4">
-            <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <CardTitle>Daftar Template</CardTitle>
-                      <CardDescription>Pilih item untuk edit detail.</CardDescription>
+                      ))}
+                      <p className="text-xs text-muted-foreground">
+                        Untuk edit demo images dan logo lebih lengkap, gunakan tab Templates CRUD.
+                      </p>
                     </div>
-                    <Button size="sm" onClick={addCaseStudy}>
-                      <Plus className="mr-1 h-4 w-4" /> Tambah
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  {draftCaseStudies.map((item, index) => (
-                    <div
-                      key={item.id ?? `${item.name}-${index}`}
-                      className={`w-full rounded-md border px-3 py-2 text-left transition ${
-                        selectedCaseStudy === index
-                          ? "border-primary bg-primary/5"
-                          : "hover:border-muted-foreground/40"
-                      }`}
-                    >
-                      <div className="flex items-start justify-between gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setSelectedCaseStudy(index)}
-                          className="w-full text-left"
-                        >
-                          <p className="text-sm font-medium text-foreground">{item.name}</p>
-                          <p className="text-xs text-muted-foreground line-clamp-2">
-                            {item.project_title}
-                          </p>
-                        </button>
-                        <div className="flex items-center gap-1">
-                          <button
-                            type="button"
-                            onClick={() => moveCaseStudy(index, "up")}
-                            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
-                            aria-label={`Move ${item.name} up`}
-                            disabled={index === 0}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Process Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Label htmlFor="process-badge">Badge</Label>
+                    <Input
+                      id="process-badge"
+                      value={draftContent.process.badge}
+                      onChange={(e) => updateContentField("process", "badge", e.target.value)}
+                    />
+                    <Label htmlFor="process-heading">Heading</Label>
+                    <Input
+                      id="process-heading"
+                      value={draftContent.process.heading}
+                      onChange={(e) => updateContentField("process", "heading", e.target.value)}
+                    />
+                    <Label htmlFor="process-description">Description</Label>
+                    <Textarea
+                      id="process-description"
+                      rows={3}
+                      value={draftContent.process.description}
+                      onChange={(e) => updateContentField("process", "description", e.target.value)}
+                    />
+                    <Separator />
+                    <div className="space-y-3">
+                      <p className="text-sm font-medium">Background Image per Step</p>
+                      <div className="grid gap-3 md:grid-cols-2">
+                        {[0, 1, 2, 3].map((index) => (
+                          <div
+                            key={`process-bg-${index}`}
+                            className="space-y-2 rounded-md border p-3"
                           >
-                            <ArrowUp className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => moveCaseStudy(index, "down")}
-                            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
-                            aria-label={`Move ${item.name} down`}
-                            disabled={index === draftCaseStudies.length - 1}
-                          >
-                            <ArrowDown className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => deleteCaseStudy(index)}
-                            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
-                            aria-label={`Delete ${item.name}`}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
+                            <Label>{`Step ${index + 1} Background`}</Label>
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(event) => void handleProcessBackgroundUpload(event, index)}
+                            />
+                            <img
+                              src={draftContent.process.backgroundImages[index] ?? ""}
+                              alt={`Process step ${index + 1} background preview`}
+                              className="h-24 w-full rounded border object-cover"
+                            />
+                          </div>
+                        ))}
                       </div>
                     </div>
-                  ))}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Testimonials Section</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <Label htmlFor="testi-badge">Badge</Label>
+                    <Input
+                      id="testi-badge"
+                      value={draftContent.testimonials.badge}
+                      onChange={(e) => updateContentField("testimonials", "badge", e.target.value)}
+                    />
+                    <Label htmlFor="testi-heading">Heading</Label>
+                    <Input
+                      id="testi-heading"
+                      value={draftContent.testimonials.heading}
+                      onChange={(e) =>
+                        updateContentField("testimonials", "heading", e.target.value)
+                      }
+                    />
+                    <Label htmlFor="testi-description">Description</Label>
+                    <Textarea
+                      id="testi-description"
+                      rows={2}
+                      value={draftContent.testimonials.description}
+                      onChange={(e) =>
+                        updateContentField("testimonials", "description", e.target.value)
+                      }
+                    />
+                    <div className="grid gap-3">
+                      <Input
+                        value={draftContent.testimonials.statOneLabel}
+                        onChange={(e) =>
+                          updateContentField("testimonials", "statOneLabel", e.target.value)
+                        }
+                        placeholder="Stat 1 label"
+                      />
+                      <Input
+                        value={draftContent.testimonials.statTwoLabel}
+                        onChange={(e) =>
+                          updateContentField("testimonials", "statTwoLabel", e.target.value)
+                        }
+                        placeholder="Stat 2 label"
+                      />
+                      <Input
+                        value={draftContent.testimonials.statThreeLabel}
+                        onChange={(e) =>
+                          updateContentField("testimonials", "statThreeLabel", e.target.value)
+                        }
+                        placeholder="Stat 3 label"
+                      />
+                    </div>
+                    <Separator />
+                    <div className="space-y-3">
+                      <p className="text-sm font-medium">Quick Image CRUD - Testimonials</p>
+                      {testimonialCaseStudies.length === 0 ? (
+                        <p className="text-xs text-muted-foreground">
+                          Belum ada item testimonial. Isi testimonial di tab Templates CRUD untuk
+                          menampilkan kontrol image di sini.
+                        </p>
+                      ) : (
+                        testimonialCaseStudies.map(({ item, index }) => (
+                          <div
+                            key={`testimonial-image-${item.id ?? index}`}
+                            className="space-y-2 rounded-md border p-3"
+                          >
+                            <p className="text-sm font-medium">{item.name}</p>
+                            <Label>Testimonial Image</Label>
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(event) =>
+                                void handleSectionCaseStudyImageUpload(
+                                  event,
+                                  index,
+                                  "test_img",
+                                  `Testimonial image ${item.name}`
+                                )
+                              }
+                            />
+                            <img
+                              src={item.test_img ?? ""}
+                              alt={`Testimonial ${item.name} preview`}
+                              className="h-24 w-full rounded border object-cover"
+                            />
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
 
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <CardTitle>Editor Template</CardTitle>
-                      <CardDescription>CRUD item yang dipakai di beberapa section.</CardDescription>
-                    </div>
-                    <Button size="sm" variant="outline" onClick={duplicateCaseStudy}>
-                      <Copy className="mr-1 h-4 w-4" /> Duplikat
-                    </Button>
-                  </div>
+                  <CardTitle>Contact Section</CardTitle>
+                  <CardDescription>
+                    Kontrol heading dan label form di section kontak.
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {activeCaseStudy ? (
-                    <>
-                      <div className="grid gap-3 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label>Nama Template</Label>
-                          <Input
-                            value={activeCaseStudy.name}
-                            onChange={(e) => updateCaseStudyField("name", e.target.value)}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Case Study Link</Label>
-                          <Input
-                            value={activeCaseStudy.case_study_link}
-                            onChange={(e) =>
-                              updateCaseStudyField("case_study_link", e.target.value)
-                            }
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid gap-3 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label>Project Link</Label>
-                          <Input
-                            value={activeCaseStudy.project_link ?? ""}
-                            onChange={(e) => updateCaseStudyField("project_link", e.target.value)}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>CTA Let's Talk</Label>
-                          <Input
-                            value={activeCaseStudy.cta_links?.["let's talk"] ?? ""}
-                            onChange={(e) => updateCaseStudyCtaField("let's talk", e.target.value)}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>CTA Read Case Study</Label>
-                        <Input
-                          value={activeCaseStudy.cta_links?.["read case study"] ?? ""}
-                          onChange={(e) =>
-                            updateCaseStudyCtaField("read case study", e.target.value)
-                          }
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Project Title</Label>
-                        <Input
-                          value={activeCaseStudy.project_title}
-                          onChange={(e) => updateCaseStudyField("project_title", e.target.value)}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Description</Label>
-                        <Textarea
-                          rows={3}
-                          value={activeCaseStudy.description}
-                          onChange={(e) => updateCaseStudyField("description", e.target.value)}
-                        />
-                      </div>
-
-                      <div className="grid gap-3 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label>Main Image URL</Label>
-                          <Input
-                            value={activeCaseStudy.main_image_src}
-                            onChange={(e) => updateCaseStudyField("main_image_src", e.target.value)}
-                          />
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={(event) =>
-                              void handleCaseStudyImageUpload(event, "main_image_src")
-                            }
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Logo URL</Label>
-                          <Input
-                            value={activeCaseStudy.logo_src}
-                            onChange={(e) => updateCaseStudyField("logo_src", e.target.value)}
-                          />
-                          <Input
-                            type="file"
-                            accept="image/*"
-                            onChange={(event) => void handleCaseStudyImageUpload(event, "logo_src")}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid gap-3 md:grid-cols-2">
-                        <div className="space-y-2">
-                          <Label>Founder Name</Label>
-                          <Input
-                            value={activeCaseStudy.founder_name ?? ""}
-                            onChange={(e) => updateCaseStudyField("founder_name", e.target.value)}
-                          />
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Position</Label>
-                          <Input
-                            value={activeCaseStudy.position ?? ""}
-                            onChange={(e) => updateCaseStudyField("position", e.target.value)}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Testimonial Image URL</Label>
-                        <Input
-                          value={activeCaseStudy.test_img ?? ""}
-                          onChange={(e) => updateCaseStudyField("test_img", e.target.value)}
-                        />
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          onChange={(event) => void handleCaseStudyImageUpload(event, "test_img")}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Testimonial</Label>
-                        <Textarea
-                          rows={3}
-                          value={activeCaseStudy.testimonial ?? ""}
-                          onChange={(e) => updateCaseStudyField("testimonial", e.target.value)}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Features (1 baris = 1 item)</Label>
-                        <Textarea
-                          rows={4}
-                          value={activeCaseStudy.features.join("\n")}
-                          onChange={(e) => updateCaseStudyListField("features", e.target.value)}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Demo Images (1 baris = 1 URL/path)</Label>
-                        <Textarea
-                          rows={4}
-                          value={activeCaseStudy.demo_images.join("\n")}
-                          onChange={(e) => updateCaseStudyListField("demo_images", e.target.value)}
-                        />
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            variant="outline"
-                            size="sm"
-                            onClick={() => {
-                              updateCaseStudyListField("demo_images", "");
-                              setStatus("Semua demo images pada template ini dikosongkan.");
-                            }}
-                          >
-                            Kosongkan Demo Images
-                          </Button>
-                        </div>
-                        <Input
-                          type="file"
-                          accept="image/*"
-                          multiple
-                          onChange={(event) => void handleDemoImagesUpload(event)}
-                        />
-                      </div>
-                    </>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      Tidak ada template untuk diedit.
-                    </p>
-                  )}
+                  <div className="grid gap-3 md:grid-cols-3">
+                    <div className="space-y-2">
+                      <Label>Badge</Label>
+                      <Input
+                        value={draftContent.contact.badge}
+                        onChange={(e) => updateContentField("contact", "badge", e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Heading</Label>
+                      <Input
+                        value={draftContent.contact.heading}
+                        onChange={(e) => updateContentField("contact", "heading", e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Description</Label>
+                    <Textarea
+                      rows={2}
+                      value={draftContent.contact.description}
+                      onChange={(e) => updateContentField("contact", "description", e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Background Image</Label>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) => void handleContactBackgroundUpload(event)}
+                    />
+                    <img
+                      src={draftContent.contact.backgroundImage}
+                      alt="Contact background preview"
+                      className="h-24 w-full rounded border object-cover"
+                    />
+                  </div>
+                  <Separator />
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <Input
+                      value={draftContent.contact.nameLabel}
+                      onChange={(e) => updateContentField("contact", "nameLabel", e.target.value)}
+                      placeholder="Name label"
+                    />
+                    <Input
+                      value={draftContent.contact.namePlaceholder}
+                      onChange={(e) =>
+                        updateContentField("contact", "namePlaceholder", e.target.value)
+                      }
+                      placeholder="Name placeholder"
+                    />
+                    <Input
+                      value={draftContent.contact.emailLabel}
+                      onChange={(e) => updateContentField("contact", "emailLabel", e.target.value)}
+                      placeholder="Email label"
+                    />
+                    <Input
+                      value={draftContent.contact.emailPlaceholder}
+                      onChange={(e) =>
+                        updateContentField("contact", "emailPlaceholder", e.target.value)
+                      }
+                      placeholder="Email placeholder"
+                    />
+                    <Input
+                      value={draftContent.contact.messageLabel}
+                      onChange={(e) =>
+                        updateContentField("contact", "messageLabel", e.target.value)
+                      }
+                      placeholder="Message label"
+                    />
+                    <Input
+                      value={draftContent.contact.submitLabel}
+                      onChange={(e) => updateContentField("contact", "submitLabel", e.target.value)}
+                      placeholder="Submit label"
+                    />
+                  </div>
+                  <Textarea
+                    rows={2}
+                    value={draftContent.contact.messagePlaceholder}
+                    onChange={(e) =>
+                      updateContentField("contact", "messagePlaceholder", e.target.value)
+                    }
+                    placeholder="Message placeholder"
+                  />
                 </CardContent>
               </Card>
-            </div>
-          </TabsContent>
+            </TabsContent>
 
-          <TabsContent value="links" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Halaman yang Terkoneksi</CardTitle>
-                <CardDescription>Semua halaman ini membaca data dari admin panel.</CardDescription>
-              </CardHeader>
-              <CardContent className="grid gap-3 md:grid-cols-2">
-                <Button asChild variant="outline" className="justify-start">
-                  <Link href="/" target="_blank">
-                    Homepage (Hero + Carousel + Sections)
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="justify-start">
-                  <Link href="/about" target="_blank">
-                    About Page
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="justify-start">
-                  <Link href="/blog" target="_blank">
-                    Blog / Templates List
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="justify-start">
-                  <Link href="/signup" target="_blank">
-                    Signup Page
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="justify-start">
-                  <Link href="/login" target="_blank">
-                    Login Page
-                  </Link>
-                </Button>
-                <Button asChild variant="outline" className="justify-start">
-                  <Link href="/admin" target="_blank">
-                    Admin (Current)
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
+            <TabsContent value="templates" className="space-y-4">
+              <div className="grid gap-4 lg:grid-cols-[320px_1fr]">
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <CardTitle>Daftar Template</CardTitle>
+                        <CardDescription>Pilih item untuk edit detail.</CardDescription>
+                      </div>
+                      <Button size="sm" onClick={addCaseStudy}>
+                        <Plus className="mr-1 h-4 w-4" /> Tambah
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    {draftCaseStudies.map((item, index) => (
+                      <div
+                        key={item.id ?? `${item.name}-${index}`}
+                        className={`w-full rounded-md border px-3 py-2 text-left transition ${
+                          selectedCaseStudy === index
+                            ? "border-primary bg-primary/5"
+                            : "hover:border-muted-foreground/40"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedCaseStudy(index)}
+                            className="w-full text-left"
+                          >
+                            <p className="text-sm font-medium text-foreground">{item.name}</p>
+                            <p className="text-xs text-muted-foreground line-clamp-2">
+                              {item.project_title}
+                            </p>
+                          </button>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => moveCaseStudy(index, "up")}
+                              className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
+                              aria-label={`Move ${item.name} up`}
+                              disabled={index === 0}
+                            >
+                              <ArrowUp className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => moveCaseStudy(index, "down")}
+                              className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
+                              aria-label={`Move ${item.name} down`}
+                              disabled={index === draftCaseStudies.length - 1}
+                            >
+                              <ArrowDown className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => deleteCaseStudy(index)}
+                              className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
+                              aria-label={`Delete ${item.name}`}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between gap-2">
+                      <div>
+                        <CardTitle>Editor Template</CardTitle>
+                        <CardDescription>
+                          CRUD item yang dipakai di beberapa section.
+                        </CardDescription>
+                      </div>
+                      <Button size="sm" variant="outline" onClick={duplicateCaseStudy}>
+                        <Copy className="mr-1 h-4 w-4" /> Duplikat
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {activeCaseStudy ? (
+                      <>
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label>Nama Template</Label>
+                            <Input
+                              value={activeCaseStudy.name}
+                              onChange={(e) => updateCaseStudyField("name", e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Case Study Link</Label>
+                            <Input
+                              value={activeCaseStudy.case_study_link}
+                              onChange={(e) =>
+                                updateCaseStudyField("case_study_link", e.target.value)
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label>Status Label</Label>
+                            <Input
+                              value={activeCaseStudy.status_label ?? "Ready to Use"}
+                              onChange={(e) => updateCaseStudyField("status_label", e.target.value)}
+                              placeholder="Ready to Use"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label className="block">Best Seller</Label>
+                            <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
+                              <input
+                                type="checkbox"
+                                checked={Boolean(activeCaseStudy.is_best_seller)}
+                                onChange={(event) =>
+                                  updateCaseStudyBooleanField(
+                                    "is_best_seller",
+                                    event.target.checked
+                                  )
+                                }
+                              />
+                              Tandai sebagai best seller
+                            </label>
+                          </div>
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label>Project Link</Label>
+                            <Input
+                              value={activeCaseStudy.project_link ?? ""}
+                              onChange={(e) => updateCaseStudyField("project_link", e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>CTA Let's Talk</Label>
+                            <Input
+                              value={activeCaseStudy.cta_links?.["let's talk"] ?? ""}
+                              onChange={(e) =>
+                                updateCaseStudyCtaField("let's talk", e.target.value)
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>CTA Read Case Study</Label>
+                          <Input
+                            value={activeCaseStudy.cta_links?.["read case study"] ?? ""}
+                            onChange={(e) =>
+                              updateCaseStudyCtaField("read case study", e.target.value)
+                            }
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Project Title</Label>
+                          <Input
+                            value={activeCaseStudy.project_title}
+                            onChange={(e) => updateCaseStudyField("project_title", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Description</Label>
+                          <Textarea
+                            rows={3}
+                            value={activeCaseStudy.description}
+                            onChange={(e) => updateCaseStudyField("description", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label>Main Image</Label>
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(event) =>
+                                void handleCaseStudyImageUpload(event, "main_image_src")
+                              }
+                            />
+                            <img
+                              src={activeCaseStudy.main_image_src}
+                              alt={`${activeCaseStudy.name} main image preview`}
+                              className="h-24 w-full rounded border object-cover"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Logo</Label>
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(event) =>
+                                void handleCaseStudyImageUpload(event, "logo_src")
+                              }
+                            />
+                            <div className="bg-muted/40 flex h-24 items-center justify-center rounded border p-2">
+                              <img
+                                src={activeCaseStudy.logo_src}
+                                alt={`${activeCaseStudy.name} logo preview`}
+                                className="max-h-16 w-auto object-contain"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
+                          <div className="space-y-2">
+                            <Label>Founder Name</Label>
+                            <Input
+                              value={activeCaseStudy.founder_name ?? ""}
+                              onChange={(e) => updateCaseStudyField("founder_name", e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label>Position</Label>
+                            <Input
+                              value={activeCaseStudy.position ?? ""}
+                              onChange={(e) => updateCaseStudyField("position", e.target.value)}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Testimonial Image</Label>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) => void handleCaseStudyImageUpload(event, "test_img")}
+                          />
+                          <img
+                            src={activeCaseStudy.test_img ?? ""}
+                            alt={`${activeCaseStudy.name} testimonial image preview`}
+                            className="h-24 w-full rounded border object-cover"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Testimonial</Label>
+                          <Textarea
+                            rows={3}
+                            value={activeCaseStudy.testimonial ?? ""}
+                            onChange={(e) => updateCaseStudyField("testimonial", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Features (1 baris = 1 item)</Label>
+                          <Textarea
+                            rows={4}
+                            value={activeCaseStudy.features.join("\n")}
+                            onChange={(e) => updateCaseStudyListField("features", e.target.value)}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label>Demo Images</Label>
+                          <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+                            {activeCaseStudy.demo_images.map((image, imageIndex) => (
+                              <img
+                                key={`${activeCaseStudy.id ?? selectedCaseStudy}-${imageIndex}`}
+                                src={image}
+                                alt={`${activeCaseStudy.name} demo ${imageIndex + 1}`}
+                                className="h-20 w-full rounded border object-cover"
+                              />
+                            ))}
+                          </div>
+                          <div className="flex gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              onClick={() => {
+                                updateCaseStudyListField("demo_images", "");
+                                setStatus("Semua demo images pada template ini dikosongkan.");
+                              }}
+                            >
+                              Kosongkan Demo Images
+                            </Button>
+                          </div>
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={(event) => void handleDemoImagesUpload(event)}
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        Tidak ada template untuk diedit.
+                      </p>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="links" className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Halaman yang Terkoneksi</CardTitle>
+                  <CardDescription>
+                    Semua halaman ini membaca data dari admin panel.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="grid gap-3 md:grid-cols-2">
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link href="/" target="_blank">
+                      Homepage (Hero + Carousel + Sections)
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link href="/about" target="_blank">
+                      About Page
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link href="/blog" target="_blank">
+                      Blog / Templates List
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link href="/signup" target="_blank">
+                      Signup Page
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link href="/login" target="_blank">
+                      Login Page
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link href="/admin" target="_blank">
+                      Admin (Current)
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </div>
         </Tabs>
       </div>
     </main>

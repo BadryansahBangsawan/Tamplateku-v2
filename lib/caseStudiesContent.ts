@@ -26,6 +26,14 @@ function pickOptionalString(
   return typeof raw[key] === "string" ? (raw[key] as string) : fallback;
 }
 
+function pickOptionalBoolean(
+  raw: Record<string, unknown>,
+  key: string,
+  fallback: boolean | null | undefined
+): boolean | null | undefined {
+  return typeof raw[key] === "boolean" ? (raw[key] as boolean) : fallback;
+}
+
 function cloneDefaults(): CaseStudyType[] {
   return defaultCaseStudies.map((item) => ({
     ...item,
@@ -71,6 +79,8 @@ function normalizeCaseStudy(raw: unknown, fallback: CaseStudyType): CaseStudyTyp
     testimonial: typeof raw.testimonial === "string" ? raw.testimonial : fallback.testimonial,
     founder_name: typeof raw.founder_name === "string" ? raw.founder_name : fallback.founder_name,
     position: typeof raw.position === "string" ? raw.position : fallback.position,
+    status_label: pickOptionalString(raw, "status_label", fallback.status_label ?? "Ready to Use"),
+    is_best_seller: pickOptionalBoolean(raw, "is_best_seller", fallback.is_best_seller ?? false),
   };
 }
 

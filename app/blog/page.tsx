@@ -2,112 +2,58 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { blogPosts } from "@/data/blogPosts";
 import "@/lib/GSAPAnimations";
+import { siteConfig } from "@/lib/metadata";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
-// Static blog data
-const blogPosts = [
-  {
-    id: 1,
-    title: "Cara Memilih Template Landing Page yang Siap Closing",
-    excerpt:
-      "Panduan memilih template premium berdasarkan tujuan bisnis, audiens, dan target konversi.",
-    image: "/tamplate/tamplate-1.png",
-    date: "Aug 16, 2025",
-    tag: "Landing Page",
-    slug: "optimize-lora-qlora",
-    isTopPick: true,
-  },
-  {
-    id: 2,
-    title: "Checklist Website Company Profile yang Terlihat Premium",
-    excerpt:
-      "Elemen penting agar website company profile tampak profesional dan mudah dipercaya calon klien.",
-    image: "/tamplate/tamplate-2.png",
-    date: "Aug 16, 2025",
-    tag: "Company Profile",
-    slug: "optimize-lora-qlora",
-    isTopPick: true,
-  },
-  {
-    id: 3,
-    title: "Struktur Halaman Jasa yang Bikin Visitor Mau Kontak",
-    excerpt:
-      "Susunan section jasa yang terbukti membantu pengunjung memahami nilai layanan dengan cepat.",
-    image: "/tamplate/tamplate-3.png",
-    date: "Aug 16, 2025",
-    tag: "Copywriting",
-    slug: "optimize-lora-qlora",
-    isTopPick: true,
-  },
-  {
-    id: 4,
-    title: "Tips Menulis Hero Section untuk Website Bisnis",
-    excerpt:
-      "Formula sederhana untuk menulis headline dan subheadline yang langsung menjelaskan value bisnis kamu.",
-    image: "/tamplate/tamplate-1.png",
-    date: "Aug 16, 2025",
-    tag: "UI Copy",
-    slug: "optimize-lora-qlora",
-    isTopPick: false,
-  },
-  {
-    id: 5,
-    title: "Optimasi CTA di Template Website: Praktik Terbaik",
-    excerpt:
-      "Posisi dan wording CTA yang tepat bisa meningkatkan rasio klik tanpa mengubah layout desain.",
-    image: "/tamplate/tamplate-2.png",
-    date: "Aug 16, 2025",
-    tag: "Conversion",
-    slug: "optimize-lora-qlora",
-    isTopPick: false,
-  },
-  {
-    id: 6,
-    title: "Desain Mobile-First untuk Template Website Modern",
-    excerpt: "Cara memastikan tampilan mobile tetap premium, cepat, dan nyaman dipakai pengunjung.",
-    image: "/tamplate/tamplate-3.png",
-    date: "Aug 16, 2025",
-    tag: "Mobile UX",
-    slug: "optimize-lora-qlora",
-    isTopPick: false,
-  },
-  {
-    id: 7,
-    title: "Cara Menjaga Konsistensi Brand di Seluruh Halaman Website",
-    excerpt: "Panduan menjaga warna, tipografi, dan tone konten agar pengalaman brand tetap kuat.",
-    image: "/tamplate/tamplate-1.png",
-    date: "Aug 16, 2025",
-    tag: "Branding",
-    slug: "optimize-lora-qlora",
-    isTopPick: false,
-  },
-  {
-    id: 8,
-    title: "Pre-Launch Checklist Sebelum Website Go Live",
-    excerpt:
-      "Langkah final sebelum publish agar website siap dipromosikan tanpa kendala dasar teknis.",
-    image: "/tamplate/tamplate-2.png",
-    date: "Aug 16, 2025",
-    tag: "Launch",
-    slug: "optimize-lora-qlora",
-    isTopPick: false,
-  },
-];
+const blogTags = ["All", ...Array.from(new Set(blogPosts.map((post) => post.tag)))];
 
-const blogTags = [
-  "All",
-  "Landing Page",
-  "Company Profile",
-  "Copywriting",
-  "Conversion",
-  "Mobile UX",
-  "Branding",
-  "Launch",
+const uniqueSchemaPosts = Array.from(new Map(blogPosts.map((post) => [post.slug, post])).values());
+const blogStructuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    name: "Blog Tamplateku",
+    url: `${siteConfig.url}/blog`,
+    inLanguage: "id-ID",
+    publisher: {
+      "@type": "Organization",
+      name: "Tamplateku",
+      logo: {
+        "@type": "ImageObject",
+        url: `${siteConfig.url}/logo.png`,
+      },
+    },
+    blogPost: uniqueSchemaPosts.map((post) => ({
+      "@type": "BlogPosting",
+      headline: post.title,
+      description: post.excerpt,
+      url: `${siteConfig.url}/blog/${post.slug}`,
+      datePublished: post.publishedAt,
+      image: [
+        post.image.startsWith("http")
+          ? post.image
+          : `${siteConfig.url}${post.image.startsWith("/") ? "" : "/"}${post.image}`,
+      ],
+    })),
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    itemListOrder: "https://schema.org/ItemListOrderDescending",
+    numberOfItems: uniqueSchemaPosts.length,
+    itemListElement: uniqueSchemaPosts.map((post, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: `${siteConfig.url}/blog/${post.slug}`,
+      name: post.title,
+    })),
+  },
 ];
 
 // Register ScrollTrigger plugin
@@ -173,6 +119,13 @@ function BlogPage() {
 
   return (
     <div className="min-h-screen w-full">
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogStructuredData),
+        }}
+      />
       <main id="main-content">
         <div className="mx-auto max-w-6xl px-5">
           {/* Hero Section */}
@@ -239,7 +192,7 @@ function BlogPage() {
                     </h3>
 
                     <div className="flex items-center gap-3 text-sm text-label">
-                      <time dateTime="2025-08-16" className="font-medium">
+                      <time dateTime={post.publishedAt} className="font-medium">
                         {post.date}
                       </time>
                       <Badge variant="secondary" className="text-xs">
@@ -331,7 +284,7 @@ function BlogPage() {
                     </h3>
 
                     <div className="flex items-center gap-3 text-sm text-label">
-                      <time dateTime="2025-08-16" className="font-medium">
+                      <time dateTime={post.publishedAt} className="font-medium">
                         {post.date}
                       </time>
                       <Badge variant="secondary" className="text-xs">

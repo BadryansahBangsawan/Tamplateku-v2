@@ -52,12 +52,12 @@ export type SiteContent = {
 
 export const defaultSiteContent: SiteContent = {
   hero: {
-    badge: "Template Website Premium",
-    heading: "Template Website Premium Siap Pakai",
+    badge: "Website Siap Launch Cepat",
+    heading: "Template Premium Siap Launch Dalam 1 Hari",
     description:
-      "Pilih template website premium untuk company profile, agency, landing page, sampai toko online. Tinggal edit konten, publish, dan website kamu langsung terlihat profesional.",
-    primaryCta: "Lihat Koleksi Template",
-    secondaryCta: "Konsultasi Kebutuhan",
+      "Pilih template website premium untuk company profile, agency, landing page, sampai toko online. Tinggal isi konten, publish, dan website kamu langsung siap dipakai closing.",
+    primaryCta: "Browse Template",
+    secondaryCta: "Konsultasi",
     frameworkLogos: {
       nextjs: "/frameworks/nextjs.svg?v=20260219",
       vue: "/frameworks/vue.svg?v=20260219",
@@ -87,8 +87,7 @@ export const defaultSiteContent: SiteContent = {
   testimonials: {
     badge: "Testimonials",
     heading: "Review dari pengguna Tamplateku",
-    description:
-      "Lihat pengalaman klien setelah menggunakan template premium dari Tamplateku.",
+    description: "Lihat pengalaman klien setelah menggunakan template premium dari Tamplateku.",
     statOneLabel: "Template premium terpublish",
     statTwoLabel: "Brand dari berbagai niche",
     statThreeLabel: "Nilai transaksi dari implementasi klien",
@@ -113,10 +112,7 @@ function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
-export function mergeSiteContent<T extends Record<string, unknown>>(
-  base: T,
-  override: unknown,
-): T {
+export function mergeSiteContent<T extends Record<string, unknown>>(base: T, override: unknown): T {
   if (!isObject(override)) return base;
 
   const merged: Record<string, unknown> = {
@@ -148,17 +144,12 @@ export function parseSiteContent(raw: string | null): SiteContent {
 
 export function readSiteContentFromStorage(): SiteContent {
   if (typeof window === "undefined") return defaultSiteContent;
-  return parseSiteContent(
-    window.localStorage.getItem(SITE_CONTENT_STORAGE_KEY),
-  );
+  return parseSiteContent(window.localStorage.getItem(SITE_CONTENT_STORAGE_KEY));
 }
 
 export function writeSiteContentToStorage(content: SiteContent): void {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(
-    SITE_CONTENT_STORAGE_KEY,
-    JSON.stringify(content),
-  );
+  window.localStorage.setItem(SITE_CONTENT_STORAGE_KEY, JSON.stringify(content));
   window.dispatchEvent(new Event(SITE_CONTENT_UPDATED_EVENT));
 }
 

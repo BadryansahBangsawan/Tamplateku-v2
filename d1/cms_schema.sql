@@ -33,6 +33,8 @@ CREATE TABLE IF NOT EXISTS cms_templates (
   testimonial TEXT,
   founder_name TEXT,
   position TEXT,
+  status_label TEXT,
+  is_best_seller INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
