@@ -9,6 +9,7 @@ export async function POST(request: Request) {
   response.cookies.delete(AUTH_COOKIE_NAME);
   response.cookies.delete("google_oauth_state");
   response.cookies.delete("github_oauth_state");
+  response.cookies.delete("oauth_next_path");
 
   if (requestUrl.searchParams.get("redirect") === "1") {
     return NextResponse.redirect(new URL("/", requestUrl.origin));

@@ -84,7 +84,7 @@ function normalizeEmail(value: string): string {
 }
 
 function resolveGithubEmail(profile: GithubProfile, emails: GithubEmail[]): string | null {
-  if (profile.email && profile.email.includes("@")) {
+  if (profile.email?.includes("@")) {
     return normalizeEmail(profile.email);
   }
 
@@ -106,6 +106,13 @@ export async function GET(request: Request) {
   const cookieHeader = request.headers.get("cookie");
   const googleState = readCookieValue(cookieHeader, "google_oauth_state");
   const githubState = readCookieValue(cookieHeader, "github_oauth_state");
+  const oauthNextPath = readCookieValue(cookieHeader, "oauth_next_path");
+  const safeOauthNextPath =
+    typeof oauthNextPath === "string" &&
+    oauthNextPath.startsWith("/") &&
+    !oauthNextPath.startsWith("//")
+      ? oauthNextPath
+      : null;
 
   let provider: SocialProvider | null = null;
   if (state && googleState && state === googleState) provider = "google";
@@ -247,7 +254,7 @@ export async function GET(request: Request) {
   }
 
   const role = localUser?.role ?? getUserRoleByEmail(profile.email);
-  const redirectPath =
+  const roleRedirectPath =
     role === "SUPER_ADMIN"
       ? `/super-admin?${provider}=success`
       : role === "ADMIN"
@@ -255,6 +262,7 @@ export async function GET(request: Request) {
         : role === "TEMPLATE_ADMIN"
           ? `/admin-pengelola?${provider}=success`
           : `/browse-template?${provider}=success`;
+  const redirectPath = safeOauthNextPath ?? roleRedirectPath;
 
   const sessionIssuedAt = new Date().toISOString();
   if (localUser) {
@@ -282,6 +290,7 @@ export async function GET(request: Request) {
   const response = NextResponse.redirect(new URL(redirectPath, requestUrl.origin));
   response.cookies.delete("google_oauth_state");
   response.cookies.delete("github_oauth_state");
+  response.cookies.delete("oauth_next_path");
   response.cookies.set(
     AUTH_COOKIE_NAME,
     encodeAuthUser({

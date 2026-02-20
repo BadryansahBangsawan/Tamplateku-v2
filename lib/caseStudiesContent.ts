@@ -66,6 +66,7 @@ function normalizeCaseStudy(raw: unknown, fallback: CaseStudyType): CaseStudyTyp
       ? toStringArray(raw.demo_images)
       : [...fallback.demo_images],
     project_link: pickOptionalString(raw, "project_link", fallback.project_link ?? null),
+    download_url: pickOptionalString(raw, "download_url", fallback.download_url ?? null),
     cta_links:
       isObject(raw.cta_links) &&
       typeof raw.cta_links["let's talk"] === "string" &&

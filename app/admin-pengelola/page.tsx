@@ -182,7 +182,9 @@ export default function AdminPengelolaPage() {
         )
       );
       if (uploaded.some((item) => estimateImageStringBytes(item) > MAX_STORED_IMAGE_BYTES)) {
-        setStatus("Ada gambar demo yang masih terlalu besar setelah optimasi. Coba file lebih kecil.");
+        setStatus(
+          "Ada gambar demo yang masih terlalu besar setelah optimasi. Coba file lebih kecil."
+        );
         return;
       }
       setDraftCaseStudies((prev) =>
@@ -508,6 +510,17 @@ export default function AdminPengelolaPage() {
                         onChange={(e) => updateCaseStudyField("project_link", e.target.value)}
                       />
                     </div>
+                    <div className="space-y-2">
+                      <Label>URL Download</Label>
+                      <Input
+                        value={activeCaseStudy.download_url ?? ""}
+                        onChange={(e) => updateCaseStudyField("download_url", e.target.value)}
+                        placeholder="https://github.com/owner/repo atau link file zip"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label>Tombol Konsultasi</Label>
                       <Input

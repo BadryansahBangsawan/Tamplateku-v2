@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import { DEFAULT_SYSTEM_CONFIG, getSystemConfig } from "@/lib/superAdminDb";
+import { NextResponse } from "next/server";
 
 export const runtime = "edge";
 
@@ -29,6 +29,11 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const redirectUri = `${url.origin}/api/auth/google/callback`;
+  const nextPath = url.searchParams.get("next");
+  const safeNextPath =
+    typeof nextPath === "string" && nextPath.startsWith("/") && !nextPath.startsWith("//")
+      ? nextPath
+      : null;
   const state = crypto.randomUUID();
 
   const authUrl = new URL(GITHUB_AUTH_URL);
@@ -45,6 +50,15 @@ export async function GET(request: Request) {
     path: "/",
     maxAge: 60 * 10,
   });
+  if (safeNextPath) {
+    response.cookies.set("oauth_next_path", safeNextPath, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 10,
+    });
+  }
 
   return response;
 }

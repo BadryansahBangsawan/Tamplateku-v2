@@ -18,6 +18,18 @@ function LoginPageContent() {
   const verified = searchParams.get("verified") === "success";
   const googleStatus = searchParams.get("google");
   const githubStatus = searchParams.get("github");
+  const nextParam = searchParams.get("next");
+
+  const safeNextPath =
+    typeof nextParam === "string" && nextParam.startsWith("/") && !nextParam.startsWith("//")
+      ? nextParam
+      : null;
+  const googleAuthHref = safeNextPath
+    ? `/api/auth/google?next=${encodeURIComponent(safeNextPath)}`
+    : "/api/auth/google";
+  const githubAuthHref = safeNextPath
+    ? `/api/auth/github?next=${encodeURIComponent(safeNextPath)}`
+    : "/api/auth/github";
 
   const handleLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -61,7 +73,7 @@ function LoginPageContent() {
             : role === "TEMPLATE_ADMIN"
               ? "/admin-pengelola?login=form_success"
               : "/browse-template?login=form_success";
-      router.push(target);
+      router.push(safeNextPath ?? target);
     } catch {
       setErrorMessage("Tidak bisa terhubung ke server.");
     } finally {
@@ -176,7 +188,7 @@ function LoginPageContent() {
               </div>
 
               <Button type="button" variant="outline" className="w-full" asChild>
-                <a href="/api/auth/google">
+                <a href={googleAuthHref}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 48 48"
@@ -205,7 +217,7 @@ function LoginPageContent() {
               </Button>
 
               <Button type="button" variant="outline" className="w-full" asChild>
-                <a href="/api/auth/github">
+                <a href={githubAuthHref}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

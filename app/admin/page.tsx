@@ -10,13 +10,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import type { CaseStudyType } from "@/data/caseStudies";
 import { useCaseStudies } from "@/hooks/use-case-studies";
+import { useSiteContent } from "@/hooks/use-site-content";
+import { defaultCaseStudiesContent, writeCaseStudiesToStorage } from "@/lib/caseStudiesContent";
 import {
   estimateImageStringBytes,
   fileToOptimizedDataUrl,
   validateUploadImageFile,
 } from "@/lib/clientImageUpload";
-import { useSiteContent } from "@/hooks/use-site-content";
-import { defaultCaseStudiesContent, writeCaseStudiesToStorage } from "@/lib/caseStudiesContent";
 import { type SiteContent, defaultSiteContent, writeSiteContentToStorage } from "@/lib/siteContent";
 import {
   ArrowDown,
@@ -282,7 +282,9 @@ export default function AdminPage() {
     const dataUrl = await optimizeUpload(file, MAX_SINGLE_IMAGE_BYTES, 1600);
     if (!dataUrl) return;
     updateCaseStudyField(field, dataUrl);
-    setStatus(`"${file.name}" berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan data.`);
+    setStatus(
+      `"${file.name}" berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan data.`
+    );
   };
 
   const handleDemoImagesUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -331,7 +333,9 @@ export default function AdminPage() {
     const dataUrl = await optimizeUpload(file, MAX_SINGLE_IMAGE_BYTES, 1200);
     if (!dataUrl) return;
     updateHeroFrameworkLogo(key, dataUrl);
-    setStatus(`Logo ${label} berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan data.`);
+    setStatus(
+      `Logo ${label} berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan data.`
+    );
   };
 
   const handleProcessBackgroundUpload = async (
@@ -358,7 +362,9 @@ export default function AdminPage() {
     const dataUrl = await optimizeUpload(file, MAX_SINGLE_IMAGE_BYTES, 1600);
     if (!dataUrl) return;
     updateContentField("contact", "backgroundImage", dataUrl);
-    setStatus("Background contact section berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan.");
+    setStatus(
+      "Background contact section berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan."
+    );
   };
 
   const handleSectionCaseStudyImageUpload = async (
@@ -823,7 +829,9 @@ export default function AdminPage() {
                     />
                     <Separator />
                     <div className="space-y-3">
-                      <p className="text-sm font-medium">Ganti Gambar Cepat - Studi Kasus (3 Teratas)</p>
+                      <p className="text-sm font-medium">
+                        Ganti Gambar Cepat - Studi Kasus (3 Teratas)
+                      </p>
                       {featuredCaseStudies.map(({ item, index }) => (
                         <div
                           key={`cs-image-${item.id ?? index}`}
@@ -1003,9 +1011,7 @@ export default function AdminPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Bagian Kontak</CardTitle>
-                  <CardDescription>
-                    Ubah judul dan label form di bagian kontak.
-                  </CardDescription>
+                  <CardDescription>Ubah judul dan label form di bagian kontak.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="grid gap-3 md:grid-cols-3">
@@ -1230,12 +1236,23 @@ export default function AdminPage() {
 
                         <div className="grid gap-3 md:grid-cols-2">
                           <div className="space-y-2">
-                          <Label>Link Proyek</Label>
+                            <Label>Link Proyek</Label>
                             <Input
                               value={activeCaseStudy.project_link ?? ""}
                               onChange={(e) => updateCaseStudyField("project_link", e.target.value)}
                             />
                           </div>
+                          <div className="space-y-2">
+                            <Label>URL Download</Label>
+                            <Input
+                              value={activeCaseStudy.download_url ?? ""}
+                              onChange={(e) => updateCaseStudyField("download_url", e.target.value)}
+                              placeholder="https://github.com/owner/repo atau link file zip"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid gap-3 md:grid-cols-2">
                           <div className="space-y-2">
                             <Label>Tombol Konsultasi</Label>
                             <Input

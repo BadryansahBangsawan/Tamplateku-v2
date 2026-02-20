@@ -19,6 +19,7 @@ type TemplateRow = {
   case_study_link: string;
   demo_images_json: string;
   project_link: string | null;
+  download_url: string | null;
   cta_talk: string | null;
   cta_read_case_study: string | null;
   test_img: string | null;
@@ -97,6 +98,7 @@ function validateTemplateSize(item: CaseStudyType, index: number): void {
     estimateBytes(item.case_study_link ?? "") +
     estimateBytes(JSON.stringify(demoImages)) +
     estimateBytes(item.project_link ?? "") +
+    estimateBytes(item.download_url ?? "") +
     estimateBytes(item.cta_links?.["let's talk"] ?? "") +
     estimateBytes(item.cta_links?.["read case study"] ?? "") +
     estimateBytes(item.test_img ?? "") +
@@ -142,6 +144,7 @@ function rowToCaseStudy(row: TemplateRow): CaseStudyType {
     case_study_link: row.case_study_link,
     demo_images: parseJsonArray(row.demo_images_json),
     project_link: row.project_link,
+    download_url: row.download_url,
     cta_links: ctaLinks,
     test_img: row.test_img ?? undefined,
     testimonial: row.testimonial ?? undefined,
@@ -185,6 +188,7 @@ export async function ensureCmsTables(): Promise<void> {
       case_study_link TEXT NOT NULL,
       demo_images_json TEXT NOT NULL,
       project_link TEXT,
+      download_url TEXT,
       cta_talk TEXT,
       cta_read_case_study TEXT,
       test_img TEXT,
@@ -213,6 +217,10 @@ export async function ensureCmsTables(): Promise<void> {
     await runD1Query(
       "ALTER TABLE cms_templates ADD COLUMN is_best_seller INTEGER NOT NULL DEFAULT 0"
     );
+  }
+  const hasDownloadUrl = templateColumns.some((column) => column.name === "download_url");
+  if (!hasDownloadUrl) {
+    await runD1Query("ALTER TABLE cms_templates ADD COLUMN download_url TEXT");
   }
 }
 
@@ -253,7 +261,7 @@ export async function getTemplatesFromDb(): Promise<CaseStudyType[]> {
   const rows = await runD1Query<TemplateRow>(
     `SELECT id, sort_order, name, project_title, main_image_src, logo_src, description,
             features_json, case_study_link, demo_images_json, project_link, cta_talk,
-            cta_read_case_study, test_img, testimonial, founder_name, position,
+            download_url, cta_read_case_study, test_img, testimonial, founder_name, position,
             status_label, is_best_seller
      FROM cms_templates
      ORDER BY sort_order ASC`
@@ -283,11 +291,11 @@ export async function saveTemplatesToDb(templates: CaseStudyType[]): Promise<Cas
     await runD1Query(
       `INSERT INTO cms_templates (
         id, sort_order, name, project_title, main_image_src, logo_src, description,
-        features_json, case_study_link, demo_images_json, project_link, cta_talk,
+        features_json, case_study_link, demo_images_json, project_link, download_url, cta_talk,
         cta_read_case_study, test_img, testimonial, founder_name, position,
         status_label, is_best_seller,
         created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         id,
         index,
@@ -300,6 +308,7 @@ export async function saveTemplatesToDb(templates: CaseStudyType[]): Promise<Cas
         item.case_study_link,
         JSON.stringify(item.demo_images),
         toNullableString(item.project_link),
+        toNullableString(item.download_url),
         toNullableString(item.cta_links?.["let's talk"]),
         toNullableString(item.cta_links?.["read case study"]),
         toNullableString(item.test_img),

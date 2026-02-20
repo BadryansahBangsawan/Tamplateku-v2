@@ -8,8 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useCaseStudies } from "@/hooks/use-case-studies";
 import { enrichTemplates, formatIdr } from "@/lib/templateCatalog";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { useMemo } from "react";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 export const runtime = "edge";
 
@@ -17,10 +17,18 @@ export default function BrowseTemplateDetailPage() {
   const caseStudies = useCaseStudies();
   const templates = useMemo(() => enrichTemplates(caseStudies), [caseStudies]);
   const params = useParams<{ slug: string }>();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
   const { language } = useLanguage();
+  const paymentStatus = searchParams.get("payment");
 
   const template = templates.find((item) => item.slug === slug);
+  const [isCheckingAccess, setIsCheckingAccess] = useState(true);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
+  const [loginRequired, setLoginRequired] = useState(false);
+  const [actionMessage, setActionMessage] = useState<string>("");
 
   const copy = {
     back: language === "id" ? "Kembali ke Browse Template" : "Back to Browse Templates",
@@ -35,6 +43,138 @@ export default function BrowseTemplateDetailPage() {
       language === "id"
         ? "Template mungkin sudah dihapus atau URL tidak valid."
         : "The template may have been removed or the URL is invalid.",
+    buyNow: language === "id" ? "Beli Sekarang" : "Buy Now",
+    buyProcessing:
+      language === "id" ? "Mengarahkan ke pembayaran..." : "Redirecting to checkout...",
+    downloadNow: language === "id" ? "Download Template" : "Download Template",
+    unlocked:
+      language === "id"
+        ? "Template ini sudah kamu beli. Silakan download."
+        : "You already purchased this template. Download is ready.",
+    paymentSuccess:
+      language === "id"
+        ? "Pembayaran berhasil diproses. Akses download sudah dibuka."
+        : "Payment success. Download access is now available.",
+    paymentPending:
+      language === "id"
+        ? "Pembayaran sedang diproses. Tunggu beberapa saat lalu refresh."
+        : "Payment is being processed. Please wait and refresh shortly.",
+    paymentFailed:
+      language === "id"
+        ? "Pembayaran gagal atau dibatalkan. Silakan coba lagi."
+        : "Payment failed or cancelled. Please try again.",
+    loginToBuy:
+      language === "id"
+        ? "Login dulu untuk melanjutkan pembayaran."
+        : "Please log in before checkout.",
+  };
+
+  useEffect(() => {
+    if (!slug) return;
+
+    let cancelled = false;
+    const syncAccess = async () => {
+      setIsCheckingAccess(true);
+      try {
+        const response = await fetch(
+          `/api/payments/doku/checkout?action=status&slug=${encodeURIComponent(slug)}`,
+          {
+            cache: "no-store",
+          }
+        );
+        const payload = (await response.json()) as {
+          ok?: boolean;
+          loginRequired?: boolean;
+          purchased?: boolean;
+        };
+
+        if (cancelled) return;
+
+        setLoginRequired(Boolean(payload.loginRequired));
+        setHasAccess(Boolean(payload.purchased));
+      } catch {
+        if (cancelled) return;
+        setLoginRequired(true);
+        setHasAccess(false);
+      } finally {
+        if (!cancelled) setIsCheckingAccess(false);
+      }
+    };
+
+    void syncAccess();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [slug]);
+
+  useEffect(() => {
+    if (paymentStatus === "success") {
+      setActionMessage(copy.paymentSuccess);
+      return;
+    }
+
+    if (paymentStatus === "pending") {
+      setActionMessage(copy.paymentPending);
+      return;
+    }
+
+    if (paymentStatus === "failed") {
+      setActionMessage(copy.paymentFailed);
+    }
+  }, [copy.paymentFailed, copy.paymentPending, copy.paymentSuccess, paymentStatus]);
+
+  const handleStartCheckout = async () => {
+    if (!template) return;
+
+    if (loginRequired) {
+      setActionMessage(copy.loginToBuy);
+      router.push(`/login?next=${encodeURIComponent(`/browse-template/${template.slug}`)}`);
+      return;
+    }
+
+    setActionMessage("");
+    setIsCheckoutLoading(true);
+    try {
+      const response = await fetch("/api/payments/doku/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ templateSlug: template.slug }),
+      });
+      const payload = (await response.json()) as {
+        ok?: boolean;
+        alreadyPurchased?: boolean;
+        downloadUrl?: string;
+        paymentUrl?: string;
+        message?: string;
+      };
+
+      if (!response.ok || !payload.ok) {
+        setActionMessage(payload.message ?? copy.paymentFailed);
+        return;
+      }
+
+      if (payload.alreadyPurchased && payload.downloadUrl) {
+        window.location.href = payload.downloadUrl;
+        return;
+      }
+
+      if (payload.paymentUrl) {
+        window.location.href = payload.paymentUrl;
+        return;
+      }
+
+      setActionMessage(copy.paymentFailed);
+    } catch {
+      setActionMessage(copy.paymentFailed);
+    } finally {
+      setIsCheckoutLoading(false);
+    }
+  };
+
+  const handleDownload = () => {
+    if (!template) return;
+    window.location.href = `/api/payments/doku/checkout?action=download&slug=${encodeURIComponent(template.slug)}`;
   };
 
   if (!template) {
@@ -74,7 +214,27 @@ export default function BrowseTemplateDetailPage() {
           {template.project_title}
         </h1>
         <p className="max-w-3xl text-muted-foreground">{template.description}</p>
+        {hasAccess ? (
+          <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300">
+            {copy.unlocked}
+          </div>
+        ) : null}
+        {actionMessage ? (
+          <div className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+            {actionMessage}
+          </div>
+        ) : null}
         <div className="flex flex-wrap gap-2">
+          {hasAccess ? (
+            <Button onClick={handleDownload}>{copy.downloadNow}</Button>
+          ) : (
+            <Button
+              onClick={() => void handleStartCheckout()}
+              disabled={isCheckoutLoading || isCheckingAccess}
+            >
+              {isCheckoutLoading ? copy.buyProcessing : copy.buyNow}
+            </Button>
+          )}
           <Button variant="outline" asChild>
             <Link href="/browse-template">{copy.back}</Link>
           </Button>

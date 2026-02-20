@@ -138,6 +138,7 @@ export interface CaseStudyType {
   name: string;
   demo_images: string[];
   project_link?: string | null;
+  download_url?: string | null;
   cta_links?: {
     "let's talk": string;
     "read case study": string;
