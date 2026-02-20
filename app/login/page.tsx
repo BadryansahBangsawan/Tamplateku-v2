@@ -11,8 +11,10 @@ function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [unverifiedEmail, setUnverifiedEmail] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const registered = searchParams.get("registered") === "success";
+  const verified = searchParams.get("verified") === "success";
 
   const handleLoginSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,11 +31,21 @@ function LoginPageContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const result = (await response.json()) as { ok: boolean; message?: string };
+      const result = (await response.json()) as {
+        ok: boolean;
+        code?: string;
+        message?: string;
+      };
       if (!response.ok || !result.ok) {
         setErrorMessage(result.message ?? "Login gagal.");
+        if (result.code === "EMAIL_NOT_VERIFIED") {
+          setUnverifiedEmail(email);
+        } else {
+          setUnverifiedEmail("");
+        }
         return;
       }
+      setUnverifiedEmail("");
       router.push("/browse-template?login=form_success");
     } catch {
       setErrorMessage("Tidak bisa terhubung ke server.");
@@ -61,13 +73,33 @@ function LoginPageContent() {
 
             {registered ? (
               <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300">
-                Registrasi berhasil. Silakan login dengan email dan password kamu.
+                Registrasi berhasil. Cek email lalu verifikasi OTP sebelum login.
+              </div>
+            ) : null}
+
+            {verified ? (
+              <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300">
+                Verifikasi email berhasil. Sekarang kamu bisa login.
               </div>
             ) : null}
             {errorMessage ? (
               <div className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive">
                 {errorMessage}
               </div>
+            ) : null}
+            {unverifiedEmail ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full"
+                onClick={() => {
+                  router.push(
+                    `/verify-email?email=${encodeURIComponent(unverifiedEmail)}&purpose=REGISTER`
+                  );
+                }}
+              >
+                Verifikasi Email Sekarang
+              </Button>
             ) : null}
 
             <form
@@ -101,6 +133,11 @@ function LoginPageContent() {
                   autoComplete="current-password"
                   required
                 />
+                <div className="text-right">
+                  <Link href="/forgot-password" className="text-xs text-primary hover:underline">
+                    Lupa password?
+                  </Link>
+                </div>
               </div>
 
               <Button type="submit" className="w-full" disabled={isSubmitting}>

@@ -1,6 +1,7 @@
 "use client";
 
 import { SectionHeading } from "@/components/custom/SectionHeading";
+import CaseStudyLogo from "@/components/custom/CaseStudyLogo";
 import type { CaseStudyType } from "@/data/caseStudies";
 import { useCaseStudies } from "@/hooks/use-case-studies";
 import { useSiteContent } from "@/hooks/use-site-content";
@@ -44,12 +45,10 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ item, index }) => {
         </blockquote>
         <div className="mt-auto space-y-1 sm:space-y-1.5" aria-label="Client details">
           <div className="flex items-center">
-            <img
+            <CaseStudyLogo
               src={item.logo_src}
               className="aspect-auto max-h-5 w-auto sm:max-h-6"
-              alt={`${item.name} company logo`}
-              loading="lazy"
-              decoding="async"
+              name={item.name}
             />
           </div>
           <p className="text-heading text-xs font-medium sm:text-sm">

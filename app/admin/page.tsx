@@ -13,9 +13,32 @@ import { useCaseStudies } from "@/hooks/use-case-studies";
 import { useSiteContent } from "@/hooks/use-site-content";
 import { defaultCaseStudiesContent, writeCaseStudiesToStorage } from "@/lib/caseStudiesContent";
 import { type SiteContent, defaultSiteContent, writeSiteContentToStorage } from "@/lib/siteContent";
-import { Copy, ExternalLink, Plus, RotateCcw, Save, Trash2 } from "lucide-react";
+import { ArrowDown, ArrowUp, Copy, ExternalLink, Plus, RotateCcw, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { type ChangeEvent, useEffect, useMemo, useState } from "react";
+
+const MAX_IMAGE_FILE_SIZE_BYTES = 1_500_000;
+const HERO_LOGO_KEYS = ["nextjs", "vue", "react", "nuxt"] as const;
+const HERO_LOGO_LABELS = ["Next.js", "Vue", "React", "Nuxt"] as const;
+
+function cloneSiteContent(content: SiteContent): SiteContent {
+  return {
+    ...content,
+    hero: {
+      ...content.hero,
+      frameworkLogos: {
+        ...content.hero.frameworkLogos,
+      },
+    },
+    process: {
+      ...content.process,
+      backgroundImages: [...content.process.backgroundImages],
+    },
+    contact: {
+      ...content.contact,
+    },
+  };
+}
 
 function cloneCaseStudy(item: CaseStudyType): CaseStudyType {
   return {
@@ -47,18 +70,59 @@ function parseLines(value: string): string[] {
     .filter((line) => line.length > 0);
 }
 
+function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        resolve(reader.result);
+        return;
+      }
+
+      reject(new Error("invalid_result"));
+    };
+
+    reader.onerror = () => reject(reader.error ?? new Error("read_failed"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function validateImageFile(file: File): string | null {
+  if (!file.type.startsWith("image/")) {
+    return `File "${file.name}" bukan gambar.`;
+  }
+
+  if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+    return `Ukuran "${file.name}" terlalu besar. Maksimal 1.5 MB per gambar.`;
+  }
+
+  return null;
+}
+
+async function getApiErrorMessage(response: Response, fallback: string): Promise<string> {
+  try {
+    const payload = (await response.json()) as { message?: string };
+    if (typeof payload.message === "string" && payload.message.trim().length > 0) {
+      return payload.message;
+    }
+  } catch {}
+
+  return fallback;
+}
+
 export default function AdminPage() {
   const liveContent = useSiteContent();
   const liveCaseStudies = useCaseStudies();
 
-  const [draftContent, setDraftContent] = useState<SiteContent>(liveContent);
+  const [draftContent, setDraftContent] = useState<SiteContent>(cloneSiteContent(liveContent));
   const [draftCaseStudies, setDraftCaseStudies] = useState<CaseStudyType[]>(liveCaseStudies);
   const [selectedCaseStudy, setSelectedCaseStudy] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<string>("");
 
   useEffect(() => {
-    setDraftContent(liveContent);
+    setDraftContent(cloneSiteContent(liveContent));
   }, [liveContent]);
 
   useEffect(() => {
@@ -66,12 +130,17 @@ export default function AdminPage() {
     setSelectedCaseStudy((prev) => Math.min(prev, Math.max(liveCaseStudies.length - 1, 0)));
   }, [liveCaseStudies]);
 
-  const isDirty = useMemo(() => {
-    return (
-      JSON.stringify(draftContent) !== JSON.stringify(liveContent) ||
-      JSON.stringify(draftCaseStudies) !== JSON.stringify(liveCaseStudies)
-    );
-  }, [draftContent, draftCaseStudies, liveContent, liveCaseStudies]);
+  const isContentDirty = useMemo(
+    () => JSON.stringify(draftContent) !== JSON.stringify(liveContent),
+    [draftContent, liveContent]
+  );
+
+  const isTemplatesDirty = useMemo(
+    () => JSON.stringify(draftCaseStudies) !== JSON.stringify(liveCaseStudies),
+    [draftCaseStudies, liveCaseStudies]
+  );
+
+  const isDirty = isContentDirty || isTemplatesDirty;
 
   const updateContentField = (section: keyof SiteContent, field: string, value: string) => {
     setDraftContent((prev) => ({
@@ -81,6 +150,56 @@ export default function AdminPage() {
         [field]: value,
       },
     }));
+  };
+
+  const updateHeroFrameworkLogo = (
+    key: (typeof HERO_LOGO_KEYS)[number],
+    value: string
+  ) => {
+    setDraftContent((prev) => ({
+      ...prev,
+      hero: {
+        ...prev.hero,
+        frameworkLogos: {
+          ...prev.hero.frameworkLogos,
+          [key]: value,
+        },
+      },
+    }));
+  };
+
+  const updateProcessBackgroundImage = (index: number, value: string) => {
+    setDraftContent((prev) => {
+      const next = [...prev.process.backgroundImages];
+      while (next.length <= index) {
+        next.push("");
+      }
+      next[index] = value;
+      return {
+        ...prev,
+        process: {
+          ...prev.process,
+          backgroundImages: next,
+        },
+      };
+    });
+  };
+
+  const updateCaseStudyImageFieldByIndex = (
+    index: number,
+    field: "main_image_src" | "logo_src" | "test_img",
+    value: string
+  ) => {
+    setDraftCaseStudies((prev) =>
+      prev.map((item, itemIndex) =>
+        itemIndex === index
+          ? {
+              ...item,
+              [field]: value,
+            }
+          : item
+      )
+    );
   };
 
   const activeCaseStudy = draftCaseStudies[selectedCaseStudy];
@@ -105,47 +224,251 @@ export default function AdminPage() {
     );
   };
 
+  const updateCaseStudyCtaField = (field: "let's talk" | "read case study", value: string) => {
+    setDraftCaseStudies((prev) =>
+      prev.map((item, index) => {
+        if (index !== selectedCaseStudy) return item;
+        const current = item.cta_links ?? {
+          "let's talk": "",
+          "read case study": "",
+        };
+        return {
+          ...item,
+          cta_links: {
+            ...current,
+            [field]: value,
+          },
+        };
+      })
+    );
+  };
+
+  const handleCaseStudyImageUpload = async (
+    event: ChangeEvent<HTMLInputElement>,
+    field: "main_image_src" | "logo_src" | "test_img"
+  ) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+
+    if (!file) return;
+
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      setStatus(validationError);
+      return;
+    }
+
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      updateCaseStudyField(field, dataUrl);
+      setStatus(`"${file.name}" berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`);
+    } catch {
+      setStatus(`Gagal membaca file "${file.name}".`);
+    }
+  };
+
+  const handleDemoImagesUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files ?? []);
+    event.target.value = "";
+
+    if (files.length === 0) return;
+
+    for (const file of files) {
+      const validationError = validateImageFile(file);
+      if (validationError) {
+        setStatus(validationError);
+        return;
+      }
+    }
+
+    try {
+      const uploaded = await Promise.all(files.map((file) => fileToDataUrl(file)));
+      setDraftCaseStudies((prev) =>
+        prev.map((item, index) =>
+          index === selectedCaseStudy
+            ? { ...item, demo_images: [...item.demo_images, ...uploaded] }
+            : item
+        )
+      );
+      setStatus(
+        `${uploaded.length} gambar demo berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`
+      );
+    } catch {
+      setStatus("Gagal membaca salah satu file gambar demo.");
+    }
+  };
+
+  const handleHeroLogoUpload = async (
+    event: ChangeEvent<HTMLInputElement>,
+    key: (typeof HERO_LOGO_KEYS)[number],
+    label: string
+  ) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      setStatus(validationError);
+      return;
+    }
+
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      updateHeroFrameworkLogo(key, dataUrl);
+      setStatus(
+        `Logo ${label} berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`
+      );
+    } catch {
+      setStatus(`Gagal membaca file "${file.name}".`);
+    }
+  };
+
+  const handleProcessBackgroundUpload = async (
+    event: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      setStatus(validationError);
+      return;
+    }
+
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      updateProcessBackgroundImage(index, dataUrl);
+      setStatus(
+        `Background proses step ${index + 1} berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`
+      );
+    } catch {
+      setStatus(`Gagal membaca file "${file.name}".`);
+    }
+  };
+
+  const handleContactBackgroundUpload = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      setStatus(validationError);
+      return;
+    }
+
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      updateContentField("contact", "backgroundImage", dataUrl);
+      setStatus("Background contact section berhasil diupload. Klik Simpan Semua untuk menyimpan.");
+    } catch {
+      setStatus(`Gagal membaca file "${file.name}".`);
+    }
+  };
+
+  const handleSectionCaseStudyImageUpload = async (
+    event: ChangeEvent<HTMLInputElement>,
+    index: number,
+    field: "main_image_src" | "logo_src" | "test_img",
+    label: string
+  ) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    const validationError = validateImageFile(file);
+    if (validationError) {
+      setStatus(validationError);
+      return;
+    }
+
+    try {
+      const dataUrl = await fileToDataUrl(file);
+      updateCaseStudyImageFieldByIndex(index, field, dataUrl);
+      setStatus(`${label} berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`);
+    } catch {
+      setStatus(`Gagal membaca file "${file.name}".`);
+    }
+  };
+
   const saveAll = async () => {
+    if (!isDirty) {
+      setStatus("Tidak ada perubahan untuk disimpan.");
+      return;
+    }
+
     setIsSaving(true);
     setStatus("Menyimpan perubahan ke database...");
 
     try {
-      const [contentResponse, templatesResponse] = await Promise.all([
-        fetch("/api/cms/content", {
+      let savedContent = draftContent;
+      let savedTemplates = draftCaseStudies;
+
+      if (isContentDirty) {
+        const contentResponse = await fetch("/api/cms/content", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ content: draftContent }),
-        }),
-        fetch("/api/cms/templates", {
+        });
+
+        if (!contentResponse.ok) {
+          const message = await getApiErrorMessage(contentResponse, "Gagal simpan section.");
+          throw new Error(message);
+        }
+
+        const contentPayload = (await contentResponse.json()) as {
+          ok: boolean;
+          data?: SiteContent;
+        };
+        savedContent = contentPayload.data ?? draftContent;
+        setDraftContent(savedContent);
+        writeSiteContentToStorage(savedContent);
+      }
+
+      if (isTemplatesDirty) {
+        const templatesResponse = await fetch("/api/cms/templates", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ templates: draftCaseStudies }),
-        }),
-      ]);
+        });
 
-      if (!contentResponse.ok || !templatesResponse.ok) {
-        throw new Error("Failed to save CMS content");
+        if (!templatesResponse.ok) {
+          const message = await getApiErrorMessage(templatesResponse, "Gagal simpan template.");
+          throw new Error(message);
+        }
+
+        const templatesPayload = (await templatesResponse.json()) as {
+          ok: boolean;
+          data?: CaseStudyType[];
+        };
+        savedTemplates = templatesPayload.data ?? draftCaseStudies;
+        setDraftCaseStudies(savedTemplates);
+        writeCaseStudiesToStorage(savedTemplates);
       }
 
-      const templatesPayload = (await templatesResponse.json()) as {
-        ok: boolean;
-        data?: CaseStudyType[];
-      };
-      const savedTemplates = templatesPayload.data ?? draftCaseStudies;
-
-      setDraftCaseStudies(savedTemplates);
-      writeSiteContentToStorage(draftContent);
-      writeCaseStudiesToStorage(savedTemplates);
-      setStatus("Perubahan berhasil disimpan ke D1 dan sinkron ke semua halaman.");
-    } catch {
-      setStatus("Gagal menyimpan perubahan. Pastikan Anda login dan env D1 sudah benar.");
+      if (isContentDirty && isTemplatesDirty) {
+        setStatus("Perubahan section dan template berhasil disimpan ke database.");
+      } else if (isContentDirty) {
+        setStatus("Perubahan section berhasil disimpan ke database.");
+      } else {
+        setStatus("Perubahan template berhasil disimpan ke database.");
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Gagal menyimpan perubahan. Pastikan login admin aktif.";
+      setStatus(message);
     } finally {
       setIsSaving(false);
     }
   };
 
   const resetAll = async () => {
-    const resetContent = defaultSiteContent;
+    const resetContent = cloneSiteContent(defaultSiteContent);
     const resetTemplates = defaultCaseStudiesContent.map((item) => ({
       ...cloneCaseStudy(item),
       id: crypto.randomUUID(),
@@ -173,7 +496,10 @@ export default function AdminPage() {
       ]);
 
       if (!contentResponse.ok || !templatesResponse.ok) {
-        throw new Error("Failed to reset CMS content");
+        const message = !contentResponse.ok
+          ? await getApiErrorMessage(contentResponse, "Gagal reset section.")
+          : await getApiErrorMessage(templatesResponse, "Gagal reset template.");
+        throw new Error(message);
       }
 
       const templatesPayload = (await templatesResponse.json()) as {
@@ -186,8 +512,12 @@ export default function AdminPage() {
       writeSiteContentToStorage(resetContent);
       writeCaseStudiesToStorage(savedTemplates);
       setStatus("Semua konten berhasil direset ke default.");
-    } catch {
-      setStatus("Gagal reset konten ke database.");
+    } catch (error) {
+      const message =
+        error instanceof Error && error.message
+          ? error.message
+          : "Gagal reset konten ke database.";
+      setStatus(message);
     } finally {
       setIsSaving(false);
     }
@@ -220,6 +550,33 @@ export default function AdminPage() {
     setSelectedCaseStudy((prev) => Math.max(0, Math.min(prev, draftCaseStudies.length - 2)));
     setStatus("Template berhasil dihapus.");
   };
+
+  const moveCaseStudy = (fromIndex: number, direction: "up" | "down") => {
+    const toIndex = direction === "up" ? fromIndex - 1 : fromIndex + 1;
+    if (toIndex < 0 || toIndex >= draftCaseStudies.length) return;
+
+    setDraftCaseStudies((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, moved);
+      return next;
+    });
+    setSelectedCaseStudy(toIndex);
+    setStatus("Urutan template diperbarui.");
+  };
+
+  const featuredCaseStudies = useMemo(
+    () => draftCaseStudies.slice(0, 3).map((item, index) => ({ item, index })),
+    [draftCaseStudies]
+  );
+
+  const testimonialCaseStudies = useMemo(
+    () =>
+      draftCaseStudies
+        .map((item, index) => ({ item, index }))
+        .filter(({ item }) => Boolean(item.testimonial && item.testimonial.trim().length > 0)),
+    [draftCaseStudies]
+  );
 
   return (
     <main className="min-h-screen bg-muted/30 px-4 py-6 md:px-6 lg:px-8">
@@ -353,6 +710,35 @@ export default function AdminPage() {
                       />
                     </div>
                   </div>
+                  <Separator />
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">Framework Logo Bar (Hero)</p>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {HERO_LOGO_KEYS.map((key, index) => (
+                        <div key={key} className="space-y-2 rounded-md border p-3">
+                          <Label>{HERO_LOGO_LABELS[index]} Logo URL</Label>
+                          <Input
+                            value={draftContent.hero.frameworkLogos[key]}
+                            onChange={(e) => updateHeroFrameworkLogo(key, e.target.value)}
+                          />
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) =>
+                              void handleHeroLogoUpload(event, key, HERO_LOGO_LABELS[index])
+                            }
+                          />
+                          <div className="bg-muted/40 flex h-16 items-center justify-center rounded border p-2">
+                            <img
+                              src={draftContent.hero.frameworkLogos[key]}
+                              alt={`${HERO_LOGO_LABELS[index]} preview`}
+                              className="max-h-10 w-auto object-contain"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -390,6 +776,42 @@ export default function AdminPage() {
                       updateContentField("caseStudies", "buttonLabel", e.target.value)
                     }
                   />
+                  <Separator />
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">Quick Image CRUD - Case Studies (Top 3)</p>
+                    {featuredCaseStudies.map(({ item, index }) => (
+                      <div key={`cs-image-${item.id ?? index}`} className="space-y-2 rounded-md border p-3">
+                        <p className="text-sm font-medium">{item.name}</p>
+                        <Label>Main Image URL</Label>
+                        <Input
+                          value={item.main_image_src}
+                          onChange={(e) =>
+                            updateCaseStudyImageFieldByIndex(index, "main_image_src", e.target.value)
+                          }
+                        />
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(event) =>
+                            void handleSectionCaseStudyImageUpload(
+                              event,
+                              index,
+                              "main_image_src",
+                              `Main image ${item.name}`
+                            )
+                          }
+                        />
+                        <img
+                          src={item.main_image_src}
+                          alt={`Case study ${item.name} preview`}
+                          className="h-24 w-full rounded border object-cover"
+                        />
+                      </div>
+                    ))}
+                    <p className="text-xs text-muted-foreground">
+                      Untuk edit demo images dan logo lebih lengkap, gunakan tab Templates CRUD.
+                    </p>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -417,6 +839,33 @@ export default function AdminPage() {
                     value={draftContent.process.description}
                     onChange={(e) => updateContentField("process", "description", e.target.value)}
                   />
+                  <Separator />
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">Background Image per Step</p>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      {[0, 1, 2, 3].map((index) => (
+                        <div key={`process-bg-${index}`} className="space-y-2 rounded-md border p-3">
+                          <Label>{`Step ${index + 1} Background URL`}</Label>
+                          <Input
+                            value={draftContent.process.backgroundImages[index] ?? ""}
+                            onChange={(e) =>
+                              updateProcessBackgroundImage(index, e.target.value)
+                            }
+                          />
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) => void handleProcessBackgroundUpload(event, index)}
+                          />
+                          <img
+                            src={draftContent.process.backgroundImages[index] ?? ""}
+                            alt={`Process step ${index + 1} background preview`}
+                            className="h-24 w-full rounded border object-cover"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
@@ -469,6 +918,46 @@ export default function AdminPage() {
                       placeholder="Stat 3 label"
                     />
                   </div>
+                  <Separator />
+                  <div className="space-y-3">
+                    <p className="text-sm font-medium">Quick Image CRUD - Testimonials</p>
+                    {testimonialCaseStudies.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">
+                        Belum ada item testimonial. Isi testimonial di tab Templates CRUD untuk
+                        menampilkan kontrol image di sini.
+                      </p>
+                    ) : (
+                      testimonialCaseStudies.map(({ item, index }) => (
+                        <div key={`testimonial-image-${item.id ?? index}`} className="space-y-2 rounded-md border p-3">
+                          <p className="text-sm font-medium">{item.name}</p>
+                          <Label>Testimonial Image URL</Label>
+                          <Input
+                            value={item.test_img ?? ""}
+                            onChange={(e) =>
+                              updateCaseStudyImageFieldByIndex(index, "test_img", e.target.value)
+                            }
+                          />
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) =>
+                              void handleSectionCaseStudyImageUpload(
+                                event,
+                                index,
+                                "test_img",
+                                `Testimonial image ${item.name}`
+                              )
+                            }
+                          />
+                          <img
+                            src={item.test_img ?? ""}
+                            alt={`Testimonial ${item.name} preview`}
+                            className="h-24 w-full rounded border object-cover"
+                          />
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -501,6 +990,21 @@ export default function AdminPage() {
                     rows={2}
                     value={draftContent.contact.description}
                     onChange={(e) => updateContentField("contact", "description", e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Background Image URL</Label>
+                  <Input
+                    value={draftContent.contact.backgroundImage}
+                    onChange={(e) =>
+                      updateContentField("contact", "backgroundImage", e.target.value)
+                    }
+                  />
+                  <Input type="file" accept="image/*" onChange={(event) => void handleContactBackgroundUpload(event)} />
+                  <img
+                    src={draftContent.contact.backgroundImage}
+                    alt="Contact background preview"
+                    className="h-24 w-full rounded border object-cover"
                   />
                 </div>
                 <Separator />
@@ -587,14 +1091,34 @@ export default function AdminPage() {
                             {item.project_title}
                           </p>
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => deleteCaseStudy(index)}
-                          className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
-                          aria-label={`Delete ${item.name}`}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
+                        <div className="flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => moveCaseStudy(index, "up")}
+                            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
+                            aria-label={`Move ${item.name} up`}
+                            disabled={index === 0}
+                          >
+                            <ArrowUp className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => moveCaseStudy(index, "down")}
+                            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
+                            aria-label={`Move ${item.name} down`}
+                            disabled={index === draftCaseStudies.length - 1}
+                          >
+                            <ArrowDown className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => deleteCaseStudy(index)}
+                            className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
+                            aria-label={`Delete ${item.name}`}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -635,6 +1159,33 @@ export default function AdminPage() {
                         </div>
                       </div>
 
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <div className="space-y-2">
+                          <Label>Project Link</Label>
+                          <Input
+                            value={activeCaseStudy.project_link ?? ""}
+                            onChange={(e) => updateCaseStudyField("project_link", e.target.value)}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label>CTA Let's Talk</Label>
+                          <Input
+                            value={activeCaseStudy.cta_links?.["let's talk"] ?? ""}
+                            onChange={(e) => updateCaseStudyCtaField("let's talk", e.target.value)}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>CTA Read Case Study</Label>
+                        <Input
+                          value={activeCaseStudy.cta_links?.["read case study"] ?? ""}
+                          onChange={(e) =>
+                            updateCaseStudyCtaField("read case study", e.target.value)
+                          }
+                        />
+                      </div>
+
                       <div className="space-y-2">
                         <Label>Project Title</Label>
                         <Input
@@ -659,12 +1210,24 @@ export default function AdminPage() {
                             value={activeCaseStudy.main_image_src}
                             onChange={(e) => updateCaseStudyField("main_image_src", e.target.value)}
                           />
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) =>
+                              void handleCaseStudyImageUpload(event, "main_image_src")
+                            }
+                          />
                         </div>
                         <div className="space-y-2">
                           <Label>Logo URL</Label>
                           <Input
                             value={activeCaseStudy.logo_src}
                             onChange={(e) => updateCaseStudyField("logo_src", e.target.value)}
+                          />
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(event) => void handleCaseStudyImageUpload(event, "logo_src")}
                           />
                         </div>
                       </div>
@@ -692,6 +1255,11 @@ export default function AdminPage() {
                           value={activeCaseStudy.test_img ?? ""}
                           onChange={(e) => updateCaseStudyField("test_img", e.target.value)}
                         />
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={(event) => void handleCaseStudyImageUpload(event, "test_img")}
+                        />
                       </div>
 
                       <div className="space-y-2">
@@ -718,6 +1286,25 @@ export default function AdminPage() {
                           rows={4}
                           value={activeCaseStudy.demo_images.join("\n")}
                           onChange={(e) => updateCaseStudyListField("demo_images", e.target.value)}
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              updateCaseStudyListField("demo_images", "");
+                              setStatus("Semua demo images pada template ini dikosongkan.");
+                            }}
+                          >
+                            Kosongkan Demo Images
+                          </Button>
+                        </div>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={(event) => void handleDemoImagesUpload(event)}
                         />
                       </div>
                     </>

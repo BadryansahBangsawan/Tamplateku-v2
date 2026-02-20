@@ -20,12 +20,30 @@ interface processType {
   }[];
 }
 
+function toCssBackgroundImage(src: string): string {
+  // Wrap url in quotes so custom paths from CMS always render safely.
+  const safe = src.replace(/"/g, "%22");
+  return `url("${safe}")`;
+}
+
+const processFallbackImages = [
+  "/tamplate/tamplate-1.png",
+  "/tamplate/tamplate-2.png",
+  "/tamplate/tamplate-3.png",
+  "/tamplate/tamplate-2.png",
+];
+
 const ProcessCards: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const slidesRef = useRef<HTMLDivElement[]>([]);
   const headingRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const content = useSiteContent();
+
+  const processBackgroundImages =
+    content.process.backgroundImages.length > 0
+      ? content.process.backgroundImages
+      : processFallbackImages;
 
   const process: processType[] = [
     {
@@ -38,7 +56,7 @@ const ProcessCards: React.FC = () => {
         { item: "Rekomendasi tipe template" },
         { item: "Struktur halaman prioritas" },
       ],
-      bg_image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755799085/ssimage_bxr8i6.png",
+      bg_image: processBackgroundImages[0] ?? processFallbackImages[0],
     },
     {
       title: "Kurasi Template Terbaik",
@@ -50,7 +68,7 @@ const ProcessCards: React.FC = () => {
         { item: "Preview desktop dan mobile" },
         { item: "Arah copy section utama" },
       ],
-      bg_image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+      bg_image: processBackgroundImages[1] ?? processFallbackImages[1],
     },
     {
       title: "Customisasi Cepat",
@@ -62,7 +80,7 @@ const ProcessCards: React.FC = () => {
         { item: "Konten inti siap publish" },
         { item: "Optimasi performa dasar" },
       ],
-      bg_image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804376/fasimage_skodum.png",
+      bg_image: processBackgroundImages[2] ?? processFallbackImages[2],
     },
     {
       title: "Launch & Scale",
@@ -74,7 +92,7 @@ const ProcessCards: React.FC = () => {
         { item: "Panduan edit konten" },
         { item: "Dukungan pasca go-live" },
       ],
-      bg_image: "https://res.cloudinary.com/dieth2xb3/image/upload/v1755804235/aaaimage_zbypst.png",
+      bg_image: processBackgroundImages[3] ?? processFallbackImages[3],
     },
   ];
 
@@ -210,7 +228,7 @@ const ProcessCards: React.FC = () => {
           >
             <div
               className={"relative h-fit w-full rounded-lg bg-cover p-4 sm:p-6 md:p-8 lg:p-10"}
-              style={{ backgroundImage: `url(${slide.bg_image})` }}
+              style={{ backgroundImage: toCssBackgroundImage(slide.bg_image) }}
             >
               <div className="w-full space-y-3 rounded-md bg-background/70 p-4 backdrop-blur-lg sm:space-y-4 sm:p-6 md:max-w-7/12">
                 <div className="space-y-2 sm:space-y-3">

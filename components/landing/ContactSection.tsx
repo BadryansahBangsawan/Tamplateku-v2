@@ -1,6 +1,7 @@
 "use client";
 
 import { SectionHeading } from "@/components/custom/SectionHeading";
+import CaseStudyLogo from "@/components/custom/CaseStudyLogo";
 import { InteractiveGridPattern } from "@/components/magicui/interactive-grid-pattern";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,6 +17,12 @@ import { ScrollTrigger } from "gsap/all";
 import { useEffect, useRef, useState } from "react";
 
 gsap.registerPlugin(ScrollTrigger);
+
+function toCssBackgroundImage(src: string): string {
+  // Wrap url in quotes so custom paths from CMS always render safely.
+  const safe = src.replace(/"/g, "%22");
+  return `url("${safe}")`;
+}
 
 function ContactUs() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -281,7 +288,9 @@ function ContactUs() {
             <div className="bg-primary absolute inset-0 h-full w-full rounded-2xl" />
             <div
               style={{
-                backgroundImage: "url(/tamplate/tamplate 3.png)",
+                backgroundImage: toCssBackgroundImage(
+                  content.contact.backgroundImage || "/tamplate/tamplate-3.png"
+                ),
               }}
               className="bg-background relative flex h-64 w-full flex-col items-center justify-center overflow-hidden rounded-2xl border bg-cover opacity-85 sm:h-80 lg:h-full"
             >
@@ -308,13 +317,11 @@ function ContactUs() {
                   >
                     <div className="items- mb-3 flex flex-col sm:mb-4">
                       <div className="mb-3 flex items-center sm:mb-4">
-                        <img
+                        <CaseStudyLogo
                           ref={logoRef}
                           src={currentCaseStudy.logo_src}
                           className="aspect-auto max-h-6 w-auto sm:max-h-8"
-                          alt={`${currentCaseStudy.name} logo`}
-                          loading="lazy"
-                          decoding="async"
+                          name={currentCaseStudy.name}
                           itemProp="itemReviewed"
                         />
                       </div>

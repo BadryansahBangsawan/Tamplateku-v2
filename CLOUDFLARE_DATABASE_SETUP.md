@@ -22,8 +22,19 @@ In `.env.local` and Cloudflare deployment env:
 CLOUDFLARE_ACCOUNT_ID=...
 CLOUDFLARE_D1_DATABASE_ID=...
 CLOUDFLARE_API_TOKEN=...
+ADMIN_EMAILS=badryansah99@gmail.com
 GOOGLE_CLIENT_ID=...
 GOOGLE_CLIENT_SECRET=...
+OTP_PEPPER=...
+RESET_TOKEN_SECRET=...
+RESEND_API_KEY=...
+SMTP_FROM=Tamplateku <onboarding@resend.dev>
+# Optional SMTP fallback (if not using Resend API):
+SMTP_HOST=...
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=...
+SMTP_PASS=...
 ```
 
 ## 4) Deploy
@@ -67,6 +78,41 @@ CREATE TABLE IF NOT EXISTS cms_templates (
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS otp_requests (
+  id TEXT PRIMARY KEY,
+  email TEXT NOT NULL,
+  purpose TEXT NOT NULL CHECK (purpose IN ('REGISTER', 'RESET_PASSWORD', 'CHANGE_EMAIL')),
+  otp_hash TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  attempts INTEGER NOT NULL DEFAULT 0,
+  max_attempts INTEGER NOT NULL DEFAULT 5,
+  consumed_at TEXT,
+  request_ip TEXT,
+  user_agent TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS otp_rate_limits (
+  key TEXT PRIMARY KEY,
+  count INTEGER NOT NULL,
+  window_start TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+  id TEXT PRIMARY KEY,
+  email TEXT NOT NULL,
+  token_hash TEXT NOT NULL UNIQUE,
+  otp_request_id TEXT,
+  expires_at TEXT NOT NULL,
+  consumed_at TEXT,
+  request_ip TEXT,
+  user_agent TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
 ```
 
 ## CMS endpoints
@@ -74,3 +120,27 @@ CREATE TABLE IF NOT EXISTS cms_templates (
 - `PUT /api/cms/content` (requires login cookie)
 - `GET /api/cms/templates`
 - `PUT /api/cms/templates` (requires login cookie)
+
+## OTP endpoints
+- `POST /api/otp/request`
+- `POST /api/otp/verify`
+- `POST /api/auth/reset-password`
+
+Request body `POST /api/otp/request`:
+```json
+{
+  "email": "user@example.com",
+  "purpose": "REGISTER"
+}
+```
+
+Request body `POST /api/otp/verify`:
+```json
+{
+  "email": "user@example.com",
+  "purpose": "RESET_PASSWORD",
+  "otp": "123456"
+}
+```
+
+If purpose is `RESET_PASSWORD`, verify endpoint returns short-lived `resetToken`.

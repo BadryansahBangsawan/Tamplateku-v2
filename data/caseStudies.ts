@@ -1,9 +1,8 @@
 export const caseStudies = [
   {
-    main_image_src: "/tamplate/tamplate 1.png",
+    main_image_src: "/tamplate/tamplate-1.png",
     project_title: "Template landing page premium untuk jasa B2B dengan fokus lead generation.",
-    logo_src:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/665dcd0c7dc5304519a9a4e0_Standard%20Draft.png",
+    logo_src: "/frameworks/react.svg?v=20260219",
     description:
       "Tamplateku membantu brand B2B meluncurkan landing page premium dalam waktu singkat tanpa membangun website dari nol.",
     features: [
@@ -13,21 +12,20 @@ export const caseStudies = [
     case_study_link: "#",
     name: "B2B Leadflow",
     demo_images: [
-      "/tamplate/tamplate 1.png",
-      "/tamplate/tamplate 2.png",
-      "/tamplate/tamplate 3.png",
+      "/tamplate/tamplate-1.png",
+      "/tamplate/tamplate-2.png",
+      "/tamplate/tamplate-3.png",
     ],
-    test_img: "/tamplate/tamplate 1.png",
+    test_img: "/tamplate/tamplate-1.png",
     testimonial:
       '"Template dari Tamplateku bikin proses launch website kami jauh lebih cepat. Tim marketing langsung bisa pakai tanpa revisi besar."',
     founder_name: "Ryan Samii",
     position: "Founder & CEO",
   },
   {
-    main_image_src: "/tamplate/tamplate 2.png",
+    main_image_src: "/tamplate/tamplate-2.png",
     project_title: "Template SaaS showcase untuk menampilkan fitur produk lebih jelas.",
-    logo_src:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/6659ae5c3907ce45e187ce85_dex-logo.png",
+    logo_src: "/frameworks/nextjs.svg?v=20260219",
     description:
       "Kami pilihkan template yang menonjolkan value proposition, demo flow, dan paket harga agar lebih mudah closing.",
     features: [
@@ -38,20 +36,20 @@ export const caseStudies = [
     case_study_link: "#",
     name: "SaaS Growth",
     demo_images: [
-      "/tamplate/tamplate 2.png",
-      "/tamplate/tamplate 3.png",
-      "/tamplate/tamplate 1.png",
+      "/tamplate/tamplate-2.png",
+      "/tamplate/tamplate-3.png",
+      "/tamplate/tamplate-1.png",
     ],
-    test_img: "/tamplate/tamplate 2.png",
+    test_img: "/tamplate/tamplate-2.png",
     testimonial:
       '"Yang saya suka, templatenya premium tapi tetap fleksibel. Tinggal ganti copy dan visual, langsung siap dipromosikan."',
     founder_name: "Reid Chong",
     position: "Founder & CEO",
   },
   {
-    main_image_src: "/tamplate/tamplate 3.png",
+    main_image_src: "/tamplate/tamplate-3.png",
     project_title: "Template company profile modern untuk meningkatkan trust brand.",
-    logo_src: "https://veerview.ai/assets/images/image05.jpg?v=505d141a",
+    logo_src: "/frameworks/vue.svg?v=20260219",
     description:
       "Tamplateku merapikan alur informasi dari hero sampai contact section agar website mudah dipahami calon klien.",
     features: [
@@ -61,21 +59,20 @@ export const caseStudies = [
     case_study_link: "#",
     name: "Brand Profile",
     demo_images: [
-      "/tamplate/tamplate 3.png",
-      "/tamplate/tamplate 1.png",
-      "/tamplate/tamplate 2.png",
+      "/tamplate/tamplate-3.png",
+      "/tamplate/tamplate-1.png",
+      "/tamplate/tamplate-2.png",
     ],
-    test_img: "/tamplate/tamplate 3.png",
+    test_img: "/tamplate/tamplate-3.png",
     testimonial:
       '"Komunikasi tim Tamplateku cepat dan jelas. Kami jadi punya website yang tampil premium tanpa harus develop dari nol."',
     founder_name: "TJ Gottfried",
     position: "Founder",
   },
   {
-    main_image_src: "/tamplate/tamplate 1.png",
+    main_image_src: "/tamplate/tamplate-1.png",
     project_title: "Template dashboard product untuk startup tahap awal.",
-    logo_src:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/665da4b5d559ba95bc6af154_supplierhq.svg",
+    logo_src: "/frameworks/nuxt.svg?v=20260219",
     description:
       "Kombinasi template dan customisasi cepat membuat tim bisa go-live lebih awal dan fokus ke validasi pasar.",
     features: [
@@ -85,21 +82,20 @@ export const caseStudies = [
     case_study_link: "#",
     name: "Startup Launch",
     demo_images: [
-      "/tamplate/tamplate 1.png",
-      "/tamplate/tamplate 2.png",
-      "/tamplate/tamplate 3.png",
+      "/tamplate/tamplate-1.png",
+      "/tamplate/tamplate-2.png",
+      "/tamplate/tamplate-3.png",
     ],
-    test_img: "/tamplate/tamplate 1.png",
+    test_img: "/tamplate/tamplate-1.png",
     testimonial:
       '"Tamplateku profesional dari awal sampai rilis. Prosesnya cepat, rapi, dan hasil akhirnya sesuai ekspektasi kami."',
     founder_name: "Brad Milne",
     position: "Co-Founder",
   },
   {
-    main_image_src: "/tamplate/tamplate 2.png",
+    main_image_src: "/tamplate/tamplate-2.png",
     project_title: "Template portfolio kreatif untuk personal brand dan agency.",
-    logo_src:
-      "https://cdn.prod.website-files.com/62528d398a42424ab6390ee1/667404a553e0149bc2d16e69_wordout.png",
+    logo_src: "/frameworks/remix.svg?v=20260219",
     description:
       "Template ini dirancang untuk menampilkan karya, layanan, dan testimoni dengan visual premium yang tetap ringan.",
     features: [
@@ -109,11 +105,11 @@ export const caseStudies = [
     case_study_link: "#",
     name: "Creative Portfolio",
     demo_images: [
-      "/tamplate/tamplate 2.png",
-      "/tamplate/tamplate 3.png",
-      "/tamplate/tamplate 1.png",
+      "/tamplate/tamplate-2.png",
+      "/tamplate/tamplate-3.png",
+      "/tamplate/tamplate-1.png",
     ],
-    test_img: "/tamplate/tamplate 2.png",
+    test_img: "/tamplate/tamplate-2.png",
     testimonial:
       '"Setelah pakai template Tamplateku, presentasi brand kami jadi jauh lebih meyakinkan di mata calon klien."',
     founder_name: "Michael Guimarin",

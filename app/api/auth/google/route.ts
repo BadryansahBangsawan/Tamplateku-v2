@@ -1,5 +1,6 @@
-import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
+
+export const runtime = "edge";
 
 const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
 
@@ -11,7 +12,7 @@ export async function GET(request: Request) {
 
   const url = new URL(request.url);
   const redirectUri = `${url.origin}/api/auth/google/callback`;
-  const state = randomUUID();
+  const state = crypto.randomUUID();
 
   const authUrl = new URL(GOOGLE_AUTH_URL);
   authUrl.searchParams.set("client_id", clientId);

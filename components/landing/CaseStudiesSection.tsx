@@ -1,6 +1,7 @@
 "use client";
 
 import ImageCarousel from "@/components/custom/ImageCarousel";
+import CaseStudyLogo from "@/components/custom/CaseStudyLogo";
 import { SectionHeading } from "@/components/custom/SectionHeading";
 import { Button } from "@/components/ui/button";
 import type { CaseStudyType } from "@/data/caseStudies";
@@ -50,16 +51,14 @@ const CaseStudyCard: React.FC<CaseStudyCardProps> = ({ caseStudy, index }) => {
       role="article"
     >
       <div ref={contentRef} className="col-span-1 space-y-6 lg:col-span-5">
-        <div className="space-y-6">
-          <div className="flex items-center">
-            <img
-              src={caseStudy.logo_src}
-              className="aspect-auto max-h-8 w-auto"
-              alt={`${caseStudy.name} company logo`}
-              loading="lazy"
-              decoding="async"
-            />
-          </div>
+          <div className="space-y-6">
+            <div className="flex items-center">
+              <CaseStudyLogo
+                src={caseStudy.logo_src}
+                name={caseStudy.name}
+                className="aspect-auto max-h-8 w-auto"
+              />
+            </div>
 
           <div className="space-y-3">
             <p className="text-tag text-sm font-normal">{caseStudy.name}</p>

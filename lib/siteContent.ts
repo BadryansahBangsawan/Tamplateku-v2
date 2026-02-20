@@ -8,6 +8,12 @@ export type SiteContent = {
     description: string;
     primaryCta: string;
     secondaryCta: string;
+    frameworkLogos: {
+      nextjs: string;
+      vue: string;
+      react: string;
+      nuxt: string;
+    };
   };
   caseStudies: {
     badge: string;
@@ -19,6 +25,7 @@ export type SiteContent = {
     badge: string;
     heading: string;
     description: string;
+    backgroundImages: string[];
   };
   testimonials: {
     badge: string;
@@ -32,6 +39,7 @@ export type SiteContent = {
     badge: string;
     heading: string;
     description: string;
+    backgroundImage: string;
     nameLabel: string;
     namePlaceholder: string;
     emailLabel: string;
@@ -50,6 +58,12 @@ export const defaultSiteContent: SiteContent = {
       "Pilih template website premium untuk company profile, agency, landing page, sampai toko online. Tinggal edit konten, publish, dan website kamu langsung terlihat profesional.",
     primaryCta: "Lihat Koleksi Template",
     secondaryCta: "Konsultasi Kebutuhan",
+    frameworkLogos: {
+      nextjs: "/frameworks/nextjs.svg?v=20260219",
+      vue: "/frameworks/vue.svg?v=20260219",
+      react: "/frameworks/react.svg?v=20260219",
+      nuxt: "/frameworks/nuxt.svg?v=20260219",
+    },
   },
   caseStudies: {
     badge: "Template Pilihan",
@@ -63,6 +77,12 @@ export const defaultSiteContent: SiteContent = {
     heading: "Dari pilih template sampai siap tayang",
     description:
       "Alur kerja kami sederhana, cepat, dan fokus ke hasil: website premium yang siap bantu brand kamu terlihat lebih kredibel dan lebih mudah closing.",
+    backgroundImages: [
+      "/tamplate/tamplate-1.png",
+      "/tamplate/tamplate-2.png",
+      "/tamplate/tamplate-3.png",
+      "/tamplate/tamplate-2.png",
+    ],
   },
   testimonials: {
     badge: "Testimonials",
@@ -78,6 +98,7 @@ export const defaultSiteContent: SiteContent = {
     heading: "Konsultasi kebutuhan website kamu",
     description:
       "Cerita singkat tentang bisnis kamu, nanti tim Tamplateku bantu rekomendasikan template premium yang paling cocok.",
+    backgroundImage: "/tamplate/tamplate-3.png",
     nameLabel: "Nama",
     namePlaceholder: "Masukkan nama kamu",
     emailLabel: "Email",

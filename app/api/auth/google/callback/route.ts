@@ -1,6 +1,8 @@
 import { AUTH_COOKIE_NAME, encodeAuthUser } from "@/lib/authCookie";
 import { NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_USERINFO_URL = "https://openidconnect.googleapis.com/v1/userinfo";
 

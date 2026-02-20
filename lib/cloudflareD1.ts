@@ -62,9 +62,16 @@ export async function ensureAuthUsersTable() {
       name TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE,
       password_hash TEXT NOT NULL,
+      email_verified_at TEXT,
       notes TEXT,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
     );
   `);
+
+  const columns = await runD1Query<{ name: string }>("PRAGMA table_info(auth_users)");
+  const hasEmailVerifiedAt = columns.some((column) => column.name === "email_verified_at");
+  if (!hasEmailVerifiedAt) {
+    await runD1Query("ALTER TABLE auth_users ADD COLUMN email_verified_at TEXT");
+  }
 }

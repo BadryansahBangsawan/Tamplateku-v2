@@ -2,6 +2,8 @@ import { AUTH_COOKIE_NAME, encodeAuthUser } from "@/lib/authCookie";
 import { loginUser } from "@/lib/authDb";
 import { NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 export async function POST(request: Request) {
   try {
     const body = (await request.json()) as {
@@ -21,9 +23,10 @@ export async function POST(request: Request) {
 
     const result = await loginUser({ email, password });
     if (!result.ok || !result.data) {
+      const status = result.code === "EMAIL_NOT_VERIFIED" ? 403 : 401;
       return NextResponse.json(
-        { ok: false, message: result.message ?? "Login gagal." },
-        { status: 401 }
+        { ok: false, code: result.code, message: result.message ?? "Login gagal." },
+        { status }
       );
     }
 

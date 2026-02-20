@@ -1,6 +1,8 @@
 import { AUTH_COOKIE_NAME } from "@/lib/authCookie";
 import { NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 export async function POST(request: Request) {
   const requestUrl = new URL(request.url);
   const response = NextResponse.json({ ok: true }, { status: 200 });

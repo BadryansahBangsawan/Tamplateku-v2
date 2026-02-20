@@ -41,7 +41,27 @@ function SignupPageContent() {
         setErrorMessage(result.message ?? "Registrasi gagal.");
         return;
       }
-      router.push("/login?registered=success");
+
+      const otpResponse = await fetch("/api/otp/request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          purpose: "REGISTER",
+        }),
+      });
+
+      const otpResult = (await otpResponse.json()) as {
+        ok: boolean;
+        message?: string;
+      };
+
+      if (!otpResponse.ok && otpResponse.status !== 429) {
+        setErrorMessage(otpResult.message ?? "Registrasi berhasil, tapi gagal kirim OTP.");
+        return;
+      }
+
+      router.push(`/verify-email?email=${encodeURIComponent(email)}&purpose=REGISTER`);
     } catch {
       setErrorMessage("Tidak bisa terhubung ke server.");
     } finally {
@@ -170,6 +190,13 @@ function SignupPageContent() {
                       Sign in with Google
                     </a>
                   </Button>
+
+                  <p className="text-center text-sm text-label">
+                    Sudah punya akun?{" "}
+                    <a href="/login" className="text-primary hover:underline">
+                      Login di sini
+                    </a>
+                  </p>
                 </form>
               </CardContent>
             </Card>

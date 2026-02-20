@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/carousel";
 import { useCaseStudies } from "@/hooks/use-case-studies";
 import { useSiteContent } from "@/hooks/use-site-content";
+import { withFrameworkLogoVersion } from "@/lib/frameworkAssets";
 import "@/lib/GSAPAnimations";
 import { useGSAP } from "@gsap/react";
 import Autoplay from "embla-carousel-autoplay";
@@ -19,35 +20,37 @@ import gsap from "gsap";
 import { ScrollTrigger, SplitText } from "gsap/all";
 import { Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 
 // Register ScrollTrigger plugin
 gsap.registerPlugin(ScrollTrigger);
-
-const frameworkLogos = [
-  {
-    name: "Next.js",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/8/8e/Nextjs-logo.svg",
-  },
-  {
-    name: "Vue.js",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/9/95/Vue.js_Logo_2.svg",
-  },
-  {
-    name: "React",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg",
-  },
-  {
-    name: "Nuxt",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/a/ae/Nuxt_logo.svg",
-  },
-];
 
 function HomePage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const caseStudiesRef = useRef(null);
   const content = useSiteContent();
   const caseStudies = useCaseStudies();
+  const frameworkLogos = useMemo(
+    () => [
+      {
+        name: "Next.js",
+        logo: withFrameworkLogoVersion(content.hero.frameworkLogos.nextjs || "/frameworks/nextjs.svg"),
+      },
+      {
+        name: "Vue.js",
+        logo: withFrameworkLogoVersion(content.hero.frameworkLogos.vue || "/frameworks/vue.svg"),
+      },
+      {
+        name: "React",
+        logo: withFrameworkLogoVersion(content.hero.frameworkLogos.react || "/frameworks/react.svg"),
+      },
+      {
+        name: "Nuxt",
+        logo: withFrameworkLogoVersion(content.hero.frameworkLogos.nuxt || "/frameworks/nuxt.svg"),
+      },
+    ],
+    [content.hero.frameworkLogos.nextjs, content.hero.frameworkLogos.nuxt, content.hero.frameworkLogos.react, content.hero.frameworkLogos.vue]
+  );
 
   useGSAP(() => {
     const headingElement = heroRef?.current?.querySelector("h1");

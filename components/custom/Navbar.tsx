@@ -21,6 +21,7 @@ function Navbar() {
     email: string;
     picture?: string;
   } | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -207,10 +208,13 @@ function Navbar() {
         if (!response.ok) return;
         const data = (await response.json()) as {
           user: { name: string; email: string; picture?: string } | null;
+          isAdmin?: boolean;
         };
         setAuthUser(data.user);
+        setIsAdmin(Boolean(data.isAdmin));
       } catch {
         setAuthUser(null);
+        setIsAdmin(false);
       }
     };
 
@@ -222,8 +226,11 @@ function Navbar() {
       await fetch("/api/auth/logout", { method: "POST" });
     } catch {}
     setAuthUser(null);
+    setIsAdmin(false);
     window.location.href = "/";
   };
+
+  const profileHref = isAdmin ? "/admin" : "/browse-template";
 
   return (
     <>
@@ -251,7 +258,7 @@ function Navbar() {
                 aria-describedby="logo-description"
               >
                 <img
-                  src="/icon.svg"
+                  src="/logo.png"
                   alt="Tamplateku Logo"
                   className="h-8 w-8 rounded-full object-cover"
                   width="32"
@@ -302,7 +309,7 @@ function Navbar() {
               {authUser ? (
                 <div className="group relative hidden lg:block">
                   <Button size="sm" variant="outline" asChild className="max-w-[220px]">
-                    <Link href="/admin" aria-label={`Profile account ${authUser.name}`}>
+                    <Link href={profileHref} aria-label={`Profile account ${authUser.name}`}>
                       {authUser.picture ? (
                         <img
                           src={authUser.picture}
@@ -405,7 +412,7 @@ function Navbar() {
                     {authUser ? (
                       <>
                         <Button className="w-full" variant="outline" asChild onClick={closeMenu}>
-                          <Link href="/admin">
+                          <Link href={profileHref}>
                             {authUser.picture ? (
                               <img
                                 src={authUser.picture}

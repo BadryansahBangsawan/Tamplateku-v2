@@ -5,6 +5,8 @@ import { generateBlogPostMetadata, generateBlogPostStructuredData } from "@/lib/
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
   return posts.map((post) => ({ slug: post.slug }));
