@@ -9,6 +9,7 @@ export type AuthUser = {
   picture?: string;
   provider: "google" | "local";
   role?: AuthRole;
+  sessionIssuedAt?: string;
 };
 
 export function encodeAuthUser(user: AuthUser): string {
@@ -40,6 +41,8 @@ export function decodeAuthUser(value: string | undefined): AuthUser | null {
             parsed.role === "SUPER_ADMIN"
               ? parsed.role
               : undefined,
+          sessionIssuedAt:
+            typeof parsed.sessionIssuedAt === "string" ? parsed.sessionIssuedAt : undefined,
         };
       }
       return null;

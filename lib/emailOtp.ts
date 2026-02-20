@@ -9,6 +9,8 @@ type SendOtpMailInput = {
 type OtpMailContent = {
   subject: string;
   intro: string;
+  preheader: string;
+  badge: string;
 };
 
 function getMailContent(purpose: OtpPurpose): OtpMailContent {
@@ -16,6 +18,8 @@ function getMailContent(purpose: OtpPurpose): OtpMailContent {
     return {
       subject: "Kode Verifikasi Pendaftaran",
       intro: "Gunakan kode berikut untuk menyelesaikan pendaftaran akun Anda.",
+      preheader: "Kode OTP pendaftaran Tamplateku",
+      badge: "Verifikasi Pendaftaran",
     };
   }
 
@@ -23,12 +27,16 @@ function getMailContent(purpose: OtpPurpose): OtpMailContent {
     return {
       subject: "Kode Verifikasi Perubahan Email",
       intro: "Gunakan kode berikut untuk memverifikasi perubahan email akun Anda.",
+      preheader: "Kode OTP perubahan email Tamplateku",
+      badge: "Perubahan Email",
     };
   }
 
   return {
     subject: "Kode Reset Password",
     intro: "Gunakan kode berikut untuk melanjutkan proses reset password.",
+    preheader: "Kode OTP reset password Tamplateku",
+    badge: "Reset Password",
   };
 }
 
@@ -43,18 +51,69 @@ export async function sendOtpEmail(input: SendOtpMailInput): Promise<void> {
   }
 
   const content = getMailContent(input.purpose);
+  const appName = "Tamplateku";
 
-  const text = `${content.intro}\n\nKode OTP: ${input.otp}\nBerlaku selama ${OTP_EXPIRES_MINUTES} menit.\n\nJika Anda tidak meminta kode ini, abaikan email ini.`;
+  const text = [
+    `${appName} - ${content.subject}`,
+    "",
+    content.intro,
+    "",
+    `Kode OTP: ${input.otp}`,
+    `Berlaku selama ${OTP_EXPIRES_MINUTES} menit.`,
+    "",
+    "Jangan bagikan kode ini ke siapa pun.",
+    "Jika Anda tidak meminta kode ini, abaikan email ini.",
+  ].join("\n");
 
   const html = `
-    <div style="font-family:Arial,sans-serif;line-height:1.5;color:#0f172a">
-      <h2 style="margin:0 0 12px">${content.subject}</h2>
-      <p style="margin:0 0 16px">${content.intro}</p>
-      <p style="margin:0 0 8px">Kode OTP Anda:</p>
-      <p style="font-size:28px;font-weight:700;letter-spacing:4px;margin:0 0 16px">${input.otp}</p>
-      <p style="margin:0 0 8px">Kode berlaku selama ${OTP_EXPIRES_MINUTES} menit.</p>
-      <p style="margin:0">Jika Anda tidak meminta kode ini, abaikan email ini.</p>
-    </div>
+    <!doctype html>
+    <html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>${content.subject}</title>
+      </head>
+      <body style="margin:0;padding:0;background:#f8fafc;font-family:Arial,sans-serif;color:#0f172a;">
+        <div style="display:none;max-height:0;overflow:hidden;opacity:0;">${content.preheader}</div>
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f8fafc;padding:24px 12px;">
+          <tr>
+            <td align="center">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;">
+                <tr>
+                  <td style="padding:20px 24px;border-bottom:1px solid #eef2f7;">
+                    <div style="display:inline-block;font-size:12px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#0369a1;background:#e0f2fe;border-radius:999px;padding:6px 10px;">${content.badge}</div>
+                    <h1 style="margin:14px 0 0;font-size:22px;line-height:1.3;color:#0f172a;">${content.subject}</h1>
+                    <p style="margin:10px 0 0;font-size:15px;line-height:1.6;color:#334155;">${content.intro}</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:22px 24px;">
+                    <p style="margin:0 0 10px;font-size:13px;color:#64748b;">Kode OTP Anda</p>
+                    <div style="display:inline-block;background:#0f172a;color:#ffffff;border-radius:10px;padding:14px 18px;font-size:30px;font-weight:700;letter-spacing:8px;line-height:1;">${input.otp}</div>
+                    <p style="margin:16px 0 0;font-size:14px;color:#334155;">
+                      Kode berlaku selama <strong>${OTP_EXPIRES_MINUTES} menit</strong>.
+                    </p>
+                    <p style="margin:10px 0 0;font-size:14px;color:#334155;">
+                      Untuk keamanan akun, jangan bagikan kode ini ke siapa pun.
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:18px 24px;background:#f8fafc;border-top:1px solid #eef2f7;">
+                    <p style="margin:0;font-size:12px;line-height:1.6;color:#64748b;">
+                      Jika Anda tidak meminta kode ini, abaikan email ini.
+                    </p>
+                    <p style="margin:8px 0 0;font-size:12px;color:#94a3b8;">
+                      © ${new Date().getFullYear()} ${appName}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+    </html>
   `;
 
   const response = await fetch("https://api.resend.com/emails", {

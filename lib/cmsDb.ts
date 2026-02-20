@@ -237,3 +237,8 @@ export async function saveTemplatesToDb(templates: CaseStudyType[]): Promise<Cas
 
   return saved;
 }
+
+export async function deleteAllTemplatesFromDb(): Promise<void> {
+  await ensureCmsTables();
+  await runD1Query("DELETE FROM cms_templates");
+}

@@ -8,6 +8,10 @@ var a={},t=(e,c,p)=>(a.__REACT_LOADABLE_MANIFEST=e.__REACT_LOADABLE_MANIFEST="{}
       "static/media/caa3a2e1cccd8315-s.p.853070df.woff2",
       "static/media/797e433ab948586e-s.p.dbea232f.woff2"
     ],
+    "[project]/app/admin-pengelola/page": [
+      "static/media/caa3a2e1cccd8315-s.p.853070df.woff2",
+      "static/media/797e433ab948586e-s.p.dbea232f.woff2"
+    ],
     "[project]/app/admin/page": [
       "static/media/caa3a2e1cccd8315-s.p.853070df.woff2",
       "static/media/797e433ab948586e-s.p.dbea232f.woff2"
@@ -41,6 +45,10 @@ var a={},t=(e,c,p)=>(a.__REACT_LOADABLE_MANIFEST=e.__REACT_LOADABLE_MANIFEST="{}
       "static/media/797e433ab948586e-s.p.dbea232f.woff2"
     ],
     "[project]/app/signup/page": [
+      "static/media/caa3a2e1cccd8315-s.p.853070df.woff2",
+      "static/media/797e433ab948586e-s.p.dbea232f.woff2"
+    ],
+    "[project]/app/super-admin/page": [
       "static/media/caa3a2e1cccd8315-s.p.853070df.woff2",
       "static/media/797e433ab948586e-s.p.dbea232f.woff2"
     ],

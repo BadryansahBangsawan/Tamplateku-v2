@@ -1,5 +1,6 @@
 import { runD1Query } from "@/lib/cloudflareD1";
 import { OTP_MAX_ATTEMPTS, type OtpPurpose } from "@/lib/otp";
+let ensureOtpTablesPromise: Promise<void> | null = null;
 
 type OtpRequestRow = {
   id: string;
@@ -79,7 +80,7 @@ async function hashResetToken(token: string): Promise<string> {
   return bytesToHex(new Uint8Array(signature));
 }
 
-export async function ensureOtpTables(): Promise<void> {
+async function ensureOtpTablesInner(): Promise<void> {
   await runD1Query(`
     CREATE TABLE IF NOT EXISTS otp_requests (
       id TEXT PRIMARY KEY,
@@ -135,6 +136,17 @@ export async function ensureOtpTables(): Promise<void> {
     CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_email
     ON password_reset_tokens(email, created_at DESC);
   `);
+}
+
+export async function ensureOtpTables(): Promise<void> {
+  if (!ensureOtpTablesPromise) {
+    ensureOtpTablesPromise = ensureOtpTablesInner().catch((error) => {
+      ensureOtpTablesPromise = null;
+      throw error;
+    });
+  }
+
+  await ensureOtpTablesPromise;
 }
 
 export async function checkAndConsumeRateLimit(params: {

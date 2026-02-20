@@ -38,7 +38,19 @@ export function getUserRoleByEmail(email: string): AppRole {
 
 export function getUserRole(user: AuthUser | null | undefined): AppRole {
   if (!user?.email) return "USER";
-  return getUserRoleByEmail(user.email);
+  const emailBasedRole = getUserRoleByEmail(user.email);
+  if (emailBasedRole === "SUPER_ADMIN") return "SUPER_ADMIN";
+
+  if (
+    user.role === "USER" ||
+    user.role === "ADMIN" ||
+    user.role === "TEMPLATE_ADMIN" ||
+    user.role === "SUPER_ADMIN"
+  ) {
+    return user.role;
+  }
+
+  return emailBasedRole;
 }
 
 export function canAccessAdminPage(role: AppRole): boolean {

@@ -2,6 +2,7 @@ import type { CaseStudyType } from "@/data/caseStudies";
 import { getRoleFromUser } from "@/lib/adminAccess";
 import { getRequestAuthUser } from "@/lib/authRequest";
 import { getTemplatesFromDb, saveTemplatesToDb } from "@/lib/cmsDb";
+import { createAuditLog } from "@/lib/superAdminDb";
 import { NextResponse } from "next/server";
 
 export const runtime = "edge";
@@ -38,6 +39,12 @@ export async function PUT(request: Request) {
     const body = (await request.json()) as { templates?: CaseStudyType[] };
     const templates = Array.isArray(body.templates) ? body.templates : [];
     const saved = await saveTemplatesToDb(templates);
+    void createAuditLog({
+      actorEmail: user.email,
+      action: "CMS_TEMPLATES_UPDATE",
+      targetType: "cms_templates",
+      detail: { templateCount: saved.length },
+    });
 
     return NextResponse.json({ ok: true, data: saved });
   } catch (error) {

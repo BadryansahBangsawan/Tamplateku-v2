@@ -1,10 +1,27 @@
 import { NextResponse } from "next/server";
+import { DEFAULT_SYSTEM_CONFIG, getSystemConfig } from "@/lib/superAdminDb";
 
 export const runtime = "edge";
 
 const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/v2/auth";
+const CONFIG_TIMEOUT_MS = 700;
+
+async function getSystemConfigQuick() {
+  return Promise.race([
+    getSystemConfig(),
+    new Promise<typeof DEFAULT_SYSTEM_CONFIG>((resolve) => {
+      setTimeout(() => resolve(DEFAULT_SYSTEM_CONFIG), CONFIG_TIMEOUT_MS);
+    }),
+  ]).catch(() => DEFAULT_SYSTEM_CONFIG);
+}
 
 export async function GET(request: Request) {
+  const config = await getSystemConfigQuick();
+  if (!config.loginAccess.googleLoginEnabled || !config.integrations.googleOauthEnabled) {
+    const url = new URL(request.url);
+    return NextResponse.redirect(new URL("/signup?google=disabled", url.origin));
+  }
+
   const clientId = process.env.GOOGLE_CLIENT_ID;
   if (!clientId) {
     return NextResponse.json({ error: "Missing GOOGLE_CLIENT_ID env var." }, { status: 500 });

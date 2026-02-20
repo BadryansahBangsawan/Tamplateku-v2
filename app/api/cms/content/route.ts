@@ -2,6 +2,7 @@ import { getRequestAuthUser } from "@/lib/authRequest";
 import { isAdminUser } from "@/lib/adminAccess";
 import { getSiteContentFromDb, saveSiteContentToDb } from "@/lib/cmsDb";
 import { type SiteContent, defaultSiteContent, mergeSiteContent } from "@/lib/siteContent";
+import { createAuditLog } from "@/lib/superAdminDb";
 import { NextResponse } from "next/server";
 
 export const runtime = "edge";
@@ -37,6 +38,12 @@ export async function PUT(request: Request) {
     const body = (await request.json()) as { content?: SiteContent };
     const merged = mergeSiteContent(defaultSiteContent, body.content ?? defaultSiteContent);
     await saveSiteContentToDb(merged);
+    void createAuditLog({
+      actorEmail: user.email,
+      action: "CMS_CONTENT_UPDATE",
+      targetType: "cms_site_content",
+      detail: { by: "admin_panel" },
+    });
 
     return NextResponse.json({ ok: true, data: merged });
   } catch (error) {

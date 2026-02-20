@@ -1,4 +1,5 @@
 const CLOUDFLARE_API_BASE = "https://api.cloudflare.com/client/v4";
+let ensureAuthUsersTablePromise: Promise<void> | null = null;
 
 type D1Result<T = Record<string, unknown>> = {
   success: boolean;
@@ -55,7 +56,7 @@ export async function runD1Query<T = Record<string, unknown>>(
   return payload.result?.[0]?.results ?? [];
 }
 
-export async function ensureAuthUsersTable() {
+async function ensureAuthUsersTableInner() {
   await runD1Query(`
     CREATE TABLE IF NOT EXISTS auth_users (
       id TEXT PRIMARY KEY,
@@ -63,6 +64,10 @@ export async function ensureAuthUsersTable() {
       email TEXT NOT NULL UNIQUE,
       password_hash TEXT NOT NULL,
       role TEXT NOT NULL DEFAULT 'USER',
+      is_active INTEGER NOT NULL DEFAULT 1,
+      must_change_password INTEGER NOT NULL DEFAULT 0,
+      force_logout_after TEXT,
+      last_login_at TEXT,
       email_verified_at TEXT,
       notes TEXT,
       created_at TEXT NOT NULL,
@@ -80,4 +85,37 @@ export async function ensureAuthUsersTable() {
   if (!hasRole) {
     await runD1Query("ALTER TABLE auth_users ADD COLUMN role TEXT NOT NULL DEFAULT 'USER'");
   }
+
+  const hasIsActive = columns.some((column) => column.name === "is_active");
+  if (!hasIsActive) {
+    await runD1Query("ALTER TABLE auth_users ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1");
+  }
+
+  const hasMustChangePassword = columns.some((column) => column.name === "must_change_password");
+  if (!hasMustChangePassword) {
+    await runD1Query(
+      "ALTER TABLE auth_users ADD COLUMN must_change_password INTEGER NOT NULL DEFAULT 0"
+    );
+  }
+
+  const hasForceLogoutAfter = columns.some((column) => column.name === "force_logout_after");
+  if (!hasForceLogoutAfter) {
+    await runD1Query("ALTER TABLE auth_users ADD COLUMN force_logout_after TEXT");
+  }
+
+  const hasLastLoginAt = columns.some((column) => column.name === "last_login_at");
+  if (!hasLastLoginAt) {
+    await runD1Query("ALTER TABLE auth_users ADD COLUMN last_login_at TEXT");
+  }
+}
+
+export async function ensureAuthUsersTable(): Promise<void> {
+  if (!ensureAuthUsersTablePromise) {
+    ensureAuthUsersTablePromise = ensureAuthUsersTableInner().catch((error) => {
+      ensureAuthUsersTablePromise = null;
+      throw error;
+    });
+  }
+
+  await ensureAuthUsersTablePromise;
 }

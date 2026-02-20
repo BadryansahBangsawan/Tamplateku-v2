@@ -1,6 +1,8 @@
 User-Agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin-pengelola
+Disallow: /super-admin
 Disallow: /api/
 
 Host: https://tamplateku.store

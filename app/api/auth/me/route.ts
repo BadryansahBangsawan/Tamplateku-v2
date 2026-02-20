@@ -1,17 +1,14 @@
 import { getRoleFromUser } from "@/lib/adminAccess";
-import { AUTH_COOKIE_NAME, decodeAuthUser } from "@/lib/authCookie";
-import { cookies } from "next/headers";
+import { AUTH_COOKIE_NAME } from "@/lib/authCookie";
+import { getRequestAuthUser } from "@/lib/authRequest";
 import { NextResponse } from "next/server";
 
 export const runtime = "edge";
 
 export async function GET() {
-  const cookieStore = await cookies();
-  const cookieValue = cookieStore.get(AUTH_COOKIE_NAME)?.value;
-
-  const user = decodeAuthUser(cookieValue);
+  const user = await getRequestAuthUser();
   if (!user) {
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         user: null,
         role: "USER",
@@ -21,6 +18,8 @@ export async function GET() {
       },
       { status: 200 }
     );
+    response.cookies.delete(AUTH_COOKIE_NAME);
+    return response;
   }
 
   const role = getRoleFromUser(user);

@@ -4,6 +4,10 @@ CREATE TABLE IF NOT EXISTS auth_users (
   email TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
   role TEXT NOT NULL DEFAULT 'USER',
+  is_active INTEGER NOT NULL DEFAULT 1,
+  must_change_password INTEGER NOT NULL DEFAULT 0,
+  force_logout_after TEXT,
+  last_login_at TEXT,
   email_verified_at TEXT,
   notes TEXT,
   created_at TEXT NOT NULL,
@@ -86,3 +90,51 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
 
 CREATE INDEX IF NOT EXISTS idx_password_reset_tokens_email
 ON password_reset_tokens(email, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS super_admin_settings (
+  key TEXT PRIMARY KEY,
+  value_json TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS super_admin_audit_logs (
+  id TEXT PRIMARY KEY,
+  actor_email TEXT NOT NULL,
+  action TEXT NOT NULL,
+  target_type TEXT NOT NULL,
+  target_id TEXT,
+  detail_json TEXT,
+  severity TEXT NOT NULL DEFAULT 'INFO',
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_super_admin_audit_logs_created
+ON super_admin_audit_logs(created_at DESC);
+
+CREATE TABLE IF NOT EXISTS auth_login_logs (
+  id TEXT PRIMARY KEY,
+  user_id TEXT,
+  email TEXT NOT NULL,
+  success INTEGER NOT NULL,
+  reason TEXT,
+  request_ip TEXT NOT NULL,
+  user_agent TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_auth_login_logs_email_created
+ON auth_login_logs(email, created_at DESC);
+
+CREATE INDEX IF NOT EXISTS idx_auth_login_logs_success_created
+ON auth_login_logs(success, created_at DESC);
+
+CREATE TABLE IF NOT EXISTS super_admin_backups (
+  id TEXT PRIMARY KEY,
+  snapshot_type TEXT NOT NULL,
+  payload_json TEXT NOT NULL,
+  created_by TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_super_admin_backups_created
+ON super_admin_backups(created_at DESC);
