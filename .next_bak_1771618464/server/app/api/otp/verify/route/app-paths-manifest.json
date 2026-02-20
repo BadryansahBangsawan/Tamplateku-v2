@@ -1,0 +1,3 @@
+{
+  "/api/otp/verify/route": "app-edge-has-no-entrypoint"
+}

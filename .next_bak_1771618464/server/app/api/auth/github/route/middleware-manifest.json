@@ -1,0 +1,40 @@
+{
+  "sorted_middleware": [
+    "/api/auth/github/route"
+  ],
+  "middleware": {},
+  "instrumentation": null,
+  "functions": {
+    "/api/auth/github/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/server-reference-manifest.js",
+        "server/app/api/auth/github/route_client-reference-manifest.js",
+        "server/edge/chunks/_next-internal_server_app_api_auth_github_route_actions_dad75d56.js",
+        "server/edge/chunks/turbopack-_next-internal_server_app_api_auth_github_route_actions_800a4e65.js",
+        "server/edge/chunks/_7ea10722._.js",
+        "server/edge/chunks/node_modules_next_dist_637be98d._.js",
+        "server/edge/chunks/[root-of-the-server]__26866de9._.js",
+        "server/edge/chunks/turbopack-edge-wrapper_2730f0ce.js"
+      ],
+      "name": "app/api/auth/github/route",
+      "page": "/api/auth/github/route",
+      "matchers": [
+        {
+          "regexp": "^/api/auth/github(?:/)?$",
+          "originalSource": "/api/auth/github"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "qEHbesxHEkhOcRyClpVMR",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "80OKIAMZmCo6PxGbc8fVH/f12KcwE+xgV3K2sFBve0g=",
+        "__NEXT_PREVIEW_MODE_ID": "2695a47dbb7badf5015be95fcdf0de09",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a32ef687173293afb1d41b36299a059a7f9a30de58e4fb17125fd1548bff28cf",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "be2d86e9a32b6ea0517763fbe4dc1d02bd049c5d7e456d34fdeb9c6d9a2c3b1c"
+      }
+    }
+  }
+}

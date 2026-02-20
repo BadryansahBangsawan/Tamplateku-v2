@@ -1,0 +1,41 @@
+{
+  "version": 3,
+  "middleware": {
+    "/": {
+      "files": [
+        "server/edge/chunks/_7d9b4a52._.js",
+        "server/edge/chunks/[root-of-the-server]__9e61b4e3._.js",
+        "server/edge/chunks/turbopack-edge-wrapper_00b7f87e.js"
+      ],
+      "name": "middleware",
+      "page": "/",
+      "matchers": [
+        {
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/admin(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$",
+          "originalSource": "/admin/:path*"
+        },
+        {
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/admin-pengelola(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$",
+          "originalSource": "/admin-pengelola/:path*"
+        },
+        {
+          "regexp": "^(?:\\/(_next\\/data\\/[^/]{1,}))?\\/super-admin(?:\\/((?:[^\\/#\\?]+?)(?:\\/(?:[^\\/#\\?]+?))*))?(\\\\.json)?[\\/#\\?]?$",
+          "originalSource": "/super-admin/:path*"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "development",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "80OKIAMZmCo6PxGbc8fVH/f12KcwE+xgV3K2sFBve0g=",
+        "__NEXT_PREVIEW_MODE_ID": "3602cacf1f5c2b8c0d150ac45c0c0855",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "6f3d599a2b23c47e5aecbdaed13bd8876d1d91c2e1423598f4f2dda37f2ed967",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "afad7692c9d23dc0f3608cfcf05679b1c38dc854b6d9907f11f5f1fcad42bed2"
+      }
+    }
+  },
+  "sortedMiddleware": [
+    "/"
+  ],
+  "functions": {}
+}

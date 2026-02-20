@@ -141,16 +141,24 @@ export default function BrowseTemplateDetailPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ templateSlug: template.slug }),
       });
-      const payload = (await response.json()) as {
+      const rawText = await response.text();
+      let payload = {} as {
         ok?: boolean;
         alreadyPurchased?: boolean;
         downloadUrl?: string;
         paymentUrl?: string;
         message?: string;
       };
+      try {
+        payload = rawText ? (JSON.parse(rawText) as typeof payload) : {};
+      } catch {
+        payload = {
+          message: rawText?.trim().slice(0, 200) || undefined,
+        };
+      }
 
       if (!response.ok || !payload.ok) {
-        setActionMessage(payload.message ?? copy.paymentFailed);
+        setActionMessage(payload.message ?? `${copy.paymentFailed} (HTTP ${response.status})`);
         return;
       }
 

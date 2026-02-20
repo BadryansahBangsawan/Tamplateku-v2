@@ -1,0 +1,3 @@
+(globalThis.TURBOPACK||(globalThis.TURBOPACK=[])).push(["chunks/_f5b3457b._.js",8501,e=>{"use strict";e.s(["getRoleFromUser",()=>n,"isAdminUser",()=>s]);var t=e.i(36771);function n(e){return(0,t.getUserRole)(e)}function s(e){return(0,t.canAccessAdminPage)((0,t.getUserRole)(e))}},53394,(e,t,n)=>{self._ENTRIES||={};let s=Promise.resolve().then(()=>e.i(14273));s.catch(()=>{}),self._ENTRIES["middleware_app/api/super-admin/settings/route"]=new Proxy(s,{get(e,t){if("then"===t)return(t,n)=>e.then(t,n);let n=(...n)=>e.then(e=>(0,e[t])(...n));return n.then=(n,s)=>e.then(e=>e[t]).then(n,s),n}})}]);
+
+//# sourceMappingURL=_f5b3457b._.js.map

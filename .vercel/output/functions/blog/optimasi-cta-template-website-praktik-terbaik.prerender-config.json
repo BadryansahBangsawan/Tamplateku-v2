@@ -3,7 +3,7 @@
   "expiration": false,
   "sourcePath": "/blog/[slug]",
   "group": 19,
-  "bypassToken": "2695a47dbb7badf5015be95fcdf0de09",
+  "bypassToken": "f4247dd90959bc29e7f3e97310a2b7dd",
   "experimentalBypassFor": [
     {
       "type": "header",

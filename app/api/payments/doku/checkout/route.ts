@@ -1,9 +1,16 @@
 import { getRequestAuthUser } from "@/lib/authRequest";
-import { createDokuCheckout } from "@/lib/doku";
 import {
+  createDokuCheckout,
+  getDokuConfig,
+  getDokuWebhookHeaders,
+  verifyDokuWebhookSignature,
+} from "@/lib/doku";
+import {
+  applyDokuNotification,
   createPaymentOrder,
   hasTemplateAccess,
   markPaymentOrderFailed,
+  savePaymentWebhookEvent,
   updatePaymentOrderCheckout,
 } from "@/lib/paymentDb";
 import { getTemplateBySlugServer } from "@/lib/templateServer";
@@ -32,6 +39,97 @@ function generateInvoiceNumber(): string {
   const stamp = Date.now().toString().slice(-10);
   const random = Math.floor(Math.random() * 90_000 + 10_000).toString();
   return `TMP${stamp}${random}`;
+}
+
+function resolvePublicOrigin(request: Request): string {
+  const configured = getDokuConfig().publicBaseUrl;
+  if (configured) {
+    return configured;
+  }
+  return new URL(request.url).origin;
+}
+
+type DokuNotificationBody = {
+  order?: {
+    invoice_number?: string;
+  };
+  transaction?: {
+    status?: string;
+    date?: string;
+  };
+};
+
+function normalizeStatus(value: string | undefined): string {
+  return (value ?? "").trim().toUpperCase();
+}
+
+async function createEventKey(rawBody: string, requestId: string | null): Promise<string> {
+  if (requestId && requestId.trim().length > 0) {
+    return `doku:${requestId.trim()}`;
+  }
+
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(rawBody));
+  const hex = Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join(
+    ""
+  );
+  return `doku:body:${hex}`;
+}
+
+async function handleWebhook(request: Request): Promise<NextResponse> {
+  const requestUrl = new URL(request.url);
+  const requestTarget = requestUrl.pathname + (requestUrl.search || "");
+  const rawBody = await request.text();
+
+  const signatureValid = await verifyDokuWebhookSignature({
+    headers: request.headers,
+    rawBody,
+    requestTarget,
+  }).catch(() => false);
+
+  if (!signatureValid) {
+    return NextResponse.json({ ok: false, message: "Invalid signature." }, { status: 401 });
+  }
+
+  let payload: DokuNotificationBody;
+  try {
+    payload = (rawBody ? JSON.parse(rawBody) : {}) as DokuNotificationBody;
+  } catch {
+    return NextResponse.json({ ok: false, message: "Invalid payload." }, { status: 400 });
+  }
+
+  const invoiceNumber = payload.order?.invoice_number?.trim() ?? "";
+  const transactionStatus = normalizeStatus(payload.transaction?.status);
+  const transactionDate = payload.transaction?.date ?? null;
+
+  if (!invoiceNumber || !transactionStatus) {
+    return NextResponse.json(
+      { ok: false, message: "invoice_number dan transaction.status wajib ada." },
+      { status: 400 }
+    );
+  }
+
+  const webhookHeaders = getDokuWebhookHeaders(request.headers);
+  const eventKey = await createEventKey(rawBody, webhookHeaders.requestId);
+  const stored = await savePaymentWebhookEvent({
+    provider: "DOKU",
+    eventKey,
+    requestId: webhookHeaders.requestId,
+    invoiceNumber,
+    payload: payload as Record<string, unknown>,
+  });
+
+  if (!stored) {
+    return NextResponse.json({ ok: true, duplicate: true }, { status: 200 });
+  }
+
+  const result = await applyDokuNotification({
+    invoiceNumber,
+    transactionStatus,
+    transactionDate,
+    payload: payload as Record<string, unknown>,
+  });
+
+  return NextResponse.json({ ok: true, applied: result.applied, status: result.status }, { status: 200 });
 }
 
 export async function GET(request: Request) {
@@ -115,19 +213,24 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const user = await getRequestAuthUser();
-  if (!user) {
-    return NextResponse.json(
-      {
-        ok: false,
-        code: "UNAUTHORIZED",
-        message: "Silakan login dulu untuk melanjutkan pembayaran.",
-      },
-      { status: 401 }
-    );
+  const action = new URL(request.url).searchParams.get("action")?.trim() ?? "checkout";
+  if (action === "webhook") {
+    return handleWebhook(request);
   }
 
   try {
+    const user = await getRequestAuthUser();
+    if (!user) {
+      return NextResponse.json(
+        {
+          ok: false,
+          code: "UNAUTHORIZED",
+          message: "Silakan login dulu untuk melanjutkan pembayaran.",
+        },
+        { status: 401 }
+      );
+    }
+
     const body = (await request.json()) as { templateSlug?: string };
     const templateSlug = body.templateSlug?.trim() ?? "";
     if (!templateSlug) {
@@ -168,10 +271,23 @@ export async function POST(request: Request) {
       );
     }
 
-    const origin = new URL(request.url).origin;
+    const requestUrl = new URL(request.url);
+    const origin = resolvePublicOrigin(request);
+    if (!getDokuConfig().publicBaseUrl && ["localhost", "127.0.0.1"].includes(requestUrl.hostname)) {
+      return NextResponse.json(
+        {
+          ok: false,
+          code: "INVALID_PUBLIC_URL",
+          message:
+            "Set DOKU_PUBLIC_BASE_URL ke domain HTTPS publik (contoh: https://tamplateku.store) untuk checkout dari local.",
+        },
+        { status: 400 }
+      );
+    }
+
     const successUrl = `${origin}/browse-template/${template.slug}?payment=success&invoice=${encodeURIComponent(invoiceNumber)}`;
     const failureUrl = `${origin}/browse-template/${template.slug}?payment=failed&invoice=${encodeURIComponent(invoiceNumber)}`;
-    const notifyUrl = `${origin}/api/payments/doku/webhook`;
+    const notifyUrl = `${origin}/api/payments/doku/checkout?action=webhook`;
     const downloadUrl = getTemplateDownloadUrl(template);
 
     await createPaymentOrder({

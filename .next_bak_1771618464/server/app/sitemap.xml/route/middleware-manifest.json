@@ -1,0 +1,45 @@
+{
+  "sorted_middleware": [
+    "/sitemap.xml/route"
+  ],
+  "middleware": {},
+  "instrumentation": null,
+  "functions": {
+    "/sitemap.xml/route": {
+      "files": [
+        "server/middleware-build-manifest.js",
+        "server/interception-route-rewrite-manifest.js",
+        "server/next-font-manifest.js",
+        "server/server-reference-manifest.js",
+        "server/app/sitemap.xml/route_client-reference-manifest.js",
+        "server/edge/chunks/_next-internal_server_app_sitemap_xml_route_actions_8b2ca122.js",
+        "server/edge/chunks/turbopack-_next-internal_server_app_sitemap_xml_route_actions_9659de6d.js",
+        "server/edge/chunks/[root-of-the-server]__cc886dd6._.js",
+        "server/edge/chunks/node_modules_next_dist_7fd5fd40._.js",
+        "server/edge/chunks/node_modules_next_dist_compiled_2adaed9e._.js",
+        "server/edge/chunks/node_modules_next_dist_0e587828._.js",
+        "server/edge/chunks/node_modules_next_dist_8cc1cca4._.js",
+        "server/edge/chunks/node_modules_next_dist_72805b8f._.js",
+        "server/edge/chunks/turbopack-edge-wrapper_d390409b.js",
+        "server/app/sitemap.xml/route/react-loadable-manifest.js"
+      ],
+      "name": "app/sitemap.xml/route",
+      "page": "/sitemap.xml/route",
+      "matchers": [
+        {
+          "regexp": "^/sitemap\\.xml(?:/)?$",
+          "originalSource": "/sitemap.xml"
+        }
+      ],
+      "wasm": [],
+      "assets": [],
+      "env": {
+        "__NEXT_BUILD_ID": "qEHbesxHEkhOcRyClpVMR",
+        "NEXT_SERVER_ACTIONS_ENCRYPTION_KEY": "80OKIAMZmCo6PxGbc8fVH/f12KcwE+xgV3K2sFBve0g=",
+        "__NEXT_PREVIEW_MODE_ID": "2695a47dbb7badf5015be95fcdf0de09",
+        "__NEXT_PREVIEW_MODE_ENCRYPTION_KEY": "a32ef687173293afb1d41b36299a059a7f9a30de58e4fb17125fd1548bff28cf",
+        "__NEXT_PREVIEW_MODE_SIGNING_KEY": "be2d86e9a32b6ea0517763fbe4dc1d02bd049c5d7e456d34fdeb9c6d9a2c3b1c"
+      }
+    }
+  }
+}

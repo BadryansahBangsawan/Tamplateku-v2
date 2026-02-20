@@ -40,6 +40,36 @@ function normalizeBaseUrl(value: string): string {
   return value.replace(/\/+$/, "");
 }
 
+function resolveErrorMessage(payload: Record<string, unknown>, status: number): string {
+  const messageValue = payload.message;
+  if (typeof messageValue === "string" && messageValue.trim().length > 0) {
+    return messageValue;
+  }
+
+  if (Array.isArray(messageValue) && messageValue.length > 0) {
+    const joined = messageValue
+      .map((item) => (typeof item === "string" ? item : JSON.stringify(item)))
+      .filter(Boolean)
+      .join("; ");
+    if (joined.trim().length > 0) return joined;
+  }
+
+  const errorValue = payload.error;
+  if (typeof errorValue === "string" && errorValue.trim().length > 0) {
+    return errorValue;
+  }
+
+  if (Array.isArray(errorValue) && errorValue.length > 0) {
+    const joined = errorValue
+      .map((item) => (typeof item === "string" ? item : JSON.stringify(item)))
+      .filter(Boolean)
+      .join("; ");
+    if (joined.trim().length > 0) return joined;
+  }
+
+  return `DOKU request failed (${status}).`;
+}
+
 function safeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
 
@@ -86,6 +116,7 @@ export function getDokuConfig() {
     clientId: getEnv("DOKU_CLIENT_ID"),
     secretKey: getEnv("DOKU_SECRET_KEY"),
     baseUrl: normalizeBaseUrl(process.env.DOKU_BASE_URL?.trim() || "https://api-sandbox.doku.com"),
+    publicBaseUrl: normalizeBaseUrl(process.env.DOKU_PUBLIC_BASE_URL?.trim() || ""),
   };
 }
 
@@ -135,6 +166,13 @@ export async function createDokuCheckout(input: DokuCheckoutInput): Promise<Doku
       callback_url: input.successUrl,
       callback_url_cancel: input.failureUrl,
       auto_redirect: true,
+      line_items: [
+        {
+          name: input.templateName,
+          price: input.amount,
+          quantity: 1,
+        },
+      ],
     },
     payment: {
       payment_due_date: 60,
@@ -154,7 +192,7 @@ export async function createDokuCheckout(input: DokuCheckoutInput): Promise<Doku
     additional_info: {
       product_type: "DIGITAL",
       template_slug: input.templateSlug,
-      notify_url: input.notifyUrl,
+      override_notification_url: input.notifyUrl,
     },
   };
 
@@ -184,13 +222,17 @@ export async function createDokuCheckout(input: DokuCheckoutInput): Promise<Doku
   });
 
   const responseText = await response.text();
-  const payload = responseText ? (JSON.parse(responseText) as Record<string, unknown>) : {};
+  let payload: Record<string, unknown> = {};
+  if (responseText) {
+    try {
+      payload = JSON.parse(responseText) as Record<string, unknown>;
+    } catch {
+      payload = { raw_response: responseText };
+    }
+  }
 
   if (!response.ok) {
-    const message =
-      typeof payload.message === "string"
-        ? payload.message
-        : `DOKU request failed (${response.status}).`;
+    const message = resolveErrorMessage(payload, response.status);
     throw new Error(message);
   }
 

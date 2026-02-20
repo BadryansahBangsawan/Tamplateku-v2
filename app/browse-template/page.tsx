@@ -22,13 +22,14 @@ import {
   sortTemplates,
 } from "@/lib/templateCatalog";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useMemo, useState } from "react";
 
 function BrowseTemplateContent() {
   const caseStudies = useCaseStudies();
   const templates = useMemo(() => enrichTemplates(caseStudies), [caseStudies]);
   const { language } = useLanguage();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const loginStatus = searchParams.get("google");
   const [query, setQuery] = useState("");
@@ -37,6 +38,8 @@ function BrowseTemplateContent() {
   const [useCaseFilter, setUseCaseFilter] = useState("all");
   const [priceFilter, setPriceFilter] = useState<PriceFilter>("all");
   const [sortBy, setSortBy] = useState<SortOption>("latest");
+  const [processingSlug, setProcessingSlug] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState("");
 
   const copy = {
     title: language === "id" ? "Browse Template" : "Browse Templates",
@@ -65,6 +68,8 @@ function BrowseTemplateContent() {
         ? "Template tidak ditemukan. Coba ubah filter atau kata kunci."
         : "No templates found. Try changing your filters or search.",
     detail: language === "id" ? "Detail" : "Detail",
+    buyNow: language === "id" ? "Beli" : "Buy",
+    buyProcessing: language === "id" ? "Memproses..." : "Processing...",
     liveDemo: language === "id" ? "Live Demo" : "Live Demo",
     statusReady: language === "id" ? "Siap Pakai" : "Ready to Use",
     bestSeller: language === "id" ? "Best Seller" : "Best Seller",
@@ -76,6 +81,64 @@ function BrowseTemplateContent() {
       language === "id"
         ? (count: number) => `${count} template ditemukan`
         : (count: number) => `${count} templates found`,
+    paymentFailed:
+      language === "id"
+        ? "Gagal membuat checkout. Coba lagi sebentar."
+        : "Failed to create checkout. Please try again.",
+  };
+
+  const handleBuyTemplate = async (templateSlug: string) => {
+    setActionMessage("");
+    setProcessingSlug(templateSlug);
+    try {
+      const response = await fetch("/api/payments/doku/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ templateSlug }),
+      });
+
+      const rawText = await response.text();
+      let payload = {} as {
+        ok?: boolean;
+        paymentUrl?: string;
+        alreadyPurchased?: boolean;
+        downloadUrl?: string;
+        message?: string;
+      };
+      try {
+        payload = rawText ? (JSON.parse(rawText) as typeof payload) : {};
+      } catch {
+        payload = {
+          message: rawText?.trim().slice(0, 200) || undefined,
+        };
+      }
+
+      if (response.status === 401) {
+        router.push(`/login?next=${encodeURIComponent(`/browse-template/${templateSlug}`)}`);
+        return;
+      }
+
+      if (!response.ok || !payload.ok) {
+        setActionMessage(payload.message ?? `${copy.paymentFailed} (HTTP ${response.status})`);
+        return;
+      }
+
+      if (payload.alreadyPurchased && payload.downloadUrl) {
+        window.location.href = payload.downloadUrl;
+        return;
+      }
+
+      if (payload.paymentUrl) {
+        window.location.href = payload.paymentUrl;
+        return;
+      }
+
+      setActionMessage(copy.paymentFailed);
+    } catch {
+      setActionMessage(copy.paymentFailed);
+    } finally {
+      setProcessingSlug(null);
+    }
   };
 
   const frameworkOptions = useMemo(
@@ -122,6 +185,11 @@ function BrowseTemplateContent() {
         {loginStatus === "success" ? (
           <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300">
             {copy.loginSuccess}
+          </div>
+        ) : null}
+        {actionMessage ? (
+          <div className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+            {actionMessage}
           </div>
         ) : null}
 
@@ -247,6 +315,13 @@ function BrowseTemplateContent() {
                   <p className="line-clamp-2 text-sm text-muted-foreground">{item.description}</p>
                   <p className="text-sm font-medium text-foreground">{formatIdr(item.price)}</p>
                   <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => void handleBuyTemplate(item.slug)}
+                      disabled={processingSlug === item.slug}
+                    >
+                      {processingSlug === item.slug ? copy.buyProcessing : copy.buyNow}
+                    </Button>
                     {demoHref ? (
                       <Button variant="outline" size="sm" asChild>
                         <Link href={demoHref} target="_blank" rel="noopener noreferrer">
