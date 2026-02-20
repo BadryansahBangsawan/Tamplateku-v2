@@ -7,7 +7,7 @@ export type AuthUser = {
   email: string;
   name: string;
   picture?: string;
-  provider: "google" | "local";
+  provider: "google" | "github" | "local";
   role?: AuthRole;
   sessionIssuedAt?: string;
 };
@@ -26,7 +26,7 @@ export function decodeAuthUser(value: string | undefined): AuthUser | null {
         typeof parsed.id === "string" &&
         typeof parsed.email === "string" &&
         typeof parsed.name === "string" &&
-        (parsed.provider === "google" || parsed.provider === "local")
+        (parsed.provider === "google" || parsed.provider === "github" || parsed.provider === "local")
       ) {
         return {
           id: parsed.id,

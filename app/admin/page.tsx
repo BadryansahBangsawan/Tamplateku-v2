@@ -10,6 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import type { CaseStudyType } from "@/data/caseStudies";
 import { useCaseStudies } from "@/hooks/use-case-studies";
+import {
+  estimateImageStringBytes,
+  fileToOptimizedDataUrl,
+  validateUploadImageFile,
+} from "@/lib/clientImageUpload";
 import { useSiteContent } from "@/hooks/use-site-content";
 import { defaultCaseStudiesContent, writeCaseStudiesToStorage } from "@/lib/caseStudiesContent";
 import { type SiteContent, defaultSiteContent, writeSiteContentToStorage } from "@/lib/siteContent";
@@ -30,7 +35,10 @@ import {
 import Link from "next/link";
 import { type ChangeEvent, useEffect, useMemo, useState } from "react";
 
-const MAX_IMAGE_FILE_SIZE_BYTES = 1_500_000;
+const MAX_SINGLE_IMAGE_BYTES = 320_000;
+const MAX_DEMO_IMAGE_BYTES = 240_000;
+const MAX_STORED_IMAGE_BYTES = 420_000;
+const MAX_DEMO_IMAGES_PER_TEMPLATE = 8;
 const HERO_LOGO_KEYS = ["nextjs", "vue", "react", "nuxt"] as const;
 const HERO_LOGO_LABELS = ["Next.js", "Vue", "React", "Nuxt"] as const;
 
@@ -85,36 +93,6 @@ function parseLines(value: string): string[] {
     .filter((line) => line.length > 0);
 }
 
-function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        resolve(reader.result);
-        return;
-      }
-
-      reject(new Error("invalid_result"));
-    };
-
-    reader.onerror = () => reject(reader.error ?? new Error("read_failed"));
-    reader.readAsDataURL(file);
-  });
-}
-
-function validateImageFile(file: File): string | null {
-  if (!file.type.startsWith("image/")) {
-    return `File "${file.name}" bukan gambar.`;
-  }
-
-  if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
-    return `Ukuran "${file.name}" terlalu besar. Maksimal 1.5 MB per gambar.`;
-  }
-
-  return null;
-}
-
 async function getApiErrorMessage(response: Response, fallback: string): Promise<string> {
   try {
     const payload = (await response.json()) as { message?: string };
@@ -135,6 +113,30 @@ export default function AdminPage() {
   const [selectedCaseStudy, setSelectedCaseStudy] = useState(0);
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<string>("");
+
+  const optimizeUpload = async (
+    file: File,
+    targetBytes: number,
+    maxDimension = 1600
+  ): Promise<string | null> => {
+    const validationError = validateUploadImageFile(file);
+    if (validationError) {
+      setStatus(validationError);
+      return null;
+    }
+
+    try {
+      const dataUrl = await fileToOptimizedDataUrl(file, { maxBytes: targetBytes, maxDimension });
+      if (estimateImageStringBytes(dataUrl) > MAX_STORED_IMAGE_BYTES) {
+        setStatus(`Gambar "${file.name}" masih terlalu besar. Gunakan file yang lebih kecil.`);
+        return null;
+      }
+      return dataUrl;
+    } catch {
+      setStatus(`Gagal membaca file "${file.name}".`);
+      return null;
+    }
+  };
 
   useEffect(() => {
     setDraftContent(cloneSiteContent(liveContent));
@@ -277,19 +279,10 @@ export default function AdminPage() {
 
     if (!file) return;
 
-    const validationError = validateImageFile(file);
-    if (validationError) {
-      setStatus(validationError);
-      return;
-    }
-
-    try {
-      const dataUrl = await fileToDataUrl(file);
-      updateCaseStudyField(field, dataUrl);
-      setStatus(`"${file.name}" berhasil diupload. Klik Simpan Semua untuk menyimpan data.`);
-    } catch {
-      setStatus(`Gagal membaca file "${file.name}".`);
-    }
+    const dataUrl = await optimizeUpload(file, MAX_SINGLE_IMAGE_BYTES, 1600);
+    if (!dataUrl) return;
+    updateCaseStudyField(field, dataUrl);
+    setStatus(`"${file.name}" berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan data.`);
   };
 
   const handleDemoImagesUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -298,25 +291,28 @@ export default function AdminPage() {
 
     if (files.length === 0) return;
 
-    for (const file of files) {
-      const validationError = validateImageFile(file);
-      if (validationError) {
-        setStatus(validationError);
-        return;
-      }
+    if ((activeCaseStudy?.demo_images.length ?? 0) + files.length > MAX_DEMO_IMAGES_PER_TEMPLATE) {
+      setStatus(`Maksimal ${MAX_DEMO_IMAGES_PER_TEMPLATE} gambar demo per template.`);
+      return;
     }
 
     try {
-      const uploaded = await Promise.all(files.map((file) => fileToDataUrl(file)));
+      const uploaded = await Promise.all(
+        files.map((file) => optimizeUpload(file, MAX_DEMO_IMAGE_BYTES, 1440))
+      );
+      if (uploaded.some((item) => !item)) {
+        return;
+      }
+      const optimized = uploaded.filter((item): item is string => Boolean(item));
       setDraftCaseStudies((prev) =>
         prev.map((item, index) =>
           index === selectedCaseStudy
-            ? { ...item, demo_images: [...item.demo_images, ...uploaded] }
+            ? { ...item, demo_images: [...item.demo_images, ...optimized] }
             : item
         )
       );
       setStatus(
-        `${uploaded.length} gambar demo berhasil diupload. Klik Simpan Semua untuk menyimpan data.`
+        `${optimized.length} gambar demo berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan data.`
       );
     } catch {
       setStatus("Gagal membaca salah satu file gambar demo.");
@@ -332,19 +328,10 @@ export default function AdminPage() {
     event.target.value = "";
     if (!file) return;
 
-    const validationError = validateImageFile(file);
-    if (validationError) {
-      setStatus(validationError);
-      return;
-    }
-
-    try {
-      const dataUrl = await fileToDataUrl(file);
-      updateHeroFrameworkLogo(key, dataUrl);
-      setStatus(`Logo ${label} berhasil diupload. Klik Simpan Semua untuk menyimpan data.`);
-    } catch {
-      setStatus(`Gagal membaca file "${file.name}".`);
-    }
+    const dataUrl = await optimizeUpload(file, MAX_SINGLE_IMAGE_BYTES, 1200);
+    if (!dataUrl) return;
+    updateHeroFrameworkLogo(key, dataUrl);
+    setStatus(`Logo ${label} berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan data.`);
   };
 
   const handleProcessBackgroundUpload = async (
@@ -355,21 +342,12 @@ export default function AdminPage() {
     event.target.value = "";
     if (!file) return;
 
-    const validationError = validateImageFile(file);
-    if (validationError) {
-      setStatus(validationError);
-      return;
-    }
-
-    try {
-      const dataUrl = await fileToDataUrl(file);
-      updateProcessBackgroundImage(index, dataUrl);
-      setStatus(
-        `Gambar latar langkah ${index + 1} berhasil diupload. Klik Simpan Semua untuk menyimpan data.`
-      );
-    } catch {
-      setStatus(`Gagal membaca file "${file.name}".`);
-    }
+    const dataUrl = await optimizeUpload(file, MAX_SINGLE_IMAGE_BYTES, 1600);
+    if (!dataUrl) return;
+    updateProcessBackgroundImage(index, dataUrl);
+    setStatus(
+      `Gambar latar langkah ${index + 1} berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan data.`
+    );
   };
 
   const handleContactBackgroundUpload = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -377,19 +355,10 @@ export default function AdminPage() {
     event.target.value = "";
     if (!file) return;
 
-    const validationError = validateImageFile(file);
-    if (validationError) {
-      setStatus(validationError);
-      return;
-    }
-
-    try {
-      const dataUrl = await fileToDataUrl(file);
-      updateContentField("contact", "backgroundImage", dataUrl);
-      setStatus("Background contact section berhasil diupload. Klik Simpan Semua untuk menyimpan.");
-    } catch {
-      setStatus(`Gagal membaca file "${file.name}".`);
-    }
+    const dataUrl = await optimizeUpload(file, MAX_SINGLE_IMAGE_BYTES, 1600);
+    if (!dataUrl) return;
+    updateContentField("contact", "backgroundImage", dataUrl);
+    setStatus("Background contact section berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan.");
   };
 
   const handleSectionCaseStudyImageUpload = async (
@@ -402,19 +371,10 @@ export default function AdminPage() {
     event.target.value = "";
     if (!file) return;
 
-    const validationError = validateImageFile(file);
-    if (validationError) {
-      setStatus(validationError);
-      return;
-    }
-
-    try {
-      const dataUrl = await fileToDataUrl(file);
-      updateCaseStudyImageFieldByIndex(index, field, dataUrl);
-      setStatus(`${label} berhasil diupload. Klik Simpan Semua untuk menyimpan data.`);
-    } catch {
-      setStatus(`Gagal membaca file "${file.name}".`);
-    }
+    const dataUrl = await optimizeUpload(file, MAX_SINGLE_IMAGE_BYTES, 1600);
+    if (!dataUrl) return;
+    updateCaseStudyImageFieldByIndex(index, field, dataUrl);
+    setStatus(`${label} berhasil diupload dan dioptimasi. Klik Simpan Semua untuk menyimpan data.`);
   };
 
   const saveAll = async () => {

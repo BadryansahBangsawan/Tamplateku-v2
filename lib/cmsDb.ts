@@ -29,6 +29,89 @@ type TemplateRow = {
   is_best_seller: number | null;
 };
 
+const MAX_INLINE_IMAGE_BYTES = 420_000;
+const MAX_TEMPLATE_ROW_BYTES = 1_600_000;
+const MAX_DEMO_IMAGES_PER_TEMPLATE = 8;
+
+function isDataUrl(value: string): boolean {
+  return value.startsWith("data:");
+}
+
+function estimateBytes(value: string): number {
+  return new TextEncoder().encode(value).length;
+}
+
+function estimateDataUrlBytes(value: string): number {
+  if (!isDataUrl(value)) return estimateBytes(value);
+
+  const marker = ";base64,";
+  const markerIndex = value.indexOf(marker);
+  if (markerIndex === -1) return estimateBytes(value);
+
+  const payload = value.slice(markerIndex + marker.length);
+  const padding = payload.endsWith("==") ? 2 : payload.endsWith("=") ? 1 : 0;
+  return Math.floor((payload.length * 3) / 4) - padding;
+}
+
+function validateTemplateSize(item: CaseStudyType, index: number): void {
+  const name = item.name?.trim() || `Template ${index + 1}`;
+  const demoImages = Array.isArray(item.demo_images) ? item.demo_images : [];
+  if (demoImages.length > MAX_DEMO_IMAGES_PER_TEMPLATE) {
+    throw new Error(
+      `Template "${name}" melebihi batas gambar demo (${MAX_DEMO_IMAGES_PER_TEMPLATE}).`
+    );
+  }
+
+  const imageFields: Array<{ label: string; value: string | undefined }> = [
+    { label: "gambar utama", value: item.main_image_src },
+    { label: "logo", value: item.logo_src },
+    { label: "gambar testimoni", value: item.test_img },
+  ];
+
+  for (const field of imageFields) {
+    if (!field.value || !isDataUrl(field.value)) continue;
+    if (estimateDataUrlBytes(field.value) > MAX_INLINE_IMAGE_BYTES) {
+      throw new Error(
+        `Ukuran ${field.label} pada template "${name}" terlalu besar. Kecilkan ukuran gambar lalu simpan ulang.`
+      );
+    }
+  }
+
+  for (let i = 0; i < demoImages.length; i += 1) {
+    const image = demoImages[i];
+    if (!isDataUrl(image)) continue;
+    if (estimateDataUrlBytes(image) > MAX_INLINE_IMAGE_BYTES) {
+      throw new Error(
+        `Ukuran gambar demo #${i + 1} pada template "${name}" terlalu besar. Kecilkan ukuran gambar lalu simpan ulang.`
+      );
+    }
+  }
+
+  const approxRowBytes =
+    estimateBytes(item.name ?? "") +
+    estimateBytes(item.project_title ?? "") +
+    estimateBytes(item.main_image_src ?? "") +
+    estimateBytes(item.logo_src ?? "") +
+    estimateBytes(item.description ?? "") +
+    estimateBytes(JSON.stringify(item.features ?? [])) +
+    estimateBytes(item.case_study_link ?? "") +
+    estimateBytes(JSON.stringify(demoImages)) +
+    estimateBytes(item.project_link ?? "") +
+    estimateBytes(item.cta_links?.["let's talk"] ?? "") +
+    estimateBytes(item.cta_links?.["read case study"] ?? "") +
+    estimateBytes(item.test_img ?? "") +
+    estimateBytes(item.testimonial ?? "") +
+    estimateBytes(item.founder_name ?? "") +
+    estimateBytes(item.position ?? "") +
+    estimateBytes(item.status_label ?? "");
+
+  if (approxRowBytes > MAX_TEMPLATE_ROW_BYTES) {
+    throw new Error(
+      `Ukuran data template "${name}" terlalu besar untuk database. Kurangi jumlah/ukuran gambar lalu simpan ulang.`
+    );
+  }
+}
+
 function parseJsonArray(raw: string): string[] {
   try {
     const parsed = JSON.parse(raw);
@@ -194,6 +277,7 @@ export async function saveTemplatesToDb(templates: CaseStudyType[]): Promise<Cas
   const saved: CaseStudyType[] = [];
   for (let index = 0; index < normalized.length; index += 1) {
     const item = normalized[index];
+    validateTemplateSize(item, index);
     const id = item.id && item.id.trim().length > 0 ? item.id : crypto.randomUUID();
 
     await runD1Query(

@@ -9,11 +9,19 @@ import { Textarea } from "@/components/ui/textarea";
 import type { CaseStudyType } from "@/data/caseStudies";
 import { useCaseStudies } from "@/hooks/use-case-studies";
 import { defaultCaseStudiesContent, writeCaseStudiesToStorage } from "@/lib/caseStudiesContent";
+import {
+  estimateImageStringBytes,
+  fileToOptimizedDataUrl,
+  validateUploadImageFile,
+} from "@/lib/clientImageUpload";
 import { ArrowDown, ArrowUp, Copy, Plus, Save, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { type ChangeEvent, useEffect, useMemo, useState } from "react";
 
-const MAX_IMAGE_FILE_SIZE_BYTES = 1_500_000;
+const MAX_SINGLE_IMAGE_BYTES = 320_000;
+const MAX_DEMO_IMAGE_BYTES = 240_000;
+const MAX_STORED_IMAGE_BYTES = 420_000;
+const MAX_DEMO_IMAGES_PER_TEMPLATE = 8;
 
 function cloneCaseStudy(item: CaseStudyType): CaseStudyType {
   return {
@@ -45,26 +53,6 @@ function parseLines(value: string): string[] {
     .split("\n")
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
-}
-
-function fileToDataUrl(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () =>
-      typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("invalid"));
-    reader.onerror = () => reject(reader.error ?? new Error("read_failed"));
-    reader.readAsDataURL(file);
-  });
-}
-
-function validateImageFile(file: File): string | null {
-  if (!file.type.startsWith("image/")) {
-    return `File "${file.name}" bukan gambar.`;
-  }
-  if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
-    return `Ukuran "${file.name}" terlalu besar. Maksimal 1.5 MB.`;
-  }
-  return null;
 }
 
 async function getApiErrorMessage(response: Response, fallback: string): Promise<string> {
@@ -147,16 +135,23 @@ export default function AdminPengelolaPage() {
     event.target.value = "";
     if (!file) return;
 
-    const validationError = validateImageFile(file);
+    const validationError = validateUploadImageFile(file);
     if (validationError) {
       setStatus(validationError);
       return;
     }
 
     try {
-      const dataUrl = await fileToDataUrl(file);
+      const dataUrl = await fileToOptimizedDataUrl(file, {
+        maxBytes: MAX_SINGLE_IMAGE_BYTES,
+        maxDimension: 1600,
+      });
+      if (estimateImageStringBytes(dataUrl) > MAX_STORED_IMAGE_BYTES) {
+        setStatus(`Gambar "${file.name}" masih terlalu besar. Coba file lain yang lebih kecil.`);
+        return;
+      }
       updateCaseStudyField(field, dataUrl);
-      setStatus(`"${file.name}" berhasil diupload. Klik Simpan Template.`);
+      setStatus(`"${file.name}" berhasil diupload dan dioptimasi. Klik Simpan Template.`);
     } catch {
       setStatus(`Gagal membaca file "${file.name}".`);
     }
@@ -167,8 +162,13 @@ export default function AdminPengelolaPage() {
     event.target.value = "";
     if (files.length === 0) return;
 
+    if ((activeCaseStudy?.demo_images.length ?? 0) + files.length > MAX_DEMO_IMAGES_PER_TEMPLATE) {
+      setStatus(`Maksimal ${MAX_DEMO_IMAGES_PER_TEMPLATE} gambar demo per template.`);
+      return;
+    }
+
     for (const file of files) {
-      const validationError = validateImageFile(file);
+      const validationError = validateUploadImageFile(file);
       if (validationError) {
         setStatus(validationError);
         return;
@@ -176,7 +176,15 @@ export default function AdminPengelolaPage() {
     }
 
     try {
-      const uploaded = await Promise.all(files.map((file) => fileToDataUrl(file)));
+      const uploaded = await Promise.all(
+        files.map((file) =>
+          fileToOptimizedDataUrl(file, { maxBytes: MAX_DEMO_IMAGE_BYTES, maxDimension: 1440 })
+        )
+      );
+      if (uploaded.some((item) => estimateImageStringBytes(item) > MAX_STORED_IMAGE_BYTES)) {
+        setStatus("Ada gambar demo yang masih terlalu besar setelah optimasi. Coba file lebih kecil.");
+        return;
+      }
       setDraftCaseStudies((prev) =>
         prev.map((item, index) =>
           index === selectedCaseStudy
@@ -184,7 +192,7 @@ export default function AdminPengelolaPage() {
             : item
         )
       );
-      setStatus(`${uploaded.length} gambar demo berhasil diupload.`);
+      setStatus(`${uploaded.length} gambar demo berhasil diupload dan dioptimasi.`);
     } catch {
       setStatus("Gagal membaca salah satu file gambar demo.");
     }
