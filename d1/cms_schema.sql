@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS auth_users (
   name TEXT NOT NULL,
   email TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'USER',
   email_verified_at TEXT,
   notes TEXT,
   created_at TEXT NOT NULL,

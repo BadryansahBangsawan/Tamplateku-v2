@@ -1,4 +1,5 @@
 import { AUTH_COOKIE_NAME, encodeAuthUser } from "@/lib/authCookie";
+import { getUserRoleByEmail } from "@/lib/roles";
 import { NextResponse } from "next/server";
 
 export const runtime = "edge";
@@ -76,10 +77,17 @@ export async function GET(request: Request) {
   }
 
   const profile = (await profileResponse.json()) as GoogleProfile;
+  const role = getUserRoleByEmail(profile.email);
+  const redirectPath =
+    role === "SUPER_ADMIN"
+      ? "/super-admin?google=success"
+      : role === "ADMIN"
+        ? "/admin?google=success"
+        : role === "TEMPLATE_ADMIN"
+          ? "/admin-pengelola?google=success"
+          : "/browse-template?google=success";
 
-  const response = NextResponse.redirect(
-    new URL("/browse-template?google=success", requestUrl.origin)
-  );
+  const response = NextResponse.redirect(new URL(redirectPath, requestUrl.origin));
   response.cookies.delete("google_oauth_state");
   response.cookies.set(
     AUTH_COOKIE_NAME,
@@ -89,6 +97,7 @@ export async function GET(request: Request) {
       name: profile.name,
       picture: profile.picture,
       provider: "google",
+      role,
     }),
     {
       httpOnly: true,

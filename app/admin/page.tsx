@@ -73,7 +73,7 @@ function createNewCaseStudy(seed: number): CaseStudyType {
     testimonial: "",
     founder_name: "",
     position: "",
-    status_label: "Ready to Use",
+    status_label: "Siap Dipakai",
     is_best_seller: false,
   };
 }
@@ -286,7 +286,7 @@ export default function AdminPage() {
     try {
       const dataUrl = await fileToDataUrl(file);
       updateCaseStudyField(field, dataUrl);
-      setStatus(`"${file.name}" berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`);
+      setStatus(`"${file.name}" berhasil diupload. Klik Simpan Semua untuk menyimpan data.`);
     } catch {
       setStatus(`Gagal membaca file "${file.name}".`);
     }
@@ -316,7 +316,7 @@ export default function AdminPage() {
         )
       );
       setStatus(
-        `${uploaded.length} gambar demo berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`
+        `${uploaded.length} gambar demo berhasil diupload. Klik Simpan Semua untuk menyimpan data.`
       );
     } catch {
       setStatus("Gagal membaca salah satu file gambar demo.");
@@ -341,7 +341,7 @@ export default function AdminPage() {
     try {
       const dataUrl = await fileToDataUrl(file);
       updateHeroFrameworkLogo(key, dataUrl);
-      setStatus(`Logo ${label} berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`);
+      setStatus(`Logo ${label} berhasil diupload. Klik Simpan Semua untuk menyimpan data.`);
     } catch {
       setStatus(`Gagal membaca file "${file.name}".`);
     }
@@ -365,7 +365,7 @@ export default function AdminPage() {
       const dataUrl = await fileToDataUrl(file);
       updateProcessBackgroundImage(index, dataUrl);
       setStatus(
-        `Background proses step ${index + 1} berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`
+        `Gambar latar langkah ${index + 1} berhasil diupload. Klik Simpan Semua untuk menyimpan data.`
       );
     } catch {
       setStatus(`Gagal membaca file "${file.name}".`);
@@ -411,7 +411,7 @@ export default function AdminPage() {
     try {
       const dataUrl = await fileToDataUrl(file);
       updateCaseStudyImageFieldByIndex(index, field, dataUrl);
-      setStatus(`${label} berhasil diupload. Klik Simpan Semua untuk menyimpan ke database.`);
+      setStatus(`${label} berhasil diupload. Klik Simpan Semua untuk menyimpan data.`);
     } catch {
       setStatus(`Gagal membaca file "${file.name}".`);
     }
@@ -424,7 +424,7 @@ export default function AdminPage() {
     }
 
     setIsSaving(true);
-    setStatus("Menyimpan perubahan ke database...");
+    setStatus("Menyimpan perubahan...");
 
     try {
       let savedContent = draftContent;
@@ -473,11 +473,11 @@ export default function AdminPage() {
       }
 
       if (isContentDirty && isTemplatesDirty) {
-        setStatus("Perubahan section dan template berhasil disimpan ke database.");
+        setStatus("Perubahan bagian halaman dan template berhasil disimpan.");
       } else if (isContentDirty) {
-        setStatus("Perubahan section berhasil disimpan ke database.");
+        setStatus("Perubahan bagian halaman berhasil disimpan.");
       } else {
-        setStatus("Perubahan template berhasil disimpan ke database.");
+        setStatus("Perubahan template berhasil disimpan.");
       }
     } catch (error) {
       const message =
@@ -502,7 +502,7 @@ export default function AdminPage() {
     setSelectedCaseStudy(0);
 
     setIsSaving(true);
-    setStatus("Mereset konten ke default dan menyimpan ke database...");
+    setStatus("Mengembalikan konten awal dan menyimpan...");
 
     try {
       const [contentResponse, templatesResponse] = await Promise.all([
@@ -537,7 +537,7 @@ export default function AdminPage() {
       setStatus("Semua konten berhasil direset ke default.");
     } catch (error) {
       const message =
-        error instanceof Error && error.message ? error.message : "Gagal reset konten ke database.";
+        error instanceof Error && error.message ? error.message : "Gagal reset konten.";
       setStatus(message);
     } finally {
       setIsSaving(false);
@@ -605,16 +605,16 @@ export default function AdminPage() {
         <header className="flex flex-col gap-4 rounded-xl border bg-background p-5 md:flex-row md:items-center md:justify-between">
           <div>
             <p className="text-sm text-muted-foreground">Tamplateku CMS</p>
-            <h1 className="text-2xl font-semibold">Admin Konten & CRUD Section</h1>
+            <h1 className="text-2xl font-semibold">Kelola Konten Website</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              Kelola konten global dan item template. Perubahan akan dipakai di Home, Templates,
-              Testimonial, dan Contact section.
+              Kelola isi website dan data template. Perubahan akan tampil di beranda, halaman
+              template, testimoni, dan kontak.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button asChild variant="outline">
               <Link href="/" target="_blank">
-                Preview Website
+                Lihat Website
                 <ExternalLink className="ml-2 h-4 w-4" />
               </Link>
             </Button>
@@ -637,25 +637,25 @@ export default function AdminPage() {
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base">Sidebar Admin</CardTitle>
-                <CardDescription>Pilih section yang ingin dikelola.</CardDescription>
+                <CardDescription>Pilih bagian yang ingin diubah.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-2">
                 <TabsList className="flex h-auto w-full flex-col items-stretch gap-2 bg-transparent p-0">
                   <TabsTrigger value="overview" className="h-10 w-full justify-start">
                     <LayoutDashboard className="mr-2 h-4 w-4" />
-                    Overview
+                    Ringkasan
                   </TabsTrigger>
                   <TabsTrigger value="sections" className="h-10 w-full justify-start">
                     <Settings2 className="mr-2 h-4 w-4" />
-                    Sections
+                    Isi Halaman
                   </TabsTrigger>
                   <TabsTrigger value="templates" className="h-10 w-full justify-start">
                     <GalleryVerticalEnd className="mr-2 h-4 w-4" />
-                    Templates CRUD
+                    Kelola Template
                   </TabsTrigger>
                   <TabsTrigger value="links" className="h-10 w-full justify-start">
                     <Link2 className="mr-2 h-4 w-4" />
-                    Page Links
+                    Tautan Halaman
                   </TabsTrigger>
                 </TabsList>
               </CardContent>
@@ -663,11 +663,11 @@ export default function AdminPage() {
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm">Status Sinkronisasi</CardTitle>
+                <CardTitle className="text-sm">Status Perubahan</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <Badge variant={isDirty ? "destructive" : "secondary"}>
-                  {isDirty ? "Unsaved" : "Synced"}
+                  {isDirty ? "Belum Disimpan" : "Sudah Tersimpan"}
                 </Badge>
                 <p className="text-xs text-muted-foreground">
                   {status || "Siap edit dan simpan perubahan."}
@@ -681,7 +681,7 @@ export default function AdminPage() {
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">Section Editable</CardTitle>
+                    <CardTitle className="text-sm">Bagian yang Bisa Diubah</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-2xl font-semibold">5</p>
@@ -692,23 +692,23 @@ export default function AdminPage() {
                 </Card>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">Template Items</CardTitle>
+                    <CardTitle className="text-sm">Jumlah Template</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-2xl font-semibold">{draftCaseStudies.length}</p>
                     <p className="text-xs text-muted-foreground">
-                      Dipakai untuk carousel, cards, dan testimonial
+                      Dipakai untuk carousel, kartu, dan testimoni
                     </p>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">Storage</CardTitle>
+                    <CardTitle className="text-sm">Penyimpanan Data</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-2xl font-semibold">Cloudflare D1</p>
+                    <p className="text-2xl font-semibold">Database Website</p>
                     <p className="text-xs text-muted-foreground">
-                      Database utama + local sync untuk realtime update UI
+                      Data utama website dan cadangan lokal untuk tampilan admin.
                     </p>
                   </CardContent>
                 </Card>
@@ -728,12 +728,12 @@ export default function AdminPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Aksi Cepat</CardTitle>
-                  <CardDescription>Navigasi cepat untuk workflow admin harian.</CardDescription>
+                  <CardDescription>Pintasan untuk pekerjaan admin harian.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-wrap gap-2">
                   <Button asChild variant="outline">
                     <Link href="/" target="_blank">
-                      Preview Website
+                      Lihat Website
                       <ExternalLink className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
@@ -757,22 +757,22 @@ export default function AdminPage() {
               <div className="grid gap-4 lg:grid-cols-2">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Hero Section</CardTitle>
+                    <CardTitle>Bagian Hero</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <Label htmlFor="hero-badge">Badge</Label>
+                    <Label htmlFor="hero-badge">Label Kecil</Label>
                     <Input
                       id="hero-badge"
                       value={draftContent.hero.badge}
                       onChange={(e) => updateContentField("hero", "badge", e.target.value)}
                     />
-                    <Label htmlFor="hero-heading">Heading</Label>
+                    <Label htmlFor="hero-heading">Judul</Label>
                     <Input
                       id="hero-heading"
                       value={draftContent.hero.heading}
                       onChange={(e) => updateContentField("hero", "heading", e.target.value)}
                     />
-                    <Label htmlFor="hero-description">Description</Label>
+                    <Label htmlFor="hero-description">Deskripsi</Label>
                     <Textarea
                       id="hero-description"
                       rows={3}
@@ -781,7 +781,7 @@ export default function AdminPage() {
                     />
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div className="space-y-2">
-                        <Label htmlFor="hero-primary">Primary CTA</Label>
+                        <Label htmlFor="hero-primary">Teks Tombol Utama</Label>
                         <Input
                           id="hero-primary"
                           value={draftContent.hero.primaryCta}
@@ -789,7 +789,7 @@ export default function AdminPage() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="hero-secondary">Secondary CTA</Label>
+                        <Label htmlFor="hero-secondary">Teks Tombol Kedua</Label>
                         <Input
                           id="hero-secondary"
                           value={draftContent.hero.secondaryCta}
@@ -801,7 +801,7 @@ export default function AdminPage() {
                     </div>
                     <Separator />
                     <div className="space-y-3">
-                      <p className="text-sm font-medium">Framework Logo Bar (Hero)</p>
+                      <p className="text-sm font-medium">Logo Framework (Hero)</p>
                       <div className="grid gap-3 md:grid-cols-2">
                         {HERO_LOGO_KEYS.map((key, index) => (
                           <div key={key} className="space-y-2 rounded-md border p-3">
@@ -829,22 +829,22 @@ export default function AdminPage() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Case Studies Section</CardTitle>
+                    <CardTitle>Bagian Studi Kasus</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <Label htmlFor="cs-badge">Badge</Label>
+                    <Label htmlFor="cs-badge">Label Kecil</Label>
                     <Input
                       id="cs-badge"
                       value={draftContent.caseStudies.badge}
                       onChange={(e) => updateContentField("caseStudies", "badge", e.target.value)}
                     />
-                    <Label htmlFor="cs-heading">Heading</Label>
+                    <Label htmlFor="cs-heading">Judul</Label>
                     <Input
                       id="cs-heading"
                       value={draftContent.caseStudies.heading}
                       onChange={(e) => updateContentField("caseStudies", "heading", e.target.value)}
                     />
-                    <Label htmlFor="cs-description">Description</Label>
+                    <Label htmlFor="cs-description">Deskripsi</Label>
                     <Textarea
                       id="cs-description"
                       rows={3}
@@ -853,7 +853,7 @@ export default function AdminPage() {
                         updateContentField("caseStudies", "description", e.target.value)
                       }
                     />
-                    <Label htmlFor="cs-button">Button Label</Label>
+                    <Label htmlFor="cs-button">Teks Tombol</Label>
                     <Input
                       id="cs-button"
                       value={draftContent.caseStudies.buttonLabel}
@@ -863,14 +863,14 @@ export default function AdminPage() {
                     />
                     <Separator />
                     <div className="space-y-3">
-                      <p className="text-sm font-medium">Quick Image CRUD - Case Studies (Top 3)</p>
+                      <p className="text-sm font-medium">Ganti Gambar Cepat - Studi Kasus (3 Teratas)</p>
                       {featuredCaseStudies.map(({ item, index }) => (
                         <div
                           key={`cs-image-${item.id ?? index}`}
                           className="space-y-2 rounded-md border p-3"
                         >
                           <p className="text-sm font-medium">{item.name}</p>
-                          <Label>Main Image</Label>
+                          <Label>Gambar Utama</Label>
                           <Input
                             type="file"
                             accept="image/*"
@@ -879,7 +879,7 @@ export default function AdminPage() {
                                 event,
                                 index,
                                 "main_image_src",
-                                `Main image ${item.name}`
+                                `Gambar utama ${item.name}`
                               )
                             }
                           />
@@ -891,7 +891,7 @@ export default function AdminPage() {
                         </div>
                       ))}
                       <p className="text-xs text-muted-foreground">
-                        Untuk edit demo images dan logo lebih lengkap, gunakan tab Templates CRUD.
+                        Untuk mengubah gambar demo dan logo lebih lengkap, buka tab Kelola Template.
                       </p>
                     </div>
                   </CardContent>
@@ -899,22 +899,22 @@ export default function AdminPage() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Process Section</CardTitle>
+                    <CardTitle>Bagian Proses</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <Label htmlFor="process-badge">Badge</Label>
+                    <Label htmlFor="process-badge">Label Kecil</Label>
                     <Input
                       id="process-badge"
                       value={draftContent.process.badge}
                       onChange={(e) => updateContentField("process", "badge", e.target.value)}
                     />
-                    <Label htmlFor="process-heading">Heading</Label>
+                    <Label htmlFor="process-heading">Judul</Label>
                     <Input
                       id="process-heading"
                       value={draftContent.process.heading}
                       onChange={(e) => updateContentField("process", "heading", e.target.value)}
                     />
-                    <Label htmlFor="process-description">Description</Label>
+                    <Label htmlFor="process-description">Deskripsi</Label>
                     <Textarea
                       id="process-description"
                       rows={3}
@@ -923,14 +923,14 @@ export default function AdminPage() {
                     />
                     <Separator />
                     <div className="space-y-3">
-                      <p className="text-sm font-medium">Background Image per Step</p>
+                      <p className="text-sm font-medium">Gambar Latar per Langkah</p>
                       <div className="grid gap-3 md:grid-cols-2">
                         {[0, 1, 2, 3].map((index) => (
                           <div
                             key={`process-bg-${index}`}
                             className="space-y-2 rounded-md border p-3"
                           >
-                            <Label>{`Step ${index + 1} Background`}</Label>
+                            <Label>{`Gambar Latar Langkah ${index + 1}`}</Label>
                             <Input
                               type="file"
                               accept="image/*"
@@ -950,16 +950,16 @@ export default function AdminPage() {
 
                 <Card>
                   <CardHeader>
-                    <CardTitle>Testimonials Section</CardTitle>
+                    <CardTitle>Bagian Testimoni</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <Label htmlFor="testi-badge">Badge</Label>
+                    <Label htmlFor="testi-badge">Label Kecil</Label>
                     <Input
                       id="testi-badge"
                       value={draftContent.testimonials.badge}
                       onChange={(e) => updateContentField("testimonials", "badge", e.target.value)}
                     />
-                    <Label htmlFor="testi-heading">Heading</Label>
+                    <Label htmlFor="testi-heading">Judul</Label>
                     <Input
                       id="testi-heading"
                       value={draftContent.testimonials.heading}
@@ -967,7 +967,7 @@ export default function AdminPage() {
                         updateContentField("testimonials", "heading", e.target.value)
                       }
                     />
-                    <Label htmlFor="testi-description">Description</Label>
+                    <Label htmlFor="testi-description">Deskripsi</Label>
                     <Textarea
                       id="testi-description"
                       rows={2}
@@ -982,29 +982,29 @@ export default function AdminPage() {
                         onChange={(e) =>
                           updateContentField("testimonials", "statOneLabel", e.target.value)
                         }
-                        placeholder="Stat 1 label"
+                        placeholder="Label statistik 1"
                       />
                       <Input
                         value={draftContent.testimonials.statTwoLabel}
                         onChange={(e) =>
                           updateContentField("testimonials", "statTwoLabel", e.target.value)
                         }
-                        placeholder="Stat 2 label"
+                        placeholder="Label statistik 2"
                       />
                       <Input
                         value={draftContent.testimonials.statThreeLabel}
                         onChange={(e) =>
                           updateContentField("testimonials", "statThreeLabel", e.target.value)
                         }
-                        placeholder="Stat 3 label"
+                        placeholder="Label statistik 3"
                       />
                     </div>
                     <Separator />
                     <div className="space-y-3">
-                      <p className="text-sm font-medium">Quick Image CRUD - Testimonials</p>
+                      <p className="text-sm font-medium">Ganti Gambar Cepat - Testimoni</p>
                       {testimonialCaseStudies.length === 0 ? (
                         <p className="text-xs text-muted-foreground">
-                          Belum ada item testimonial. Isi testimonial di tab Templates CRUD untuk
+                          Belum ada item testimoni. Isi testimoni di tab Kelola Template untuk
                           menampilkan kontrol image di sini.
                         </p>
                       ) : (
@@ -1042,22 +1042,22 @@ export default function AdminPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Contact Section</CardTitle>
+                  <CardTitle>Bagian Kontak</CardTitle>
                   <CardDescription>
-                    Kontrol heading dan label form di section kontak.
+                    Ubah judul dan label form di bagian kontak.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div className="grid gap-3 md:grid-cols-3">
                     <div className="space-y-2">
-                      <Label>Badge</Label>
+                      <Label>Label Kecil</Label>
                       <Input
                         value={draftContent.contact.badge}
                         onChange={(e) => updateContentField("contact", "badge", e.target.value)}
                       />
                     </div>
                     <div className="space-y-2 md:col-span-2">
-                      <Label>Heading</Label>
+                      <Label>Judul</Label>
                       <Input
                         value={draftContent.contact.heading}
                         onChange={(e) => updateContentField("contact", "heading", e.target.value)}
@@ -1065,7 +1065,7 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label>Description</Label>
+                    <Label>Deskripsi</Label>
                     <Textarea
                       rows={2}
                       value={draftContent.contact.description}
@@ -1073,7 +1073,7 @@ export default function AdminPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Background Image</Label>
+                    <Label>Gambar Latar</Label>
                     <Input
                       type="file"
                       accept="image/*"
@@ -1090,38 +1090,38 @@ export default function AdminPage() {
                     <Input
                       value={draftContent.contact.nameLabel}
                       onChange={(e) => updateContentField("contact", "nameLabel", e.target.value)}
-                      placeholder="Name label"
+                      placeholder="Label nama"
                     />
                     <Input
                       value={draftContent.contact.namePlaceholder}
                       onChange={(e) =>
                         updateContentField("contact", "namePlaceholder", e.target.value)
                       }
-                      placeholder="Name placeholder"
+                      placeholder="Contoh nama"
                     />
                     <Input
                       value={draftContent.contact.emailLabel}
                       onChange={(e) => updateContentField("contact", "emailLabel", e.target.value)}
-                      placeholder="Email label"
+                      placeholder="Label email"
                     />
                     <Input
                       value={draftContent.contact.emailPlaceholder}
                       onChange={(e) =>
                         updateContentField("contact", "emailPlaceholder", e.target.value)
                       }
-                      placeholder="Email placeholder"
+                      placeholder="Contoh email"
                     />
                     <Input
                       value={draftContent.contact.messageLabel}
                       onChange={(e) =>
                         updateContentField("contact", "messageLabel", e.target.value)
                       }
-                      placeholder="Message label"
+                      placeholder="Label pesan"
                     />
                     <Input
                       value={draftContent.contact.submitLabel}
                       onChange={(e) => updateContentField("contact", "submitLabel", e.target.value)}
-                      placeholder="Submit label"
+                      placeholder="Teks tombol kirim"
                     />
                   </div>
                   <Textarea
@@ -1130,7 +1130,7 @@ export default function AdminPage() {
                     onChange={(e) =>
                       updateContentField("contact", "messagePlaceholder", e.target.value)
                     }
-                    placeholder="Message placeholder"
+                    placeholder="Contoh isi pesan"
                   />
                 </CardContent>
               </Card>
@@ -1143,7 +1143,7 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between gap-2">
                       <div>
                         <CardTitle>Daftar Template</CardTitle>
-                        <CardDescription>Pilih item untuk edit detail.</CardDescription>
+                        <CardDescription>Pilih template untuk diubah.</CardDescription>
                       </div>
                       <Button size="sm" onClick={addCaseStudy}>
                         <Plus className="mr-1 h-4 w-4" /> Tambah
@@ -1176,7 +1176,7 @@ export default function AdminPage() {
                               type="button"
                               onClick={() => moveCaseStudy(index, "up")}
                               className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
-                              aria-label={`Move ${item.name} up`}
+                              aria-label={`Pindahkan ${item.name} ke atas`}
                               disabled={index === 0}
                             >
                               <ArrowUp className="h-4 w-4" />
@@ -1185,7 +1185,7 @@ export default function AdminPage() {
                               type="button"
                               onClick={() => moveCaseStudy(index, "down")}
                               className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-40"
-                              aria-label={`Move ${item.name} down`}
+                              aria-label={`Pindahkan ${item.name} ke bawah`}
                               disabled={index === draftCaseStudies.length - 1}
                             >
                               <ArrowDown className="h-4 w-4" />
@@ -1194,7 +1194,7 @@ export default function AdminPage() {
                               type="button"
                               onClick={() => deleteCaseStudy(index)}
                               className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-destructive"
-                              aria-label={`Delete ${item.name}`}
+                              aria-label={`Hapus ${item.name}`}
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -1209,9 +1209,9 @@ export default function AdminPage() {
                   <CardHeader>
                     <div className="flex items-center justify-between gap-2">
                       <div>
-                        <CardTitle>Editor Template</CardTitle>
+                        <CardTitle>Form Ubah Template</CardTitle>
                         <CardDescription>
-                          CRUD item yang dipakai di beberapa section.
+                          Ubah data template yang dipakai di beberapa bagian.
                         </CardDescription>
                       </div>
                       <Button size="sm" variant="outline" onClick={duplicateCaseStudy}>
@@ -1231,7 +1231,7 @@ export default function AdminPage() {
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label>Case Study Link</Label>
+                            <Label>Link Studi Kasus</Label>
                             <Input
                               value={activeCaseStudy.case_study_link}
                               onChange={(e) =>
@@ -1243,15 +1243,15 @@ export default function AdminPage() {
 
                         <div className="grid gap-3 md:grid-cols-2">
                           <div className="space-y-2">
-                            <Label>Status Label</Label>
+                            <Label>Label Status</Label>
                             <Input
-                              value={activeCaseStudy.status_label ?? "Ready to Use"}
+                              value={activeCaseStudy.status_label ?? "Siap Dipakai"}
                               onChange={(e) => updateCaseStudyField("status_label", e.target.value)}
-                              placeholder="Ready to Use"
+                              placeholder="Siap Dipakai"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label className="block">Best Seller</Label>
+                            <Label className="block">Unggulan</Label>
                             <label className="inline-flex items-center gap-2 text-sm text-muted-foreground">
                               <input
                                 type="checkbox"
@@ -1263,21 +1263,21 @@ export default function AdminPage() {
                                   )
                                 }
                               />
-                              Tandai sebagai best seller
+                              Tandai sebagai template unggulan
                             </label>
                           </div>
                         </div>
 
                         <div className="grid gap-3 md:grid-cols-2">
                           <div className="space-y-2">
-                            <Label>Project Link</Label>
+                          <Label>Link Proyek</Label>
                             <Input
                               value={activeCaseStudy.project_link ?? ""}
                               onChange={(e) => updateCaseStudyField("project_link", e.target.value)}
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label>CTA Let's Talk</Label>
+                            <Label>Tombol Konsultasi</Label>
                             <Input
                               value={activeCaseStudy.cta_links?.["let's talk"] ?? ""}
                               onChange={(e) =>
@@ -1288,7 +1288,7 @@ export default function AdminPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label>CTA Read Case Study</Label>
+                          <Label>Tombol Lihat Studi Kasus</Label>
                           <Input
                             value={activeCaseStudy.cta_links?.["read case study"] ?? ""}
                             onChange={(e) =>
@@ -1298,7 +1298,7 @@ export default function AdminPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label>Project Title</Label>
+                          <Label>Judul Proyek</Label>
                           <Input
                             value={activeCaseStudy.project_title}
                             onChange={(e) => updateCaseStudyField("project_title", e.target.value)}
@@ -1306,7 +1306,7 @@ export default function AdminPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label>Description</Label>
+                          <Label>Deskripsi</Label>
                           <Textarea
                             rows={3}
                             value={activeCaseStudy.description}
@@ -1316,7 +1316,7 @@ export default function AdminPage() {
 
                         <div className="grid gap-3 md:grid-cols-2">
                           <div className="space-y-2">
-                            <Label>Main Image</Label>
+                            <Label>Gambar Utama</Label>
                             <Input
                               type="file"
                               accept="image/*"
@@ -1351,14 +1351,14 @@ export default function AdminPage() {
 
                         <div className="grid gap-3 md:grid-cols-2">
                           <div className="space-y-2">
-                            <Label>Founder Name</Label>
+                            <Label>Nama Pemilik</Label>
                             <Input
                               value={activeCaseStudy.founder_name ?? ""}
                               onChange={(e) => updateCaseStudyField("founder_name", e.target.value)}
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label>Position</Label>
+                            <Label>Jabatan</Label>
                             <Input
                               value={activeCaseStudy.position ?? ""}
                               onChange={(e) => updateCaseStudyField("position", e.target.value)}
@@ -1367,7 +1367,7 @@ export default function AdminPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label>Testimonial Image</Label>
+                          <Label>Gambar Testimoni</Label>
                           <Input
                             type="file"
                             accept="image/*"
@@ -1390,7 +1390,7 @@ export default function AdminPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label>Features (1 baris = 1 item)</Label>
+                          <Label>Fitur (1 baris = 1 item)</Label>
                           <Textarea
                             rows={4}
                             value={activeCaseStudy.features.join("\n")}
@@ -1399,7 +1399,7 @@ export default function AdminPage() {
                         </div>
 
                         <div className="space-y-2">
-                          <Label>Demo Images</Label>
+                          <Label>Gambar Demo</Label>
                           <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
                             {activeCaseStudy.demo_images.map((image, imageIndex) => (
                               <img
@@ -1417,10 +1417,10 @@ export default function AdminPage() {
                               size="sm"
                               onClick={() => {
                                 updateCaseStudyListField("demo_images", "");
-                                setStatus("Semua demo images pada template ini dikosongkan.");
+                                setStatus("Semua gambar demo pada template ini dihapus.");
                               }}
                             >
-                              Kosongkan Demo Images
+                              Hapus Semua Gambar Demo
                             </Button>
                           </div>
                           <Input
@@ -1452,32 +1452,42 @@ export default function AdminPage() {
                 <CardContent className="grid gap-3 md:grid-cols-2">
                   <Button asChild variant="outline" className="justify-start">
                     <Link href="/" target="_blank">
-                      Homepage (Hero + Carousel + Sections)
+                      Beranda (Hero + Carousel + Bagian)
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="justify-start">
                     <Link href="/about" target="_blank">
-                      About Page
+                      Halaman Tentang
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="justify-start">
                     <Link href="/blog" target="_blank">
-                      Blog / Templates List
+                      Blog / Daftar Template
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="justify-start">
                     <Link href="/signup" target="_blank">
-                      Signup Page
+                      Halaman Daftar
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="justify-start">
                     <Link href="/login" target="_blank">
-                      Login Page
+                      Halaman Masuk
                     </Link>
                   </Button>
                   <Button asChild variant="outline" className="justify-start">
                     <Link href="/admin" target="_blank">
-                      Admin (Current)
+                      Admin (Saat Ini)
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link href="/admin-pengelola" target="_blank">
+                      Admin Pengelola Template
+                    </Link>
+                  </Button>
+                  <Button asChild variant="outline" className="justify-start">
+                    <Link href="/super-admin" target="_blank">
+                      Superadmin
                     </Link>
                   </Button>
                 </CardContent>

@@ -38,6 +38,7 @@ export async function POST(request: Request) {
         email: result.data.email,
         name: result.data.name,
         provider: "local",
+        role: result.data.role,
       }),
       {
         httpOnly: true,

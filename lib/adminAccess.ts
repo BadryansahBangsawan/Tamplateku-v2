@@ -1,26 +1,35 @@
 import type { AuthUser } from "@/lib/authCookie";
+import {
+  type AppRole,
+  canAccessAdminPage,
+  canAccessSuperAdminPage,
+  canAccessTemplateManagerPage,
+  getUserRole,
+  getUserRoleByEmail,
+} from "@/lib/roles";
 
-const DEFAULT_ADMIN_EMAIL = "badryansah99@gmail.com";
+export type { AppRole };
 
-function normalizeEmail(email: string): string {
-  return email.trim().toLowerCase();
+export function getRoleFromUser(user: AuthUser | null | undefined): AppRole {
+  return getUserRole(user);
 }
 
-function getConfiguredAdminEmails(): Set<string> {
-  const raw = process.env.ADMIN_EMAILS ?? DEFAULT_ADMIN_EMAIL;
-  const emails = raw
-    .split(",")
-    .map((email) => normalizeEmail(email))
-    .filter((email) => email.length > 0);
-
-  return new Set(emails.length > 0 ? emails : [DEFAULT_ADMIN_EMAIL]);
+export function getRoleFromEmail(email: string): AppRole {
+  return getUserRoleByEmail(email);
 }
 
 export function isAdminEmail(email: string): boolean {
-  return getConfiguredAdminEmails().has(normalizeEmail(email));
+  return canAccessAdminPage(getUserRoleByEmail(email));
 }
 
 export function isAdminUser(user: AuthUser | null | undefined): boolean {
-  if (!user?.email) return false;
-  return isAdminEmail(user.email);
+  return canAccessAdminPage(getUserRole(user));
+}
+
+export function isTemplateAdminUser(user: AuthUser | null | undefined): boolean {
+  return canAccessTemplateManagerPage(getUserRole(user));
+}
+
+export function isSuperAdminUser(user: AuthUser | null | undefined): boolean {
+  return canAccessSuperAdminPage(getUserRole(user));
 }

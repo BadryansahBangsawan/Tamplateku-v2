@@ -35,6 +35,9 @@ function LoginPageContent() {
         ok: boolean;
         code?: string;
         message?: string;
+        user?: {
+          role?: "USER" | "ADMIN" | "TEMPLATE_ADMIN" | "SUPER_ADMIN";
+        };
       };
       if (!response.ok || !result.ok) {
         setErrorMessage(result.message ?? "Login gagal.");
@@ -46,7 +49,16 @@ function LoginPageContent() {
         return;
       }
       setUnverifiedEmail("");
-      router.push("/browse-template?login=form_success");
+      const role = result.user?.role ?? "USER";
+      const target =
+        role === "SUPER_ADMIN"
+          ? "/super-admin?login=form_success"
+          : role === "ADMIN"
+            ? "/admin?login=form_success"
+            : role === "TEMPLATE_ADMIN"
+              ? "/admin-pengelola?login=form_success"
+              : "/browse-template?login=form_success";
+      router.push(target);
     } catch {
       setErrorMessage("Tidak bisa terhubung ke server.");
     } finally {

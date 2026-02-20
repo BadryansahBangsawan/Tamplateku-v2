@@ -1,5 +1,5 @@
+import { getRoleFromUser } from "@/lib/adminAccess";
 import { AUTH_COOKIE_NAME, decodeAuthUser } from "@/lib/authCookie";
-import { isAdminUser } from "@/lib/adminAccess";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
@@ -11,8 +11,27 @@ export async function GET() {
 
   const user = decodeAuthUser(cookieValue);
   if (!user) {
-    return NextResponse.json({ user: null, isAdmin: false }, { status: 200 });
+    return NextResponse.json(
+      {
+        user: null,
+        role: "USER",
+        isAdmin: false,
+        isTemplateAdmin: false,
+        isSuperAdmin: false,
+      },
+      { status: 200 }
+    );
   }
 
-  return NextResponse.json({ user, isAdmin: isAdminUser(user) }, { status: 200 });
+  const role = getRoleFromUser(user);
+  return NextResponse.json(
+    {
+      user,
+      role,
+      isAdmin: role === "ADMIN" || role === "SUPER_ADMIN",
+      isTemplateAdmin: role === "TEMPLATE_ADMIN" || role === "SUPER_ADMIN",
+      isSuperAdmin: role === "SUPER_ADMIN",
+    },
+    { status: 200 }
+  );
 }

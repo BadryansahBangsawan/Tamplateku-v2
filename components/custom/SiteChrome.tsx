@@ -6,7 +6,10 @@ import { usePathname } from "next/navigation";
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isAdminRoute = pathname?.startsWith("/admin");
+  const isAdminRoute =
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/admin-pengelola") ||
+    pathname?.startsWith("/super-admin");
 
   if (isAdminRoute) {
     return <div className="min-h-screen w-full">{children}</div>;

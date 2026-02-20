@@ -21,7 +21,9 @@ function Navbar() {
     email: string;
     picture?: string;
   } | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [userRole, setUserRole] = useState<"USER" | "ADMIN" | "TEMPLATE_ADMIN" | "SUPER_ADMIN">(
+    "USER"
+  );
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const navRef = useRef<HTMLElement>(null);
@@ -208,13 +210,13 @@ function Navbar() {
         if (!response.ok) return;
         const data = (await response.json()) as {
           user: { name: string; email: string; picture?: string } | null;
-          isAdmin?: boolean;
+          role?: "USER" | "ADMIN" | "TEMPLATE_ADMIN" | "SUPER_ADMIN";
         };
         setAuthUser(data.user);
-        setIsAdmin(Boolean(data.isAdmin));
+        setUserRole(data.role ?? "USER");
       } catch {
         setAuthUser(null);
-        setIsAdmin(false);
+        setUserRole("USER");
       }
     };
 
@@ -226,11 +228,17 @@ function Navbar() {
       await fetch("/api/auth/logout", { method: "POST" });
     } catch {}
     setAuthUser(null);
-    setIsAdmin(false);
     window.location.href = "/";
   };
 
-  const profileHref = isAdmin ? "/admin" : "/browse-template";
+  const profileHref =
+    userRole === "SUPER_ADMIN"
+      ? "/super-admin"
+      : userRole === "ADMIN"
+        ? "/admin"
+        : userRole === "TEMPLATE_ADMIN"
+          ? "/admin-pengelola"
+          : "/browse-template";
 
   return (
     <>

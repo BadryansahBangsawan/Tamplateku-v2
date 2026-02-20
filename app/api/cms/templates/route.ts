@@ -1,6 +1,6 @@
 import type { CaseStudyType } from "@/data/caseStudies";
+import { getRoleFromUser } from "@/lib/adminAccess";
 import { getRequestAuthUser } from "@/lib/authRequest";
-import { isAdminUser } from "@/lib/adminAccess";
 import { getTemplatesFromDb, saveTemplatesToDb } from "@/lib/cmsDb";
 import { NextResponse } from "next/server";
 
@@ -29,7 +29,8 @@ export async function PUT(request: Request) {
   if (!user) {
     return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
   }
-  if (!isAdminUser(user)) {
+  const role = getRoleFromUser(user);
+  if (role !== "ADMIN" && role !== "TEMPLATE_ADMIN" && role !== "SUPER_ADMIN") {
     return NextResponse.json({ ok: false, message: "Forbidden" }, { status: 403 });
   }
 

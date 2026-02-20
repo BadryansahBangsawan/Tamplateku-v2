@@ -1,11 +1,14 @@
 export const AUTH_COOKIE_NAME = "tamplateku_auth_user";
 
+export type AuthRole = "USER" | "ADMIN" | "TEMPLATE_ADMIN" | "SUPER_ADMIN";
+
 export type AuthUser = {
   id: string;
   email: string;
   name: string;
   picture?: string;
   provider: "google" | "local";
+  role?: AuthRole;
 };
 
 export function encodeAuthUser(user: AuthUser): string {
@@ -30,6 +33,13 @@ export function decodeAuthUser(value: string | undefined): AuthUser | null {
           name: parsed.name,
           picture: typeof parsed.picture === "string" ? parsed.picture : undefined,
           provider: parsed.provider,
+          role:
+            parsed.role === "USER" ||
+            parsed.role === "ADMIN" ||
+            parsed.role === "TEMPLATE_ADMIN" ||
+            parsed.role === "SUPER_ADMIN"
+              ? parsed.role
+              : undefined,
         };
       }
       return null;

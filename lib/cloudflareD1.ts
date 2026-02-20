@@ -62,6 +62,7 @@ export async function ensureAuthUsersTable() {
       name TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE,
       password_hash TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'USER',
       email_verified_at TEXT,
       notes TEXT,
       created_at TEXT NOT NULL,
@@ -73,5 +74,10 @@ export async function ensureAuthUsersTable() {
   const hasEmailVerifiedAt = columns.some((column) => column.name === "email_verified_at");
   if (!hasEmailVerifiedAt) {
     await runD1Query("ALTER TABLE auth_users ADD COLUMN email_verified_at TEXT");
+  }
+
+  const hasRole = columns.some((column) => column.name === "role");
+  if (!hasRole) {
+    await runD1Query("ALTER TABLE auth_users ADD COLUMN role TEXT NOT NULL DEFAULT 'USER'");
   }
 }
