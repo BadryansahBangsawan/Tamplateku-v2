@@ -77,7 +77,7 @@ export default function BrowseTemplateDetailPage() {
       setIsCheckingAccess(true);
       try {
         const response = await fetch(
-          `/api/payments/doku/checkout?action=status&slug=${encodeURIComponent(slug)}`,
+          `/api/payments/checkout?action=status&slug=${encodeURIComponent(slug)}`,
           {
             cache: "no-store",
           }
@@ -136,7 +136,7 @@ export default function BrowseTemplateDetailPage() {
     setActionMessage("");
     setIsCheckoutLoading(true);
     try {
-      const response = await fetch("/api/payments/doku/checkout", {
+      const response = await fetch("/api/payments/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ templateSlug: template.slug }),
@@ -186,7 +186,7 @@ export default function BrowseTemplateDetailPage() {
 
   const handleDownload = () => {
     if (!template) return;
-    window.location.href = `/api/payments/doku/checkout?action=download&slug=${encodeURIComponent(template.slug)}`;
+    window.location.href = `/api/payments/checkout?action=download&slug=${encodeURIComponent(template.slug)}`;
   };
 
   if (!template) {

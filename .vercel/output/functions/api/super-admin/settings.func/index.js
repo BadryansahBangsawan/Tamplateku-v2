@@ -5,13 +5,13 @@
   "pages": {
     "/_app": [
       "static/chunks/e60ef129113f6e24.js",
-      "static/chunks/bbd123cfc63d81be.js",
-      "static/chunks/turbopack-47b8f2aac673a326.js"
+      "static/chunks/016ecd3494cb06e7.js",
+      "static/chunks/turbopack-52d72cd277d9be6c.js"
     ],
     "/_error": [
       "static/chunks/17722e3ac4e00587.js",
-      "static/chunks/bbd123cfc63d81be.js",
-      "static/chunks/turbopack-85e26b47ee3b39f2.js"
+      "static/chunks/016ecd3494cb06e7.js",
+      "static/chunks/turbopack-9ea80cf6bf870324.js"
     ]
   },
   "devFiles": [],

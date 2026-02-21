@@ -4,13 +4,12 @@ import type { CaseStudyType } from "@/data/caseStudies";
 import {
   CASE_STUDIES_STORAGE_KEY,
   CASE_STUDIES_UPDATED_EVENT,
-  defaultCaseStudiesContent,
   readCaseStudiesFromStorage,
 } from "@/lib/caseStudiesContent";
 import { useEffect, useState } from "react";
 
 export function useCaseStudies(): CaseStudyType[] {
-  const [caseStudies, setCaseStudies] = useState<CaseStudyType[]>(defaultCaseStudiesContent);
+  const [caseStudies, setCaseStudies] = useState<CaseStudyType[]>([]);
 
   useEffect(() => {
     const sync = async () => {

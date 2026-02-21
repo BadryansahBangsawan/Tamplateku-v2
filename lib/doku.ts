@@ -40,6 +40,14 @@ function normalizeBaseUrl(value: string): string {
   return value.replace(/\/+$/, "");
 }
 
+function parseCsvEnv(value: string | undefined): string[] {
+  if (!value) return [];
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter((item) => item.length > 0);
+}
+
 function resolveErrorMessage(payload: Record<string, unknown>, status: number): string {
   const messageValue = payload.message;
   if (typeof messageValue === "string" && messageValue.trim().length > 0) {
@@ -86,6 +94,7 @@ export type DokuCheckoutInput = {
   amount: number;
   templateName: string;
   templateSlug: string;
+  paymentMethodTypes?: string[];
   customer: {
     id: string;
     name: string;
@@ -117,6 +126,25 @@ export type DokuWebhookHeaders = {
   signature: string | null;
 };
 
+export class DokuRequestError extends Error {
+  status: number;
+  requestId: string;
+  payload: Record<string, unknown>;
+
+  constructor(params: {
+    message: string;
+    status: number;
+    requestId: string;
+    payload: Record<string, unknown>;
+  }) {
+    super(params.message);
+    this.name = "DokuRequestError";
+    this.status = params.status;
+    this.requestId = params.requestId;
+    this.payload = params.payload;
+  }
+}
+
 function safeSlugPart(value: string): string {
   return value
     .toLowerCase()
@@ -140,8 +168,11 @@ export function getDokuConfig() {
   return {
     clientId: getEnv("DOKU_CLIENT_ID"),
     secretKey: getEnv("DOKU_SECRET_KEY"),
+    apiKey: process.env.DOKU_API_KEY?.trim() || "",
     baseUrl: normalizeBaseUrl(process.env.DOKU_BASE_URL?.trim() || "https://api-sandbox.doku.com"),
     publicBaseUrl: normalizeBaseUrl(process.env.DOKU_PUBLIC_BASE_URL?.trim() || ""),
+    paymentMethodTypes: parseCsvEnv(process.env.DOKU_PAYMENT_METHOD_TYPES),
+    lineItemCategory: process.env.DOKU_LINE_ITEM_CATEGORY?.trim() || "other",
   };
 }
 
@@ -193,17 +224,27 @@ export async function createDokuCheckout(input: DokuCheckoutInput): Promise<Doku
   const normalizedCountry = input.customer.country?.trim() || "ID";
   const safeTemplateSlug = safeSlugPart(input.templateSlug) || "template";
   const safeTemplateName = input.templateName.trim() || "Template";
+  const configuredMethods =
+    input.paymentMethodTypes?.map((method) => method.trim()).filter((method) => method.length > 0) ??
+    [];
+  const lineItemCategory = config.lineItemCategory.trim() || "other";
   const lineItem = {
     id: `${safeTemplateSlug}-001`,
     name: safeTemplateName.slice(0, 255),
     quantity: 1,
     price: input.amount,
     sku: `${safeTemplateSlug}-sku`,
-    category: "digital-template",
-    url: `${origin}/browse-template/${input.templateSlug}`,
-    image_url: `${origin}/logo.png`,
-    type: "DIGITAL",
+    category: lineItemCategory,
   };
+  const payment: Record<string, unknown> = {
+    payment_due_date: 60,
+  };
+  if (configuredMethods.length > 0) {
+    payment.payment_method_types = configuredMethods;
+  }
+  if (configuredMethods.includes("PEER_TO_PEER_AKULAKU")) {
+    payment.merchant_unique_reference = input.invoiceNumber;
+  }
 
   const body = {
     order: {
@@ -217,9 +258,7 @@ export async function createDokuCheckout(input: DokuCheckoutInput): Promise<Doku
       auto_redirect: true,
       line_items: [lineItem],
     },
-    payment: {
-      payment_due_date: 60,
-    },
+    payment,
     customer: {
       id: input.customer.id,
       name: firstName,
@@ -267,17 +306,23 @@ export async function createDokuCheckout(input: DokuCheckoutInput): Promise<Doku
     bodyText,
   });
 
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    "Client-Id": config.clientId,
+    "Request-Id": requestId,
+    "Request-Timestamp": requestTimestamp,
+    Signature: signed.signature,
+    Digest: signed.digest,
+  };
+
+  if (config.apiKey) {
+    headers["Api-Key"] = config.apiKey;
+  }
+
   const response = await fetch(`${config.baseUrl}${requestTarget}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "Client-Id": config.clientId,
-      "Request-Id": requestId,
-      "Request-Timestamp": requestTimestamp,
-      Signature: signed.signature,
-      Digest: signed.digest,
-    },
+    headers,
     body: bodyText,
     cache: "no-store",
   });
@@ -294,7 +339,12 @@ export async function createDokuCheckout(input: DokuCheckoutInput): Promise<Doku
 
   if (!response.ok) {
     const message = resolveErrorMessage(payload, response.status);
-    throw new Error(message);
+    throw new DokuRequestError({
+      message,
+      status: response.status,
+      requestId,
+      payload,
+    });
   }
 
   const responseRoot =

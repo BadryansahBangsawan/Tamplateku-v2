@@ -91,7 +91,7 @@ function BrowseTemplateContent() {
     setActionMessage("");
     setProcessingSlug(templateSlug);
     try {
-      const response = await fetch("/api/payments/doku/checkout", {
+      const response = await fetch("/api/payments/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ templateSlug }),

@@ -3,6 +3,7 @@ import {
   createDokuCheckout,
   getDokuConfig,
   getDokuWebhookHeaders,
+  DokuRequestError,
   verifyDokuWebhookSignature,
 } from "@/lib/doku";
 import {
@@ -17,6 +18,14 @@ import { getTemplateBySlugServer } from "@/lib/templateServer";
 import { NextResponse } from "next/server";
 
 export const runtime = "edge";
+
+type PaymentGatewayMode = "DOKU" | "SIMULATED";
+
+function getPaymentGatewayMode(): PaymentGatewayMode {
+  const value = process.env.PAYMENT_GATEWAY_MODE?.trim().toUpperCase();
+  if (value === "SIMULATED") return "SIMULATED";
+  return "DOKU";
+}
 
 function resolveTemplateSlugFromUrl(request: Request): string {
   return new URL(request.url).searchParams.get("slug")?.trim() ?? "";
@@ -42,9 +51,9 @@ function generateInvoiceNumber(): string {
 }
 
 function resolvePublicOrigin(request: Request): string {
-  const configured = getDokuConfig().publicBaseUrl;
+  const configured = process.env.DOKU_PUBLIC_BASE_URL?.trim();
   if (configured) {
-    return configured;
+    return configured.replace(/\/+$/, "");
   }
   return new URL(request.url).origin;
 }
@@ -63,6 +72,29 @@ function sanitizeGatewayMessage(value: string): string {
   }
 
   return trimmed.slice(0, 220);
+}
+
+function formatCheckoutFailureMessage(value: string): string {
+  const normalized = value.toUpperCase();
+  if (normalized.includes("INTERNAL SERVER ERROR")) {
+    return "Gateway DOKU masih menolak transaksi (INTERNAL SERVER ERROR). Periksa aktivasi channel pembayaran di dashboard DOKU.";
+  }
+  if (normalized.includes("PAYMENT CHANNEL IS INACTIVE")) {
+    return "Channel pembayaran DOKU untuk metode ini belum aktif. Aktifkan minimal satu channel checkout (misal VA/QRIS) lalu coba lagi.";
+  }
+  if (normalized.includes("PLEASE USE ANOTHER PAYMENT METHOD")) {
+    return "Metode pembayaran yang dipilih tidak tersedia. Gunakan metode lain yang sudah aktif di dashboard DOKU.";
+  }
+  return value;
+}
+
+function canRetryWithAnotherMethod(message: string): boolean {
+  const normalized = message.toUpperCase();
+  return (
+    normalized.includes("INTERNAL SERVER ERROR") ||
+    normalized.includes("PAYMENT CHANNEL IS INACTIVE") ||
+    normalized.includes("PLEASE USE ANOTHER PAYMENT METHOD")
+  );
 }
 
 type DokuNotificationBody = {
@@ -92,6 +124,13 @@ async function createEventKey(rawBody: string, requestId: string | null): Promis
 }
 
 async function handleWebhook(request: Request): Promise<NextResponse> {
+  if (getPaymentGatewayMode() !== "DOKU") {
+    return NextResponse.json(
+      { ok: false, message: "Webhook tidak aktif saat mode pembayaran SIMULATED." },
+      { status: 400 }
+    );
+  }
+
   const requestUrl = new URL(request.url);
   const requestTarget = requestUrl.pathname + (requestUrl.search || "");
   const rawBody = await request.text();
@@ -269,7 +308,7 @@ export async function POST(request: Request) {
       return NextResponse.json({
         ok: true,
         alreadyPurchased: true,
-        downloadUrl: `/api/payments/doku/checkout?action=download&slug=${encodeURIComponent(template.slug)}`,
+        downloadUrl: `/api/payments/checkout?action=download&slug=${encodeURIComponent(template.slug)}`,
       });
     }
 
@@ -288,8 +327,9 @@ export async function POST(request: Request) {
     }
 
     const requestUrl = new URL(request.url);
+    const paymentMode = getPaymentGatewayMode();
     const origin = resolvePublicOrigin(request);
-    if (!getDokuConfig().publicBaseUrl && ["localhost", "127.0.0.1"].includes(requestUrl.hostname)) {
+    if (!process.env.DOKU_PUBLIC_BASE_URL?.trim() && ["localhost", "127.0.0.1"].includes(requestUrl.hostname)) {
       return NextResponse.json(
         {
           ok: false,
@@ -303,7 +343,7 @@ export async function POST(request: Request) {
 
     const successUrl = `${origin}/browse-template/${template.slug}?payment=success&invoice=${encodeURIComponent(invoiceNumber)}`;
     const failureUrl = `${origin}/browse-template/${template.slug}?payment=failed&invoice=${encodeURIComponent(invoiceNumber)}`;
-    const notifyUrl = `${origin}/api/payments/doku/checkout?action=webhook`;
+    const notifyUrl = `${origin}/api/payments/checkout?action=webhook`;
     const downloadUrl = getTemplateDownloadUrl(template);
 
     await createPaymentOrder({
@@ -321,21 +361,72 @@ export async function POST(request: Request) {
       status: "PENDING",
     });
 
-    try {
-      const checkout = await createDokuCheckout({
+    if (paymentMode === "SIMULATED") {
+      const simulatedAt = new Date().toISOString();
+      await applyDokuNotification({
         invoiceNumber,
-        amount,
-        templateName,
-        templateSlug: template.slug,
-        customer: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
+        transactionStatus: "SUCCESS",
+        transactionDate: simulatedAt,
+        payload: {
+          mode: "SIMULATED",
+          order: { invoice_number: invoiceNumber },
+          transaction: { status: "SUCCESS", date: simulatedAt },
         },
-        successUrl,
-        failureUrl,
-        notifyUrl,
       });
+
+      return NextResponse.json({
+        ok: true,
+        provider: "SIMULATED",
+        invoiceNumber,
+        paymentUrl: successUrl,
+        simulated: true,
+      });
+    }
+
+    try {
+      const dokuConfig = getDokuConfig();
+      const configuredMethods = dokuConfig.paymentMethodTypes;
+      const methodCandidates =
+        configuredMethods.length > 0
+          ? configuredMethods.map((method) => [method])
+          : [undefined];
+      let checkout: Awaited<ReturnType<typeof createDokuCheckout>> | null = null;
+      let checkoutError: unknown = null;
+
+      for (const paymentMethodTypes of methodCandidates) {
+        try {
+          checkout = await createDokuCheckout({
+            invoiceNumber,
+            amount,
+            templateName,
+            templateSlug: template.slug,
+            paymentMethodTypes,
+            customer: {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+            },
+            successUrl,
+            failureUrl,
+            notifyUrl,
+          });
+          break;
+        } catch (error) {
+          checkoutError = error;
+          const rawMessage = error instanceof Error ? error.message : "";
+          if (
+            methodCandidates.length === 1 ||
+            !rawMessage ||
+            !canRetryWithAnotherMethod(rawMessage)
+          ) {
+            break;
+          }
+        }
+      }
+
+      if (!checkout) {
+        throw checkoutError instanceof Error ? checkoutError : new Error("Checkout gagal.");
+      }
 
       await updatePaymentOrderCheckout({
         invoiceNumber,
@@ -352,17 +443,26 @@ export async function POST(request: Request) {
         paymentUrl: checkout.checkoutUrl,
       });
     } catch (error) {
+      if (error instanceof DokuRequestError) {
+        console.error("DOKU checkout failed", {
+          status: error.status,
+          requestId: error.requestId,
+          message: error.message,
+        });
+      }
+
       const message = error instanceof Error ? error.message : "Checkout gagal.";
       await markPaymentOrderFailed(invoiceNumber, { error: message });
       const safeMessage = sanitizeGatewayMessage(message);
+      const userMessage = formatCheckoutFailureMessage(safeMessage);
 
       return NextResponse.json(
         {
           ok: false,
           code: "CHECKOUT_FAILED",
-          message: `Gagal membuat checkout DOKU. ${safeMessage}`,
+          message: `Gagal membuat checkout DOKU. ${userMessage}`,
         },
-        { status: 502 }
+        { status: 400 }
       );
     }
   } catch {

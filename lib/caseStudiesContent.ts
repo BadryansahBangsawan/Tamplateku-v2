@@ -1,6 +1,6 @@
 import { type CaseStudyType, caseStudies as defaultCaseStudies } from "@/data/caseStudies";
 
-export const CASE_STUDIES_STORAGE_KEY = "tamplateku-case-studies-v1";
+export const CASE_STUDIES_STORAGE_KEY = "tamplateku-case-studies-v2";
 export const CASE_STUDIES_UPDATED_EVENT = "case-studies-updated";
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -87,24 +87,24 @@ function normalizeCaseStudy(raw: unknown, fallback: CaseStudyType): CaseStudyTyp
 
 export function parseCaseStudies(raw: string | null): CaseStudyType[] {
   const defaults = cloneDefaults();
-  if (!raw) return defaults;
+  if (!raw) return [];
 
   try {
     const parsed = JSON.parse(raw);
-    if (!Array.isArray(parsed)) return defaults;
+    if (!Array.isArray(parsed)) return [];
 
     const normalized = parsed
       .filter((item) => isObject(item))
       .map((item, index) => normalizeCaseStudy(item, defaults[index % defaults.length]));
 
-    return normalized.length > 0 ? normalized : defaults;
+    return normalized.length > 0 ? normalized : [];
   } catch {
-    return defaults;
+    return [];
   }
 }
 
 export function readCaseStudiesFromStorage(): CaseStudyType[] {
-  if (typeof window === "undefined") return cloneDefaults();
+  if (typeof window === "undefined") return [];
   return parseCaseStudies(window.localStorage.getItem(CASE_STUDIES_STORAGE_KEY));
 }
 

@@ -1,5 +1,5 @@
 import type { CaseStudyType } from "@/data/caseStudies";
-import { defaultCaseStudiesContent, parseCaseStudies } from "@/lib/caseStudiesContent";
+import { parseCaseStudies } from "@/lib/caseStudiesContent";
 import { runD1Query } from "@/lib/cloudflareD1";
 import { type SiteContent, defaultSiteContent, mergeSiteContent } from "@/lib/siteContent";
 
@@ -163,7 +163,11 @@ function toNullableString(value: string | null | undefined): string | null {
 
 function normalizeTemplates(input: CaseStudyType[]): CaseStudyType[] {
   const parsed = parseCaseStudies(JSON.stringify(input));
-  return parsed.length > 0 ? parsed : defaultCaseStudiesContent;
+  if (input.length === 0) return [];
+  if (parsed.length === 0) {
+    throw new Error("Format template tidak valid.");
+  }
+  return parsed;
 }
 
 export async function ensureCmsTables(): Promise<void> {
@@ -268,7 +272,7 @@ export async function getTemplatesFromDb(): Promise<CaseStudyType[]> {
   );
 
   if (rows.length === 0) {
-    return saveTemplatesToDb(defaultCaseStudiesContent);
+    return [];
   }
 
   return rows.map(rowToCaseStudy);

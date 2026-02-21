@@ -52,7 +52,7 @@
       "continue": true
     },
     {
-      "src": "^/_next/data/bvMRFx9UsAQNACxA5rKFc/(.*).json",
+      "src": "^/_next/data/VtJm_hWqKMqYQZ9MwglYZ/(.*).json",
       "dest": "/$1",
       "override": true,
       "continue": true,
@@ -131,7 +131,7 @@
           "key": "x-nextjs-data"
         }
       ],
-      "dest": "/_next/data/bvMRFx9UsAQNACxA5rKFc/index.json",
+      "dest": "/_next/data/VtJm_hWqKMqYQZ9MwglYZ/index.json",
       "continue": true,
       "override": true
     },
@@ -143,7 +143,7 @@
           "key": "x-nextjs-data"
         }
       ],
-      "dest": "/_next/data/bvMRFx9UsAQNACxA5rKFc/$1.json",
+      "dest": "/_next/data/VtJm_hWqKMqYQZ9MwglYZ/$1.json",
       "continue": true,
       "override": true
     },
@@ -183,7 +183,7 @@
       "handle": "filesystem"
     },
     {
-      "src": "^/_next/data/bvMRFx9UsAQNACxA5rKFc/(.*).json",
+      "src": "^/_next/data/VtJm_hWqKMqYQZ9MwglYZ/(.*).json",
       "dest": "/$1",
       "continue": true,
       "has": [
@@ -259,7 +259,7 @@
           "key": "x-nextjs-data"
         }
       ],
-      "dest": "/_next/data/bvMRFx9UsAQNACxA5rKFc/index.json",
+      "dest": "/_next/data/VtJm_hWqKMqYQZ9MwglYZ/index.json",
       "continue": true
     },
     {
@@ -270,19 +270,19 @@
           "key": "x-nextjs-data"
         }
       ],
-      "dest": "/_next/data/bvMRFx9UsAQNACxA5rKFc/$1.json",
+      "dest": "/_next/data/VtJm_hWqKMqYQZ9MwglYZ/$1.json",
       "continue": true
     },
     {
-      "src": "^/_next/data/bvMRFx9UsAQNACxA5rKFc/api/super\\-admin/users/(?<nxtPid>[^/]+?)(?:/)?.json$",
+      "src": "^/_next/data/VtJm_hWqKMqYQZ9MwglYZ/api/super\\-admin/users/(?<nxtPid>[^/]+?)(?:/)?.json$",
       "dest": "/api/super-admin/users/[id]?nxtPid=$nxtPid"
     },
     {
-      "src": "^/_next/data/bvMRFx9UsAQNACxA5rKFc/api/super\\-admin/users/(?<nxtPid>[^/]+?)/reset\\-password(?:/)?.json$",
+      "src": "^/_next/data/VtJm_hWqKMqYQZ9MwglYZ/api/super\\-admin/users/(?<nxtPid>[^/]+?)/reset\\-password(?:/)?.json$",
       "dest": "/api/super-admin/users/[id]/reset-password?nxtPid=$nxtPid"
     },
     {
-      "src": "^/_next/data/bvMRFx9UsAQNACxA5rKFc/browse\\-template/(?<nxtPslug>[^/]+?)(?:/)?.json$",
+      "src": "^/_next/data/VtJm_hWqKMqYQZ9MwglYZ/browse\\-template/(?<nxtPslug>[^/]+?)(?:/)?.json$",
       "dest": "/browse-template/[slug]?nxtPslug=$nxtPslug"
     },
     {
@@ -310,7 +310,7 @@
       "dest": "/browse-template/[slug]?nxtPslug=$nxtPslug"
     },
     {
-      "src": "^/_next/data/bvMRFx9UsAQNACxA5rKFc/(.*).json",
+      "src": "^/_next/data/VtJm_hWqKMqYQZ9MwglYZ/(.*).json",
       "headers": {
         "x-nextjs-matched-path": "/$1"
       },
@@ -318,14 +318,14 @@
       "override": true
     },
     {
-      "src": "^/_next/data/bvMRFx9UsAQNACxA5rKFc/(.*).json",
+      "src": "^/_next/data/VtJm_hWqKMqYQZ9MwglYZ/(.*).json",
       "dest": "__next_data_catchall"
     },
     {
       "handle": "hit"
     },
     {
-      "src": "/_next/static/(?:[^/]+/pages|pages|chunks|runtime|css|image|media|bvMRFx9UsAQNACxA5rKFc)/.+",
+      "src": "/_next/static/(?:[^/]+/pages|pages|chunks|runtime|css|image|media|VtJm_hWqKMqYQZ9MwglYZ)/.+",
       "headers": {
         "cache-control": "public,max-age=31536000,immutable"
       },
